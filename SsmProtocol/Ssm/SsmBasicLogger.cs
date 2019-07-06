@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Xml.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NateW.Ssm
 {
@@ -157,6 +159,16 @@ namespace NateW.Ssm
         /// Stopping must be done asynchronously
         /// </summary>
         private AsyncResult stopLoggingAsyncResult;
+
+        /// <summary>
+        /// If nonzero, we'll query this address in between rows of log data, then set this back to zero.
+        /// </summary>
+        private int queryAddress;
+
+        /// <summary>
+        /// This will be signaled when a pending query is completed.
+        /// </summary>
+        private TaskCompletionSource<int> queryResult;
 
         /// <summary>
         /// For atomic state transition logging
@@ -378,6 +390,21 @@ namespace NateW.Ssm
             asyncResult.ToString();
             this.ToString();
         }
+
+        /// <summary>
+        /// Query 4 bytes from the ECU in-between rows of logging data.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public async Task<int> Query4Bytes(int address)
+        {
+            // TODO: if queryAddress is nonzero, there's already a pending query. 
+            // TODO: Wait until that query has completed before requesting another one.
+            this.queryAddress = address;
+            this.queryResult = new TaskCompletionSource<int>();
+            await this.queryResult.Task;
+            return this.queryResult.Task.Result;
+        }
                 
         /// <summary>
         /// For test use only
@@ -486,7 +513,18 @@ namespace NateW.Ssm
                         }
                     }
 
-                    this.ecu.BeginMultipleRead(newProfile.Addresses, EndMultipleReadCallback, newProfile);
+                    if (this.queryAddress != 0)
+                    {
+                        // Read a single value from the ECU before resuming logging.
+                        int address = this.queryAddress;
+                        this.queryAddress = 0;
+                        this.ecu.BeginBlockRead(address, 4, QueryCallback, newProfile);
+                    }
+                    else
+                    {
+                        // Continue logging rows as usual.
+                        this.ecu.BeginMultipleRead(newProfile.Addresses, EndMultipleReadCallback, newProfile);
+                    }
                 }
                 else
                 {
@@ -537,6 +575,28 @@ namespace NateW.Ssm
                     this.stopLoggingAsyncResult = null;
                 }
             }
+        }
+
+        /// <summary>
+        /// Invoked when a between-rows query has completed.
+        /// </summary>
+        /// <param name="asyncResult">Async result.</param>
+        private void QueryCallback(IAsyncResult asyncResult)
+        {
+            // Store the block-read result and signal the awaiter.
+            byte[] queryResultBytes = this.ecu.EndBlockRead(asyncResult);
+
+            int queryResult = 0;
+            if (queryResultBytes != null && queryResultBytes.Length == 4)
+            {
+                queryResult = BitConverter.ToInt32(queryResultBytes, 0);
+            }
+
+            this.queryResult.SetResult(queryResult);
+
+            // Continue logging rows as usual.
+            InternalLogProfile profile = (InternalLogProfile)asyncResult.AsyncState;
+            this.ecu.BeginMultipleRead(profile.Addresses, EndMultipleReadCallback, profile);
         }
     }
 }

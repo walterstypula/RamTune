@@ -11,6 +11,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NateW.Ssm
@@ -303,6 +304,16 @@ namespace NateW.Ssm
         {
             Trace.WriteLine("SsmLogger.EndStopLogging");
             this.logger.EndStopLogging(asyncResult);
+        }
+
+        /// <summary>
+        /// Query 4 bytes from the ECU, in between rows of log data.
+        /// </summary>
+        /// <param name="address">Address to query.</param>
+        /// <returns>Contents of the ECU memory at those 4 bytes.</returns>
+        public async Task<int> Query4Bytes(int address)
+        {
+            return await this.logger.Query4Bytes(address);
         }
 
         /// <summary>

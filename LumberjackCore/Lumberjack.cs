@@ -481,7 +481,7 @@ namespace NateW.Ssm.ApplicationLogic
                 this.Settings.Save();
             }
         }
-
+        
         /// <summary>
         /// Directory with canned profiles & SSM database
         /// </summary>
