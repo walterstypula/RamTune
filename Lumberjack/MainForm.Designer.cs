@@ -67,6 +67,8 @@ namespace NateW.Ssm.ApplicationLogic
             this.statusText = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.liveTuningTab = new System.Windows.Forms.TabPage();
+            this.liveTuningInitialize = new System.Windows.Forms.Button();
+            this.liveTuningGrid = new System.Windows.Forms.DataGridView();
             this.tabs.SuspendLayout();
             this.controlTab.SuspendLayout();
             this.loggingModeGroupBox.SuspendLayout();
@@ -77,6 +79,8 @@ namespace NateW.Ssm.ApplicationLogic
             ((System.ComponentModel.ISupportInitialize)(this.parameterGrid)).BeginInit();
             this.dashboardTab.SuspendLayout();
             this.statusTab.SuspendLayout();
+            this.liveTuningTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.liveTuningGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // tabs
@@ -92,7 +96,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.tabs.Controls.Add(this.liveTuningTab);
             this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabs.Location = new System.Drawing.Point(3, 2);
-            this.tabs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabs.Margin = new System.Windows.Forms.Padding(4);
             this.tabs.Name = "tabs";
             this.tabs.SelectedIndex = 0;
             this.tabs.Size = new System.Drawing.Size(912, 534);
@@ -104,9 +108,9 @@ namespace NateW.Ssm.ApplicationLogic
             this.controlTab.Controls.Add(this.groupBox2);
             this.controlTab.Controls.Add(this.groupBox1);
             this.controlTab.Location = new System.Drawing.Point(4, 34);
-            this.controlTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.controlTab.Margin = new System.Windows.Forms.Padding(4);
             this.controlTab.Name = "controlTab";
-            this.controlTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.controlTab.Padding = new System.Windows.Forms.Padding(4);
             this.controlTab.Size = new System.Drawing.Size(904, 496);
             this.controlTab.TabIndex = 0;
             this.controlTab.Text = "Settings";
@@ -123,9 +127,9 @@ namespace NateW.Ssm.ApplicationLogic
             this.loggingModeGroupBox.Controls.Add(this.logOpenLoop);
             this.loggingModeGroupBox.Controls.Add(this.logDefogger);
             this.loggingModeGroupBox.Location = new System.Drawing.Point(512, 7);
-            this.loggingModeGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.loggingModeGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.loggingModeGroupBox.Name = "loggingModeGroupBox";
-            this.loggingModeGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.loggingModeGroupBox.Padding = new System.Windows.Forms.Padding(4);
             this.loggingModeGroupBox.Size = new System.Drawing.Size(379, 337);
             this.loggingModeGroupBox.TabIndex = 15;
             this.loggingModeGroupBox.TabStop = false;
@@ -135,7 +139,7 @@ namespace NateW.Ssm.ApplicationLogic
             // 
             this.logAlways.AutoSize = true;
             this.logAlways.Location = new System.Drawing.Point(23, 108);
-            this.logAlways.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.logAlways.Margin = new System.Windows.Forms.Padding(4);
             this.logAlways.Name = "logAlways";
             this.logAlways.Size = new System.Drawing.Size(171, 29);
             this.logAlways.TabIndex = 31;
@@ -147,7 +151,7 @@ namespace NateW.Ssm.ApplicationLogic
             // 
             this.logOff.AutoSize = true;
             this.logOff.Location = new System.Drawing.Point(23, 71);
-            this.logOff.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.logOff.Margin = new System.Windows.Forms.Padding(4);
             this.logOff.Name = "logOff";
             this.logOff.Size = new System.Drawing.Size(122, 29);
             this.logOff.TabIndex = 30;
@@ -160,7 +164,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.logFullThrottle.AutoSize = true;
             this.logFullThrottle.Enabled = false;
             this.logFullThrottle.Location = new System.Drawing.Point(23, 182);
-            this.logFullThrottle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.logFullThrottle.Margin = new System.Windows.Forms.Padding(4);
             this.logFullThrottle.Name = "logFullThrottle";
             this.logFullThrottle.Size = new System.Drawing.Size(135, 29);
             this.logFullThrottle.TabIndex = 35;
@@ -173,7 +177,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.logClosedLoop.AutoSize = true;
             this.logClosedLoop.Enabled = false;
             this.logClosedLoop.Location = new System.Drawing.Point(23, 265);
-            this.logClosedLoop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.logClosedLoop.Margin = new System.Windows.Forms.Padding(4);
             this.logClosedLoop.Name = "logClosedLoop";
             this.logClosedLoop.Size = new System.Drawing.Size(144, 29);
             this.logClosedLoop.TabIndex = 34;
@@ -187,7 +191,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.logOpenLoop.AutoSize = true;
             this.logOpenLoop.Enabled = false;
             this.logOpenLoop.Location = new System.Drawing.Point(23, 228);
-            this.logOpenLoop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.logOpenLoop.Margin = new System.Windows.Forms.Padding(4);
             this.logOpenLoop.Name = "logOpenLoop";
             this.logOpenLoop.Size = new System.Drawing.Size(131, 29);
             this.logOpenLoop.TabIndex = 33;
@@ -202,7 +206,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.logDefogger.Checked = true;
             this.logDefogger.Enabled = false;
             this.logDefogger.Location = new System.Drawing.Point(23, 145);
-            this.logDefogger.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.logDefogger.Margin = new System.Windows.Forms.Padding(4);
             this.logDefogger.Name = "logDefogger";
             this.logDefogger.Size = new System.Drawing.Size(113, 29);
             this.logDefogger.TabIndex = 32;
@@ -219,9 +223,9 @@ namespace NateW.Ssm.ApplicationLogic
             this.groupBox2.Controls.Add(this.folderLabel);
             this.groupBox2.Controls.Add(this.openLogFolderButton);
             this.groupBox2.Location = new System.Drawing.Point(9, 352);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox2.Size = new System.Drawing.Size(881, 132);
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
@@ -231,7 +235,7 @@ namespace NateW.Ssm.ApplicationLogic
             // 
             this.folderButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.folderButton.Location = new System.Drawing.Point(8, 65);
-            this.folderButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.folderButton.Margin = new System.Windows.Forms.Padding(4);
             this.folderButton.Name = "folderButton";
             this.folderButton.Size = new System.Drawing.Size(224, 47);
             this.folderButton.TabIndex = 11;
@@ -253,7 +257,7 @@ namespace NateW.Ssm.ApplicationLogic
             // 
             this.openLogFolderButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.openLogFolderButton.Location = new System.Drawing.Point(247, 65);
-            this.openLogFolderButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.openLogFolderButton.Margin = new System.Windows.Forms.Padding(4);
             this.openLogFolderButton.Name = "openLogFolderButton";
             this.openLogFolderButton.Size = new System.Drawing.Size(240, 47);
             this.openLogFolderButton.TabIndex = 12;
@@ -273,9 +277,9 @@ namespace NateW.Ssm.ApplicationLogic
             this.groupBox1.Controls.Add(this.ecuIdentifierLabel);
             this.groupBox1.Controls.Add(this.connectButton);
             this.groupBox1.Location = new System.Drawing.Point(9, 7);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(495, 337);
             this.groupBox1.TabIndex = 13;
             this.groupBox1.TabStop = false;
@@ -299,7 +303,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.plxSerialPorts.FormattingEnabled = true;
             this.plxSerialPorts.ItemHeight = 25;
             this.plxSerialPorts.Location = new System.Drawing.Point(247, 59);
-            this.plxSerialPorts.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.plxSerialPorts.Margin = new System.Windows.Forms.Padding(4);
             this.plxSerialPorts.Name = "plxSerialPorts";
             this.plxSerialPorts.Size = new System.Drawing.Size(239, 104);
             this.plxSerialPorts.TabIndex = 8;
@@ -322,7 +326,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.ssmSerialPorts.FormattingEnabled = true;
             this.ssmSerialPorts.ItemHeight = 25;
             this.ssmSerialPorts.Location = new System.Drawing.Point(8, 59);
-            this.ssmSerialPorts.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ssmSerialPorts.Margin = new System.Windows.Forms.Padding(4);
             this.ssmSerialPorts.Name = "ssmSerialPorts";
             this.ssmSerialPorts.Size = new System.Drawing.Size(223, 104);
             this.ssmSerialPorts.TabIndex = 3;
@@ -343,7 +347,7 @@ namespace NateW.Ssm.ApplicationLogic
             // 
             this.connectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.connectButton.Location = new System.Drawing.Point(8, 283);
-            this.connectButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.connectButton.Margin = new System.Windows.Forms.Padding(4);
             this.connectButton.Name = "connectButton";
             this.connectButton.Size = new System.Drawing.Size(224, 47);
             this.connectButton.TabIndex = 7;
@@ -361,9 +365,9 @@ namespace NateW.Ssm.ApplicationLogic
             this.profileTab.Controls.Add(this.openButton);
             this.profileTab.Controls.Add(this.label2);
             this.profileTab.Location = new System.Drawing.Point(4, 34);
-            this.profileTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.profileTab.Margin = new System.Windows.Forms.Padding(4);
             this.profileTab.Name = "profileTab";
-            this.profileTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.profileTab.Padding = new System.Windows.Forms.Padding(4);
             this.profileTab.Size = new System.Drawing.Size(904, 496);
             this.profileTab.TabIndex = 3;
             this.profileTab.Text = "Profile";
@@ -373,7 +377,7 @@ namespace NateW.Ssm.ApplicationLogic
             // 
             this.removeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.removeButton.Location = new System.Drawing.Point(256, 431);
-            this.removeButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.removeButton.Margin = new System.Windows.Forms.Padding(4);
             this.removeButton.Name = "removeButton";
             this.removeButton.Size = new System.Drawing.Size(240, 47);
             this.removeButton.TabIndex = 16;
@@ -385,7 +389,7 @@ namespace NateW.Ssm.ApplicationLogic
             // 
             this.newButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.newButton.Location = new System.Drawing.Point(8, 368);
-            this.newButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.newButton.Margin = new System.Windows.Forms.Padding(4);
             this.newButton.Name = "newButton";
             this.newButton.Size = new System.Drawing.Size(240, 47);
             this.newButton.TabIndex = 12;
@@ -398,7 +402,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.saveButton.Enabled = false;
             this.saveButton.Location = new System.Drawing.Point(504, 431);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(4);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(240, 47);
             this.saveButton.TabIndex = 13;
@@ -414,7 +418,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.profiles.FormattingEnabled = true;
             this.profiles.ItemHeight = 25;
             this.profiles.Location = new System.Drawing.Point(8, 57);
-            this.profiles.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.profiles.Margin = new System.Windows.Forms.Padding(4);
             this.profiles.Name = "profiles";
             this.profiles.Size = new System.Drawing.Size(881, 254);
             this.profiles.TabIndex = 11;
@@ -425,7 +429,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.saveAsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.saveAsButton.Enabled = false;
             this.saveAsButton.Location = new System.Drawing.Point(504, 377);
-            this.saveAsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.saveAsButton.Margin = new System.Windows.Forms.Padding(4);
             this.saveAsButton.Name = "saveAsButton";
             this.saveAsButton.Size = new System.Drawing.Size(240, 47);
             this.saveAsButton.TabIndex = 15;
@@ -437,7 +441,7 @@ namespace NateW.Ssm.ApplicationLogic
             // 
             this.openButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.openButton.Location = new System.Drawing.Point(8, 431);
-            this.openButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.openButton.Margin = new System.Windows.Forms.Padding(4);
             this.openButton.Name = "openButton";
             this.openButton.Size = new System.Drawing.Size(240, 47);
             this.openButton.TabIndex = 14;
@@ -459,9 +463,9 @@ namespace NateW.Ssm.ApplicationLogic
             // 
             this.parametersTab.Controls.Add(this.parameterGrid);
             this.parametersTab.Location = new System.Drawing.Point(4, 34);
-            this.parametersTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.parametersTab.Margin = new System.Windows.Forms.Padding(4);
             this.parametersTab.Name = "parametersTab";
-            this.parametersTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.parametersTab.Padding = new System.Windows.Forms.Padding(4);
             this.parametersTab.Size = new System.Drawing.Size(904, 496);
             this.parametersTab.TabIndex = 2;
             this.parametersTab.Text = "Parameters";
@@ -482,7 +486,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.ParamName,
             this.ParamUnits});
             this.parameterGrid.Location = new System.Drawing.Point(12, 7);
-            this.parameterGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.parameterGrid.Margin = new System.Windows.Forms.Padding(4);
             this.parameterGrid.Name = "parameterGrid";
             this.parameterGrid.RowHeadersVisible = false;
             this.parameterGrid.RowTemplate.Height = 30;
@@ -520,9 +524,9 @@ namespace NateW.Ssm.ApplicationLogic
             // 
             this.dashboardTab.Controls.Add(this.canvas);
             this.dashboardTab.Location = new System.Drawing.Point(4, 34);
-            this.dashboardTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dashboardTab.Margin = new System.Windows.Forms.Padding(4);
             this.dashboardTab.Name = "dashboardTab";
-            this.dashboardTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dashboardTab.Padding = new System.Windows.Forms.Padding(4);
             this.dashboardTab.Size = new System.Drawing.Size(904, 496);
             this.dashboardTab.TabIndex = 1;
             this.dashboardTab.Text = "Display";
@@ -542,7 +546,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.statusTab.Controls.Add(this.statusText);
             this.statusTab.Controls.Add(this.label3);
             this.statusTab.Location = new System.Drawing.Point(4, 34);
-            this.statusTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.statusTab.Margin = new System.Windows.Forms.Padding(4);
             this.statusTab.Name = "statusTab";
             this.statusTab.Size = new System.Drawing.Size(904, 496);
             this.statusTab.TabIndex = 4;
@@ -555,7 +559,7 @@ namespace NateW.Ssm.ApplicationLogic
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.statusText.Location = new System.Drawing.Point(8, 42);
-            this.statusText.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.statusText.Margin = new System.Windows.Forms.Padding(4);
             this.statusText.Multiline = true;
             this.statusText.Name = "statusText";
             this.statusText.ReadOnly = true;
@@ -574,6 +578,8 @@ namespace NateW.Ssm.ApplicationLogic
             // 
             // liveTuningTab
             // 
+            this.liveTuningTab.Controls.Add(this.liveTuningGrid);
+            this.liveTuningTab.Controls.Add(this.liveTuningInitialize);
             this.liveTuningTab.Location = new System.Drawing.Point(4, 34);
             this.liveTuningTab.Name = "liveTuningTab";
             this.liveTuningTab.Size = new System.Drawing.Size(904, 496);
@@ -581,13 +587,32 @@ namespace NateW.Ssm.ApplicationLogic
             this.liveTuningTab.Text = "Live Tuning (experimental)";
             this.liveTuningTab.UseVisualStyleBackColor = true;
             // 
+            // liveTuningInitialize
+            // 
+            this.liveTuningInitialize.Location = new System.Drawing.Point(6, 4);
+            this.liveTuningInitialize.Name = "liveTuningInitialize";
+            this.liveTuningInitialize.Size = new System.Drawing.Size(124, 36);
+            this.liveTuningInitialize.TabIndex = 0;
+            this.liveTuningInitialize.Text = "Initialize";
+            this.liveTuningInitialize.UseVisualStyleBackColor = true;
+            this.liveTuningInitialize.Click += new System.EventHandler(this.liveTuningInitialize_Click);
+            // 
+            // liveTuningGrid
+            // 
+            this.liveTuningGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.liveTuningGrid.Location = new System.Drawing.Point(136, 4);
+            this.liveTuningGrid.Name = "liveTuningGrid";
+            this.liveTuningGrid.RowTemplate.Height = 24;
+            this.liveTuningGrid.Size = new System.Drawing.Size(760, 485);
+            this.liveTuningGrid.TabIndex = 1;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 537);
             this.Controls.Add(this.tabs);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Lumberjack";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -608,6 +633,8 @@ namespace NateW.Ssm.ApplicationLogic
             this.dashboardTab.ResumeLayout(false);
             this.statusTab.ResumeLayout(false);
             this.statusTab.PerformLayout();
+            this.liveTuningTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.liveTuningGrid)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -653,6 +680,8 @@ namespace NateW.Ssm.ApplicationLogic
         private System.Windows.Forms.ListBox plxSerialPorts;
         private System.Windows.Forms.Button removeButton;
         private System.Windows.Forms.TabPage liveTuningTab;
+        private System.Windows.Forms.Button liveTuningInitialize;
+        private System.Windows.Forms.DataGridView liveTuningGrid;
     }
 }
 

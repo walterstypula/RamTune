@@ -523,5 +523,40 @@ namespace NateW.Ssm.ApplicationLogic
             }
             this.lumberjack.Settings.Save();            
         }
+
+        private async void liveTuningInitialize_Click(object sender, EventArgs e)
+        {
+            if (await this.lumberjack.LiveTuningInitialize())
+            {
+                // TODO: how to empty/reset the current table contents?
+
+                // Add header row on top.
+                this.liveTuningGrid.ColumnHeadersVisible = true;
+                DataGridViewRow headerRow = new DataGridViewRow();
+                for (int x = 0; x < this.lumberjack.TableData.XHeaders.Length; x++)
+                {
+                    DataGridViewHeaderCell headerCell = new DataGridViewHeaderCell();
+                    headerCell.Value = this.lumberjack.TableData.XHeaders[x];
+                    headerRow.Cells.Add(headerCell);
+                }
+
+                // Add rows
+                for(int y = 0; y < this.lumberjack.TableData.YHeaders.Length; y++)
+                {
+                    // Create row
+                    DataGridViewRow newRow = new DataGridViewRow();
+                    newRow.HeaderCell.Value = this.lumberjack.TableData.YHeaders[y];
+
+                    for (int x = 0; x < this.lumberjack.TableData.XHeaders.Length; x++)
+                    {
+                        DataGridViewCell newCell = new DataGridViewTextBoxCell();
+                        newCell.Value = this.lumberjack.TableData.Cells[x][y];
+                        newRow.Cells.Add(newCell);
+                    }
+
+                    this.liveTuningGrid.Rows.Add(newRow);
+                }
+            }
+        }
     }
 }

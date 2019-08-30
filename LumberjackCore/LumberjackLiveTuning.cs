@@ -29,6 +29,14 @@ namespace NateW.Ssm.ApplicationLogic
     {
         private TableData tableData;
 
+        public TableData TableData
+        {
+            get
+            {
+                return this.tableData;
+            }
+        }
+
         private static bool TryGetHexValue(JsonValue configuration, string key, out int result)
         {
             result = 0;
