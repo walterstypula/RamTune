@@ -508,24 +508,28 @@ namespace NateW.Ssm.ApplicationLogic
 
             this.parameterGrid.Rows.Clear();
 
-            foreach (Parameter parameter in database.Parameters)
+            // If the database changes duing the loop below, the app crashes.
+            lock (this.parameterGrid)
             {
-                DataGridViewRow row = new DataGridViewRow();
-                row.CreateCells(this.parameterGrid);
-                row.Cells[(int)GridColumns.Enabled].Value = false;
-                row.Cells[(int)GridColumns.Parameter].Value = parameter;
+                foreach (Parameter parameter in database.Parameters)
+                {
+                    DataGridViewRow row = new DataGridViewRow();
+                    row.CreateCells(this.parameterGrid);
+                    row.Cells[(int)GridColumns.Enabled].Value = false;
+                    row.Cells[(int)GridColumns.Parameter].Value = parameter;
 
-                DataGridViewComboBoxCell cell = (DataGridViewComboBoxCell)row.Cells[(int)GridColumns.Conversions];
-                cell.DisplayMember = "Units";                
-                foreach (Conversion conversion in parameter.Conversions)
-                {                    
-                    DataGridViewComboBoxCell.ObjectCollection items = cell.Items;
-                    items.Add(conversion);
+                    DataGridViewComboBoxCell cell = (DataGridViewComboBoxCell)row.Cells[(int)GridColumns.Conversions];
+                    cell.DisplayMember = "Units";
+                    foreach (Conversion conversion in parameter.Conversions)
+                    {
+                        DataGridViewComboBoxCell.ObjectCollection items = cell.Items;
+                        items.Add(conversion);
+                    }
+                    Conversion defaultConversion = parameter.Conversions[0];
+                    cell.Value = defaultConversion;
+
+                    this.parameterGrid.Rows.Add(row);
                 }
-                Conversion defaultConversion = parameter.Conversions[0];
-                cell.Value = defaultConversion;
-
-                this.parameterGrid.Rows.Add(row);
             }
 
             this.parameterGrid.Sort(this.parameterGrid.Columns[1], ListSortDirection.Ascending);
