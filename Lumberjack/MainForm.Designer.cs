@@ -67,8 +67,8 @@ namespace NateW.Ssm.ApplicationLogic
             this.statusText = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.liveTuningTab = new System.Windows.Forms.TabPage();
-            this.liveTuningInitialize = new System.Windows.Forms.Button();
             this.liveTuningGrid = new System.Windows.Forms.DataGridView();
+            this.liveTuningInitialize = new System.Windows.Forms.Button();
             this.tabs.SuspendLayout();
             this.controlTab.SuspendLayout();
             this.loggingModeGroupBox.SuspendLayout();
@@ -587,6 +587,18 @@ namespace NateW.Ssm.ApplicationLogic
             this.liveTuningTab.Text = "Live Tuning (experimental)";
             this.liveTuningTab.UseVisualStyleBackColor = true;
             // 
+            // liveTuningGrid
+            // 
+            this.liveTuningGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.liveTuningGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.liveTuningGrid.Location = new System.Drawing.Point(136, 4);
+            this.liveTuningGrid.Name = "liveTuningGrid";
+            this.liveTuningGrid.RowTemplate.Height = 24;
+            this.liveTuningGrid.Size = new System.Drawing.Size(760, 485);
+            this.liveTuningGrid.TabIndex = 1;
+            // 
             // liveTuningInitialize
             // 
             this.liveTuningInitialize.Location = new System.Drawing.Point(6, 4);
@@ -596,15 +608,6 @@ namespace NateW.Ssm.ApplicationLogic
             this.liveTuningInitialize.Text = "Initialize";
             this.liveTuningInitialize.UseVisualStyleBackColor = true;
             this.liveTuningInitialize.Click += new System.EventHandler(this.liveTuningInitialize_Click);
-            // 
-            // liveTuningGrid
-            // 
-            this.liveTuningGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.liveTuningGrid.Location = new System.Drawing.Point(136, 4);
-            this.liveTuningGrid.Name = "liveTuningGrid";
-            this.liveTuningGrid.RowTemplate.Height = 24;
-            this.liveTuningGrid.Size = new System.Drawing.Size(760, 485);
-            this.liveTuningGrid.TabIndex = 1;
             // 
             // MainForm
             // 
