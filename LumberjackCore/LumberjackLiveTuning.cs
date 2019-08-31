@@ -110,11 +110,13 @@ namespace NateW.Ssm.ApplicationLogic
                 this.tableData.YHeaders = await this.LoadFloatArray(tableYAddress, ySize);
 
                 int tableDataAddress = EndianSwap(await this.logger.Query4Bytes(tableAddress + 12));
-                this.tableData.Cells = new byte[xSize][];
 
-                for(int x = 0; x < xSize; x++)
+                // TODO: put x first.
+                this.tableData.Cells = new byte[ySize][];
+
+                for(int y = 0; y < ySize; y++)
                 {
-                    tableData.Cells[x] = await this.LoadByteArray(tableDataAddress + (x * ySize), ySize);
+                    tableData.Cells[y] = await this.LoadByteArray(tableDataAddress + (y * xSize), xSize);
                 }
 
                 Trace("LiveTuning initialization successful.");
@@ -144,11 +146,24 @@ namespace NateW.Ssm.ApplicationLogic
             {
                 int cellAddress = baseAddress + (index * 4);
                 int fourBytes = await this.logger.Query4Bytes(cellAddress);
-                float value = (float)EndianSwap(fourBytes);
+                float value = ToFloat(fourBytes);
                 result[index] = value;
             }
 
             return result;
+        }
+
+        private float ToFloat(int rawBytes)
+        {
+            byte[] array = new byte[]
+            {
+                (byte)(rawBytes >> 24),
+                (byte)(rawBytes >> 16),
+                (byte)(rawBytes >> 8),
+                (byte)(rawBytes),
+            };
+
+            return BitConverter.ToSingle(array, 0);
         }
 
         /// <summary>
