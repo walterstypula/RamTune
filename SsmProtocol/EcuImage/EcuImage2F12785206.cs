@@ -1,6 +1,6 @@
 namespace NateW.Ssm {
   public class EcuImage2F12785206 : EcuImage {
-      public EcuImage2F12785206() {
+      public EcuImage2F12785206() : base("Configuration\\A2WC522N.bin") {
         this.Ranges.Add(new EcuImageRange(0x00000000, 0x00010000, new byte[]
             {
 0x04,0x2F,0x12,0x78,0x52,0x06,0x00,0xFF,0x59,0x94,0x7A,0xFF,0xFF,0x21,0x14,0xC5,

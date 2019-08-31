@@ -57,40 +57,30 @@ namespace NateW.Ssm.ApplicationLogic
 
         public async Task<bool> LiveTuningInitialize()
         {
-            using (Stream configurationStream = File.OpenRead("LiveTuning.json"))
+            using (Stream configurationStream = File.OpenRead("Configuration\\LiveTuning.json"))
             {
                 JsonValue configuration = JsonValue.Load(configurationStream);
-                string internalId = (string)configuration["InternalId"];
-                int internalIdAddress;
-                int tableAddress;
 
-                if (!TryGetHexValue(configuration, "InternalIdAddress", out internalIdAddress))
-                {
-                    return false;
-                }
+                // It would be nice to use the "internal ID" here (like "A2WC522N") but
+                // that value is stored in memory that the logger cannot access.
+                // So we use the less-common "ECU Identifier" instead ("2F12785206").
+                string ecuIdentifier = (string)configuration["EcuIdentifier"];
+                int tableAddress;
 
                 if (!TryGetHexValue(configuration, "TableStructureAddress", out tableAddress))
                 {
                     return false;
                 }
 
-                long internalId1 = await this.logger.Query4Bytes(internalIdAddress);
-                long internalId2 = await this.logger.Query4Bytes(internalIdAddress + 4);
-
-                List<byte> idBytes = new List<byte>();
-                idBytes.AddRange(BitConverter.GetBytes(internalId1));
-                idBytes.AddRange(BitConverter.GetBytes(internalId2));
-                string actualId = System.Text.Encoding.ASCII.GetString(idBytes.ToArray());
-
-                if (string.Compare(actualId, internalId) == 0)
+                if (string.Compare(this.logger.EcuIdentifier, ecuIdentifier) != 0)
                 {
-                    Trace(string.Format("LiveTuning Initialization: Expected '{0}' but found '{1}'", internalId, actualId));
+                    Trace(string.Format("LiveTuning Initialization: Expected '{0}' but found '{1}'", ecuIdentifier, this.logger.EcuIdentifier));
                     return false;
                 }
-
+                
                 int fourBytes = await this.logger.Query4Bytes(tableAddress);
-                int xSize = fourBytes & 0xFFFF;
-                int ySize = fourBytes >> 16;
+                int xSize = (fourBytes & 0xFF00) >> 8;
+                int ySize = fourBytes >> 24;
                 
                 if ((xSize < 0) || (xSize > 25))
                 {
@@ -105,7 +95,7 @@ namespace NateW.Ssm.ApplicationLogic
                 }
 
                 int tableFlags = await this.logger.Query4Bytes(tableAddress + 16);
-                byte tableType = (byte)(tableFlags >> 24);
+                byte tableType = (byte)(tableFlags & 0xFF);
                 if (tableType != 0x04)
                 {
                     Trace(string.Format("LiveTuning Initialization: Unsupported table type {0}.", tableType));
@@ -113,13 +103,13 @@ namespace NateW.Ssm.ApplicationLogic
                 }
 
                 this.tableData = new TableData();
-                int tableXAddress = await this.logger.Query4Bytes(tableAddress + 4);
+                int tableXAddress = EndianSwap(await this.logger.Query4Bytes(tableAddress + 4));
                 this.tableData.XHeaders = await this.LoadFloatArray(tableXAddress, xSize);
-                
-                int tableYAddress = await this.logger.Query4Bytes(tableAddress + 8);
+
+                int tableYAddress = EndianSwap(await this.logger.Query4Bytes(tableAddress + 8));
                 this.tableData.YHeaders = await this.LoadFloatArray(tableYAddress, ySize);
 
-                int tableDataAddress = await this.logger.Query4Bytes(tableAddress + 12);
+                int tableDataAddress = EndianSwap(await this.logger.Query4Bytes(tableAddress + 12));
                 this.tableData.Cells = new byte[xSize][];
 
                 for(int x = 0; x < xSize; x++)
@@ -132,12 +122,29 @@ namespace NateW.Ssm.ApplicationLogic
             }
         }
 
+        private int EndianSwap(int input)
+        {
+            int output = input & 0xFF;
+            output <<= 8;
+            input >>= 8;
+            output |= input & 0xFF;
+            output <<= 8;
+            input >>= 8;
+            output |= input & 0xFF;
+            output <<= 8;
+            input >>= 8;
+            output |= input & 0xFF;
+            return output;
+        }
+
         private async Task<float[]> LoadFloatArray(int baseAddress, int length)
         {
             float[] result = new float[length];
             for (int index = 0; index < length; index++)
             {
-                float value = (float)await this.logger.Query4Bytes(baseAddress + index * 4);
+                int cellAddress = baseAddress + (index * 4);
+                int fourBytes = await this.logger.Query4Bytes(cellAddress);
+                float value = (float)EndianSwap(fourBytes);
                 result[index] = value;
             }
 

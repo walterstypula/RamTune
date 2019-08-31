@@ -592,6 +592,7 @@ namespace NateW.Ssm
                 queryResult = BitConverter.ToInt32(queryResultBytes, 0);
             }
 
+            this.queryAddress = 0;
             this.queryResult.SetResult(queryResult);
 
             // Continue logging rows as usual.
