@@ -531,20 +531,20 @@ namespace NateW.Ssm.ApplicationLogic
                     if (await this.lumberjack.LiveTuningInitialize())
                     {
                         // TODO: how to empty/reset the current table contents?
+                        this.liveTuningGrid.Rows.Clear();
+                        this.liveTuningGrid.Columns.Clear();
+                        this.liveTuningGrid.ColumnCount = this.lumberjack.TableData.XHeaders.Length;
 
                         DataGridViewCell templateCell = new DataGridViewTextBoxCell(); ;
 
                         // Add header row on top.
                         this.liveTuningGrid.ColumnHeadersVisible = true;
-                        DataGridViewRow headerRow = new DataGridViewRow();
                         for (int x = 0; x < this.lumberjack.TableData.XHeaders.Length; x++)
                         {
-                            DataGridViewColumn column = new DataGridViewColumn(templateCell);
-                            this.liveTuningGrid.Columns.Add(column);
-
-                            DataGridViewHeaderCell headerCell = new DataGridViewHeaderCell();
-                            headerCell.Value = this.lumberjack.TableData.XHeaders[x].ToString();
-                            headerRow.Cells.Add(headerCell);
+                            this.liveTuningGrid.Columns[x].CellTemplate = templateCell;
+                            this.liveTuningGrid.Columns[x].Name = this.lumberjack.TableData.XHeaders[x].ToString();
+                            this.liveTuningGrid.Columns[x].SortMode = DataGridViewColumnSortMode.NotSortable;
+                            this.liveTuningGrid.Columns[x].Width = 60;
                         }
 
                         // Add rows
@@ -553,16 +553,18 @@ namespace NateW.Ssm.ApplicationLogic
                             // Create row
                             DataGridViewRow newRow = new DataGridViewRow();
                             newRow.HeaderCell.Value = this.lumberjack.TableData.YHeaders[y].ToString();
-
+                            
                             for (int x = 0; x < this.lumberjack.TableData.XHeaders.Length; x++)
                             {
-                                DataGridViewCell newCell = new DataGridViewTextBoxCell();
-                                newCell.Value = this.lumberjack.TableData.Cells[y][x].ToString();
-                                newRow.Cells.Add(newCell);
+                                DataGridViewTextBoxCell cell = new DataGridViewTextBoxCell();
+                                cell.Value = lumberjack.TableData.Cells[y][x].ToString();
+                                newRow.Cells.Add(cell);
                             }
 
                             this.liveTuningGrid.Rows.Add(newRow);
                         }
+
+                        this.liveTuningGrid.RowHeadersWidth = 80;
                     }
                 });
         }
