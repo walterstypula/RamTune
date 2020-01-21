@@ -37,20 +37,9 @@ namespace RamTune.UI.ViewModels
             set { this.Set<string[,]>(nameof(Data), value); }
         }
 
-        public MainWindowVM()
+        public MainWindowVM(DefinitionLoader loader)
         {
-            _definitionLoader = new DefinitionLoader();
-
-            //TODO: GetSettings
-            var paths = new List<string>() {
-                @"C:\Program Files (x86)\OpenECU\EcuFlash\rommetadata\subaru\Forester XT\A2WC411I.xml",
-                @"C:\Program Files (x86)\OpenECU\EcuFlash\rommetadata\subaru\Bases\32BITBASE.xml",
-                @"C:\Program Files (x86)\OpenECU\EcuFlash\rommetadata\subaru\Forester XT\A2WC410I.xml",
-                @"C:\Program Files (x86)\OpenECU\EcuFlash\rommetadata\subaru\Legacy GT\A2WC522N.xml",
-                @"C:\Program Files (x86)\OpenECU\EcuFlash\rommetadata\subaru\Legacy GT\A2WC521N.xml",
-                @"C:\Users\WS\Downloads\A2WC540F.xml"
-            };
-            _definitionLoader.LoadDefinitions(paths);
+            _definitionLoader = loader;
         }
 
         public IEnumerable<IGrouping<string, Table>> GroupedTables

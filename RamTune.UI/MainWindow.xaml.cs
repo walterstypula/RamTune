@@ -11,7 +11,6 @@ namespace RamTune.UI
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new MainWindowVM();
         }
     }
 }

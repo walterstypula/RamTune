@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using RamTune.Core.Metadata;
+using RamTune.UI.ViewModels;
+using System.IO;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace RamTune.UI
 {
@@ -13,5 +11,31 @@ namespace RamTune.UI
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            var loader = new DefinitionLoader();
+
+            //TODO add definitions loading screen
+            var paths = Directory.GetFiles(Configuration.EcuFlashDefinitions, "*.xml", SearchOption.AllDirectories);
+            loader.LoadDefinitions(paths);
+
+            var window = new MainWindow();
+            var mainWindowVM = new MainWindowVM(loader);
+            window.DataContext = mainWindowVM;
+            window.Show();
+        }
+
+        public App()
+        {
+            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+        }
+
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show(e.Exception.ToString());
+            e.Handled = true;
+        }
     }
 }

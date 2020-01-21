@@ -73,17 +73,24 @@ namespace RamTune.Core.Metadata
 
             foreach (var path in definitionPaths)
             {
-                var romScalings = LoadDefinition<DefinitionScalings>(path);
-                foreach (var scaling in romScalings.Scalings)
+                try
                 {
-                    if (!scalings.ContainsKey(scaling.Name))
+                    var romScalings = LoadDefinition<DefinitionScalings>(path);
+                    foreach (var scaling in romScalings.Scalings)
                     {
-                        scalings.Add(scaling.Name, scaling);
+                        if (!scalings.ContainsKey(scaling.Name))
+                        {
+                            scalings.Add(scaling.Name, scaling);
+                        }
                     }
-                }
 
-                var rom = LoadDefinition<Definition>(path);
-                definitions.Add(rom);
+                    var rom = LoadDefinition<Definition>(path);
+                    definitions.Add(rom);
+                }
+                catch (Exception ex)
+                {
+                    //TODO: Add error handling when a definition fails to load.
+                }
             }
 
             Definitions = definitions;
@@ -168,7 +175,7 @@ namespace RamTune.Core.Metadata
             {
                 var sourceAxis = source?.Axis?.FirstOrDefault(a =>
                 {
-                    if (a.Name == "Y" )
+                    if (a.Name == "Y")
                     {
                         a.Type = targetAxis.Type;
                         a.Name = targetAxis.Name;
