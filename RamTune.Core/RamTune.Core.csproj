@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Function.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="info.lundin.math.dll" Version="1.2.6" />
+  </ItemGroup>
+
+</Project>

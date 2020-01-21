@@ -1,0 +1,111 @@
+﻿<Window x:Class="RamTune.UI.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:controls="clr-namespace:RamTune.Controls;assembly=RamTune.Controls"
+		xmlns:local="clr-namespace:RamTune.UI"
+		mc:Ignorable="d"
+		Title="RamTune"
+		Width="900"
+		AllowsTransparency="False"
+		Background="Black"
+		Height="540">
+	<Window.Resources>
+		<BooleanToVisibilityConverter
+			x:Key="BooleanToVisibilityConverter" />
+	</Window.Resources>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition MinWidth="160" Width="300" />
+			<ColumnDefinition Width="2" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="2" />
+			<ColumnDefinition MinWidth="160" Width="160" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+		<GridSplitter Background="Azure" Grid.RowSpan="2" Grid.Column="1" Width="2" HorizontalAlignment="Stretch" />
+		<GridSplitter Background="Azure" Grid.RowSpan="2" Grid.Column="3" Width="2" HorizontalAlignment="Stretch" />
+
+		<Button Content="Load Rom" Background="SlateGray"  Grid.Row="0" Grid.Column="0" Command="{Binding Path=OpenRomCommand}" />
+		<TreeView x:Name="TablesTV" Width="Auto" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding GroupedTables}"
+				  xmlns:VM="clr-namespace:RamTune.Core.Metadata;assembly=RamTune.Core"
+				  xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                  >
+            <TreeView.Resources>
+                <Style TargetType="TreeView">
+                    <Setter Property="Background" Value="Black"/>
+                </Style>
+                <Style TargetType="Label">
+                    <Setter Property="Foreground" Value="White"/>
+                </Style>
+            </TreeView.Resources>
+			<i:Interaction.Triggers>
+				<i:EventTrigger EventName="SelectedItemChanged">
+					<i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" CommandParameter="{Binding SelectedItem, ElementName=TablesTV}" />
+				</i:EventTrigger>
+			</i:Interaction.Triggers>
+			<TreeView.ItemTemplate>
+				<HierarchicalDataTemplate ItemsSource="{Binding}">
+					<Label Content="{Binding Key}" />
+					<HierarchicalDataTemplate.ItemTemplate>
+						<HierarchicalDataTemplate ItemsSource="{Binding}">
+							<StackPanel Orientation="Horizontal">
+                                <Label Content="{Binding Name}" />
+                            </StackPanel>
+						</HierarchicalDataTemplate>
+					</HierarchicalDataTemplate.ItemTemplate>
+				</HierarchicalDataTemplate>
+			</TreeView.ItemTemplate>
+		</TreeView>
+
+		<Grid Grid.Row="1" Grid.Column="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition MinWidth="10" Width="40"></ColumnDefinition>
+				<ColumnDefinition MinWidth="10" Width="*"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition MinHeight="10" Height="40"></RowDefinition>
+                <RowDefinition MinHeight="10" Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=ColumnDesc}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Bottom"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="{Binding Path=RowDesc}" Foreground="Yellow" VerticalAlignment="Center" VerticalContentAlignment="Bottom">
+                    <Label.LayoutTransform>
+                        <RotateTransform Angle="270" />
+                    </Label.LayoutTransform>
+                </Label>
+                <Label Grid.Row="2" Grid.Column="1" Content="{Binding Path=TableDesc}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Top"/>
+                <ScrollViewer Margin="5" CanContentScroll="False" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1">
+                    <ScrollViewer.Resources>
+                        <Style TargetType="ScrollBar">
+                        </Style>
+                    </ScrollViewer.Resources>
+                    <controls:FlexGrid Name="abc"  Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" Data="{Binding Path=Data}" ColumnHeaders="{Binding Path=ColumnHeaders}" RowHeaders="{Binding Path=RowHeaders}" >
+                    </controls:FlexGrid>
+                </ScrollViewer>
+            </Grid>
+
+            <GridSplitter Background="Azure" Grid.Column="1" Grid.Row="1" Width="2" HorizontalAlignment="Left" />
+			<GridSplitter Background="Azure" Grid.Column="1" Grid.Row="1"  Height="2" VerticalAlignment="Top"  HorizontalAlignment="Stretch" />
+		</Grid>
+
+		<StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
+			<Button Content="Increment (+)" MinWidth="100" Background="SlateGray" />
+			<Button Content="Decrement (-)" MinWidth="100" Background="SlateGray" />
+		</StackPanel>
+	</Grid>
+</Window>
