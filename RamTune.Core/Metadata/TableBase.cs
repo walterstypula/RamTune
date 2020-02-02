@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Collections.Generic;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace RamTune.Core.Metadata
@@ -19,5 +20,8 @@ namespace RamTune.Core.Metadata
 
         [XmlIgnore]
         public Scaling Scaling { get; set; }
+
+        [XmlIgnore]
+        public List<string> ScalingSource { get; } = new List<string>();
     }
 }

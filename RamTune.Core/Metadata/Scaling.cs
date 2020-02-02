@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Collections.Generic;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace RamTune.Core.Metadata
@@ -35,5 +36,17 @@ namespace RamTune.Core.Metadata
 
         [XmlAttribute(AttributeName = "endian")]
         public string Endian { get; set; }
+
+        [XmlElement(ElementName = "data")]
+        public List<ScalingData> Data { get; set; }
+    }
+
+    public class ScalingData
+    {
+        [XmlAttribute(AttributeName = "name")]
+        public string Name { get; set; }
+
+        [XmlAttribute(AttributeName = "value")]
+        public string Value { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using RamTune.Core.Metadata;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,22 @@ namespace RamTune.Core
     public class LoadedRomManager : ITableReader
     {
         private readonly Stream _romStream;
+        private long offset = 192 * 1024;
         public Definition Rom { get; set; }
 
         public LoadedRomManager(Stream stream, DefinitionLoader loader)
         {
             _romStream = stream;
+
+            if (_romStream.Length <= offset)
+            {
+                offset -= _romStream.Length;
+            }
+            else if (_romStream.Length > offset)
+            {
+                offset = 0;
+            }
+
             Rom = Load(loader);
         }
 
@@ -59,10 +71,38 @@ namespace RamTune.Core
             var storageType = table.Scaling.StorageType;
             var byteArraySize = storageType.ParseStorageSize();
 
+            if (byteArraySize == 0 && table?.Scaling?.Data is List<ScalingData> data)
+            {
+                int tempDataLength = 0;
+
+                for (int i = 0; i < data.Count; i++)
+                {
+                    string blobData = data[i]?.Value;
+
+                    if (i == 0)
+                    {
+                        tempDataLength = blobData.Length;
+                    }
+
+                    if (tempDataLength != blobData.Length)
+                    {
+                        throw new InvalidDataException($"{table.ScalingName} bloblist length is not consistent.");
+                    }
+                }
+
+                byteArraySize = tempDataLength / 2;
+            }
+
             var a = table.Scaling.ToExpr;
             var format = table.Scaling.Format;
 
-            _romStream.Seek(table.Address.ConvertHexToInt(), SeekOrigin.Begin);
+            var address = table.Address.ConvertHexToInt();
+            if (address > offset)
+            {
+                address -= (int)offset;
+            }
+
+            _romStream.Seek(address, SeekOrigin.Begin);
 
             for (int row = 0; row < rowElements; row++)
             {

@@ -15,7 +15,7 @@ namespace RamTune.Core.Metadata
         [XmlEnum(Name = "3D")]
         ThreeD,
 
-        [XmlEnum(Name = "1DRame")]
+        [XmlEnum(Name = "1DRam")]
         OneDRam,
 
         [XmlEnum(Name = "2DRam")]

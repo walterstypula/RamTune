@@ -17,20 +17,21 @@ namespace RamTune.Core.Metadata
         public Definition GetDefinitionByInternalId(string interalId)
         {
             var ecuMetaData = this.Definitions.First(p => p.RomId.InternalIdString == interalId);
-
+            List<string> inheritiedRomIds = new List<string>();
             //Remove any tables the address is not defined.
-            var tables = LoadBaseTables(interalId)
+            var loadedTable = LoadBaseTables(interalId, inheritiedRomIds);
+            var tables = loadedTable
                             .Where(t => t.Address != null)
                             .ToList();
 
-            LoadTableScaling(tables);
+            LoadTableScaling(tables, inheritiedRomIds);
 
             ecuMetaData.Tables = tables;
 
             return ecuMetaData;
         }
 
-        public List<Table> LoadBaseTables(string baseRomXmlId)
+        public List<Table> LoadBaseTables(string baseRomXmlId, List<string> inheritedRomIds)
         {
             if (string.IsNullOrEmpty(baseRomXmlId))
             {
@@ -41,7 +42,9 @@ namespace RamTune.Core.Metadata
             var rom = Definitions.First(d => d.RomId.XmlId == baseRomXmlId);
             var tables = Clone(rom.Tables);
 
-            List<Table> output = LoadBaseTables(rom.Base);
+            inheritedRomIds.Add(baseRomXmlId);
+            List<Table> output = LoadBaseTables(rom.Base, inheritedRomIds);
+
             if (output == null)
             {
                 //No base tables to merge return tables.
@@ -78,13 +81,19 @@ namespace RamTune.Core.Metadata
                     var romScalings = LoadDefinition<DefinitionScalings>(path);
                     foreach (var scaling in romScalings.Scalings)
                     {
-                        if (!scalings.ContainsKey(scaling.Name))
+                        var scalingName = $"{romScalings.RomId.XmlId}{scaling.Name}";
+
+                        if (scalings.ContainsKey(scalingName))
                         {
-                            scalings.Add(scaling.Name, scaling);
+                            continue;
                         }
+
+                        scalings.Add(scalingName, scaling);
                     }
 
                     var rom = LoadDefinition<Definition>(path);
+
+                    //KNOWN ISSUE
                     definitions.Add(rom);
                 }
                 catch (Exception ex)
@@ -97,12 +106,13 @@ namespace RamTune.Core.Metadata
             ScalingMetadata = scalings;
         }
 
-        public void LoadTableScaling(List<Table> tables)
+        public void LoadTableScaling(List<Table> tables, List<string> inheritedRomIds)
         {
             for (int i = 0; i < tables.Count; i++)
             {
                 var table = tables[i];
-                ScalingMetadata.TryGetValue(table.ScalingName, out var scaling);
+
+                Scaling scaling = GetScaling(inheritedRomIds, table.ScalingName);
 
                 if (scaling == null)
                 {
@@ -116,11 +126,26 @@ namespace RamTune.Core.Metadata
                 foreach (var axis in table.Axis)
                 {
                     var scalingName = axis.ScalingName != null ? axis.ScalingName : table.ScalingName;
+                    var axisScaling = GetScaling(inheritedRomIds, scalingName);
 
-                    ScalingMetadata.TryGetValue(scalingName, out var axisScaling);
                     axis.Scaling = axisScaling;
                 }
             }
+        }
+
+        private Scaling GetScaling(List<string> inheritedRomIds, string scalingName)
+        {
+            foreach (var baseRomId in inheritedRomIds)
+            {
+                var combinedScalingName = $"{baseRomId}{scalingName}";
+
+                if (ScalingMetadata.TryGetValue(combinedScalingName, out var scaling))
+                {
+                    return scaling;
+                }
+            }
+
+            return null;
         }
 
         private T Clone<T>(T source)
