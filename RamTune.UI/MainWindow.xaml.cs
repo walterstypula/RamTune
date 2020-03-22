@@ -1,5 +1,4 @@
-﻿using RamTune.UI.ViewModels;
-using System.Windows;
+﻿using System.Windows;
 
 namespace RamTune.UI
 {

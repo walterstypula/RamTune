@@ -6,6 +6,13 @@
     <Style TargetType="controls:LineGraph">
     </Style>
 
+
+    <Style TargetType = "controls:MyCustomControl">
+        <Setter Property = "Background" Value = "LightSalmon" />
+        <Setter Property = "Foreground" Value = "Blue"/>
+    </Style>
+
+
     <Style TargetType="controls:FlexGrid">
         <Style.Resources>
             <Style x:Key="ColumnHeaders" TargetType="Label">
@@ -35,7 +42,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:GridCell">
-                    <Grid>
+                    <Grid Focusable="False">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="Selection">
                                 <VisualStateGroup.Transitions>
@@ -59,8 +66,7 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Grid x:Name="SelectionRectangle" Visibility="Collapsed">
-                            <Rectangle Fill="Red" />
+                        <Grid x:Name="SelectionRectangle" Visibility="Collapsed" Background="Red">
                         </Grid>
                         <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                         <Label x:Name="PART_Label" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2,0,2,0" Foreground="White" />

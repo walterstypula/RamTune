@@ -17,29 +17,17 @@ namespace RamTune.UI.ViewModels
         private RelayCommand _selectedItemChangedCommand;
 
         private Stream _romStream;
-        private LoadedRomManager _loaderRomManager;
-
-        public List<string> ColumnHeaders
-        {
-            get { return this.Get<List<string>>(nameof(ColumnHeaders)); }
-            set { this.Set<List<string>>(nameof(ColumnHeaders), value); }
-        }
-
-        public List<string> RowHeaders
-        {
-            get { return this.Get<List<string>>(nameof(RowHeaders)); }
-            set { this.Set<List<string>>(nameof(RowHeaders), value); }
-        }
-
-        public string[,] Data
-        {
-            get { return this.Get<string[,]>(nameof(Data)); }
-            set { this.Set<string[,]>(nameof(Data), value); }
-        }
+        private ITableReader _loaderRomManager;
 
         public MainWindowVM(DefinitionLoader loader)
         {
             _definitionLoader = loader;
+        }
+
+        public TableVM Table
+        {
+            get { return Get<TableVM>(nameof(Table)); }
+            set { Set(nameof(Table), value); }
         }
 
         public IEnumerable<IGrouping<string, Table>> GroupedTables
@@ -80,24 +68,6 @@ namespace RamTune.UI.ViewModels
             }
         }
 
-        public string ColumnDesc
-        {
-            get { return Get<string>(nameof(ColumnDesc)); }
-            set { Set(nameof(ColumnDesc), value); }
-        }
-
-        public string RowDesc
-        {
-            get { return Get<string>(nameof(RowDesc)); }
-            set { Set(nameof(RowDesc), value); }
-        }
-
-        public string TableDesc
-        {
-            get { return Get<string>(nameof(TableDesc)); }
-            set { Set(nameof(TableDesc), value); }
-        }
-
         private void OpenRom()
         {
             _romStream = OpenRomFile();
@@ -133,40 +103,7 @@ namespace RamTune.UI.ViewModels
                 return;
             }
 
-            //Tables always start at zero
-            //get data for x axis
-            ColumnHeaders?.Clear();
-            RowHeaders?.Clear();
-
-            var xAxis = selectedTable.Axis.FirstOrDefault(t => t.Type == TableType.XAxis || t.Type == TableType.StaticXAxis);
-            var yAxis = selectedTable.Axis.FirstOrDefault(t => t.Type == TableType.YAxis || t.Type == TableType.StaticYAxis);
-
-            var xElements = xAxis?.Elements ?? 1;
-            var yElements = yAxis?.Elements ?? 1;
-
-            if (xAxis == null)
-            {
-                //Display YAxis in XAxis, display only.
-                xAxis = yAxis;
-                yAxis = null;
-
-                xElements = yElements;
-                yElements = 1;
-            }
-
-            ColumnDesc = xAxis != null ? $"{xAxis.Name}  -  {xAxis?.Scaling?.Units}" : string.Empty;
-            RowDesc = yAxis != null ? $"{yAxis.Name}  -  {yAxis?.Scaling?.Units}" : string.Empty;
-            TableDesc = $"{selectedTable.Name}  -  {selectedTable.Scaling.Units}";
-
-            ColumnHeaders = xAxis != null
-                                ? _loaderRomManager.LoadTableData(xAxis, xAxis.Elements).Cast<string>().ToList()
-                                : new List<string>() { string.Empty };
-
-            RowHeaders = yAxis != null
-                                ? _loaderRomManager.LoadTableData(yAxis, yAxis.Elements).Cast<string>().ToList()
-                                : new List<string>() { string.Empty };
-
-            Data = _loaderRomManager.LoadTableData(selectedTable, xElements, yElements);
+            Table = new TableVM(selectedTable, _loaderRomManager);
         }
     }
 }

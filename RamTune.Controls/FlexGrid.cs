@@ -34,7 +34,7 @@ namespace RamTune.Controls
         }
 
         public static readonly DependencyProperty DataProperty =
-            DependencyProperty.Register("Data", typeof(object), typeof(FlexGrid),
+            DependencyProperty.Register(nameof(Data), typeof(object), typeof(FlexGrid),
                                         new FrameworkPropertyMetadata(OnDataChanged));
 
         public object Data
@@ -45,7 +45,13 @@ namespace RamTune.Controls
 
         private static void OnDataChanged(DependencyObject dObj, DependencyPropertyChangedEventArgs args)
         {
+            var flexGrid = dObj as FlexGrid;
+            if (flexGrid != null)
+            {
+                flexGrid.OnApplyTemplate();
+            }
         }
+
 
         private static void OnColumnsChanged(DependencyObject dObj, DependencyPropertyChangedEventArgs args)
         {

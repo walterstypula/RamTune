@@ -44,11 +44,40 @@ namespace RamTune.Controls
     ///     <MyNamespace:CustomControl1/>
     ///
     /// </summary>
-    //public class CustomControl1 : Control
-    //{
-    //    static CustomControl1()
-    //    {
-    //        DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomControl1), new FrameworkPropertyMetadata(typeof(CustomControl1)));
-    //    }
-    //}
+    public class MyCustomControl : Control
+    {
+
+        static MyCustomControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MyCustomControl), new
+               FrameworkPropertyMetadata(typeof(MyCustomControl)));
+        }
+
+
+        public static readonly DependencyProperty DataProperty =
+           DependencyProperty.Register("Data", typeof(object), typeof(MyCustomControl),
+                                       new FrameworkPropertyMetadata(OnDataChanged));
+
+        public object Data
+        {
+            get { return (object)GetValue(DataProperty); }
+            set { SetValue(DataProperty, value); }
+        }
+
+        private static void OnDataChanged(DependencyObject dObj, DependencyPropertyChangedEventArgs args)
+        {
+            var flexGrid = dObj as MyCustomControl;
+            if (flexGrid != null)
+            {
+                flexGrid.OnApplyTemplate();
+            }
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+
+
+        }
+    }
 }

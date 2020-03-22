@@ -76,30 +76,23 @@ namespace RamTune.Core.Metadata
 
             foreach (var path in definitionPaths)
             {
-                try
+                var romScalings = LoadDefinition<DefinitionScalings>(path);
+                foreach (var scaling in romScalings.Scalings)
                 {
-                    var romScalings = LoadDefinition<DefinitionScalings>(path);
-                    foreach (var scaling in romScalings.Scalings)
+                    var scalingName = $"{romScalings.RomId.XmlId}{scaling.Name}";
+
+                    if (scalings.ContainsKey(scalingName))
                     {
-                        var scalingName = $"{romScalings.RomId.XmlId}{scaling.Name}";
-
-                        if (scalings.ContainsKey(scalingName))
-                        {
-                            continue;
-                        }
-
-                        scalings.Add(scalingName, scaling);
+                        continue;
                     }
 
-                    var rom = LoadDefinition<Definition>(path);
+                    scalings.Add(scalingName, scaling);
+                }
 
-                    //KNOWN ISSUE
-                    definitions.Add(rom);
-                }
-                catch (Exception ex)
-                {
-                    //TODO: Add error handling when a definition fails to load.
-                }
+                var rom = LoadDefinition<Definition>(path);
+
+                //KNOWN ISSUE
+                definitions.Add(rom);
             }
 
             Definitions = definitions;
