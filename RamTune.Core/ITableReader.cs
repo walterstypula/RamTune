@@ -1,10 +1,14 @@
 ﻿using RamTune.Core.Metadata;
+using System.Collections.Generic;
 
 namespace RamTune.Core
 {
     public interface ITableReader
     {
-        string[,] LoadTableData(TableBase table, int columnElements = 1, int rowElements = 1);
+        List<string> LoadAxisData(Axis axis);
+
+        List<List<string>> LoadTableData(TableBase table, int? columnElements, int? rowElements);
+
 
         public Definition Rom { get; set; }
     }

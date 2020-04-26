@@ -23,5 +23,10 @@ namespace RamTune.Core.Metadata
 
         [XmlIgnore]
         public List<string> ScalingSource { get; } = new List<string>();
+
+        public override string ToString()
+        {
+            return $"{Name} - {Scaling?.Units}";
+        }
     }
 }

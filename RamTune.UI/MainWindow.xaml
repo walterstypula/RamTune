@@ -14,23 +14,8 @@
 		Background="Black"
 		Height="540">
     <Window.Resources>
-        <BooleanToVisibilityConverter
-			x:Key="BooleanToVisibilityConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <c:ABC x:Key="ABC"/>
-
-        <DataTemplate x:Key="DataTemplate_Level2">
-            <TextBox DataContext="{Binding Path=., Mode=TwoWay}" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Height="40" Width="50" Margin="4,4,4,4" />
-        </DataTemplate>
-
-        <DataTemplate x:Key="DataTemplate_Level1">
-            <ItemsControl ItemsSource="{Binding  Path=., Mode=TwoWay}" ItemTemplate="{DynamicResource DataTemplate_Level2}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -79,14 +64,14 @@
         </TreeView>
 
         <Grid Grid.Row="1" Grid.Column="2">
-            <Grid.ColumnDefinitions>
+            <!--<Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="10" Width="40"></ColumnDefinition>
                 <ColumnDefinition MinWidth="10" Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition MinHeight="10" Height="40"></RowDefinition>
                 <RowDefinition MinHeight="10" Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
+            </Grid.RowDefinitions>-->
 
             <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
@@ -116,10 +101,9 @@
                         </Style>
                     </ScrollViewer.Resources>
                     <StackPanel>
-                        <controls:MyCustomControl Data="{Binding Table.Data, Converter={StaticResource ABC}}" Foreground="Wheat"/>
                         <controls:FlexGrid Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center"
                                             SelectedCellIndexes="{Binding Path=Table.SelectedCellIndexes}"
-                                            Data="{Binding Table.Data}"  
+                                            Data="{Binding Table.Data, Mode=TwoWay,UpdateSourceTrigger=Explicit}"  
                                             ColumnHeaders="{Binding Path=Table.ColumnHeaders}" 
                                             RowHeaders="{Binding Path=Table.RowHeaders}">
                         </controls:FlexGrid>
@@ -127,8 +111,8 @@
                 </ScrollViewer>
             </Grid>
 
-            <GridSplitter Background="Azure" Grid.Column="1" Grid.Row="1" Width="2" HorizontalAlignment="Left" />
-            <GridSplitter Background="Azure" Grid.Column="1" Grid.Row="1"  Height="2" VerticalAlignment="Top"  HorizontalAlignment="Stretch" />
+            <!--<GridSplitter Background="Azure" Grid.Column="1" Grid.Row="1" Width="2" HorizontalAlignment="Left" />
+            <GridSplitter Background="Azure" Grid.Column="1" Grid.Row="1"  Height="2" VerticalAlignment="Top"  HorizontalAlignment="Stretch" />-->
         </Grid>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">

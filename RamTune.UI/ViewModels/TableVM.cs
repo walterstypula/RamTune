@@ -4,7 +4,6 @@ using RamTune.Core.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Input;
 
 namespace RamTune.UI.ViewModels
@@ -24,16 +23,10 @@ namespace RamTune.UI.ViewModels
 
         private void PopulateTable()
         {
-            //Tables always start at zero
-            //get data for x axis
-            ColumnHeaders?.Clear();
-            RowHeaders?.Clear();
-
-            var xAxis = selectedTable.Axis.FirstOrDefault(t => t.Type == TableType.XAxis || t.Type == TableType.StaticXAxis);
-            var yAxis = selectedTable.Axis.FirstOrDefault(t => t.Type == TableType.YAxis || t.Type == TableType.StaticYAxis);
-
-            var xElements = xAxis?.Elements ?? 1;
-            var yElements = yAxis?.Elements ?? 1;
+            var xAxis = selectedTable.GetAxis(AxisType.XAxis, AxisType.StaticXAxis);
+            var yAxis = selectedTable.GetAxis(AxisType.YAxis, AxisType.StaticYAxis);
+            var columnElements = xAxis?.Elements;
+            var rowElements = yAxis?.Elements;
 
             if (xAxis == null)
             {
@@ -41,23 +34,17 @@ namespace RamTune.UI.ViewModels
                 xAxis = yAxis;
                 yAxis = null;
 
-                xElements = yElements;
-                yElements = 1;
+                columnElements = rowElements;
+                rowElements = 1;
             }
 
-            ColumnDesc = xAxis != null ? $"{xAxis.Name}  -  {xAxis?.Scaling?.Units}" : string.Empty;
-            RowDesc = yAxis != null ? $"{yAxis.Name}  -  {yAxis?.Scaling?.Units}" : string.Empty;
-            TableDesc = $"{selectedTable.Name}  -  {selectedTable.Scaling.Units}";
+            ColumnDesc = xAxis?.ToString();
+            RowDesc = yAxis?.ToString();
+            TableDesc = selectedTable.ToString();
 
-            ColumnHeaders = xAxis != null
-                                ? tableReader.LoadTableData(xAxis, xAxis.Elements).Cast<string>().ToList()
-                                : new List<string>() { string.Empty };
-
-            RowHeaders = yAxis != null
-                                ? tableReader.LoadTableData(yAxis, yAxis.Elements).Cast<string>().ToList()
-                                : new List<string>() { string.Empty };
-
-            Data = tableReader.LoadTableData(selectedTable, xElements, yElements);
+            ColumnHeaders = tableReader.LoadAxisData(xAxis);
+            RowHeaders = tableReader.LoadAxisData(yAxis);
+            Data = tableReader.LoadTableData(selectedTable, columnElements, rowElements);
 
             if (decimal.TryParse(selectedTable.Scaling.Inc, out var increment))
             {

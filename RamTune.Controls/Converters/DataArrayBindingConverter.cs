@@ -10,6 +10,8 @@ res:XML.StandardHeader.HowToChangeTemplateInformation
 }
  */
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Data;
 
@@ -22,18 +24,15 @@ namespace RamTune.Controls.Converters
 	{
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			var dataArray = value as string[,];
+			var dataArray = value as List<List<string>>;
 			var indexData = parameter as int[];
-			
-			if(dataArray != null && indexData != null)
-			{			
-				if((indexData[0]-1) <= dataArray.GetUpperBound(0)  &&   (indexData[1]-1) <=dataArray.GetUpperBound(1))
-				{
-					return dataArray[indexData[0]-1,indexData[1]-1];
-				}
+
+			if(dataArray == null)
+			{
+				return null;
 			}
-		
-			return null;
+
+			return dataArray[indexData[0] - 1][indexData[1] - 1];
 		}
 		
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

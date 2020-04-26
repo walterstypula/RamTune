@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -18,5 +19,10 @@ namespace RamTune.Core.Metadata
 
         [XmlElement(ElementName = "table")]
         public List<Axis> Axis { get; set; }
+
+        public Axis GetAxis(params AxisType[] axisType)
+        {
+            return Axis?.FirstOrDefault(tt => axisType.Any(at => (int)at == (int)tt.Type));
+        }
     }
 }

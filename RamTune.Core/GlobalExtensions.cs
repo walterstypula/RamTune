@@ -1,35 +1,57 @@
 ﻿using info.lundin.math;
 using RamTune.Core.Metadata;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 
-public static class GlobalExtensions
+public static class StreamExtensions
 {
-    public static int ConvertHexToInt(this String hexInput)
+    public static byte[] ReadElement(this Stream stream, string endian, int byteArraySize)
     {
-        return int.Parse(hexInput, System.Globalization.NumberStyles.AllowHexSpecifier);
+        var bytes = new byte[byteArraySize];
+        stream.Read(bytes, 0, byteArraySize);
+        bytes.ReverseBytes(endian);
+
+        return bytes;
     }
 
-    private static int Format(string format)
+    public static byte[] SeekAndReadElement(this Stream stream, string address, string endian, int byteArraySize)
     {
-        try
-        {
-            format = format.Replace("%.", string.Empty).Replace("%", string.Empty).Replace("f", string.Empty);
-            return Convert.ToInt32(format);
-        }
-        catch
-        {
-            return 2;
-        }
+        stream.Seek(address.ConvertHexToInt(), SeekOrigin.Begin);
+        return stream.ReadElement(endian, byteArraySize);
     }
 
-    public static string CalcValue(string expression, string format, double value)
+    public static List<List<byte[]>> Read(this Stream stream, int address, int columnElements, int rowElements, string endian, int byteArraySize)
     {
-        ExpressionParser a = new ExpressionParser();
-        a.Values.Add("x", value);
-        var result = a.Parse(expression);
-        var precision = Format(format);
-        return Math.Round((decimal)result, precision).ToString();
+        var tableData = new List<List<byte[]>>(rowElements);// columnElements][];
+
+        stream.Seek(address, SeekOrigin.Begin);
+
+        for (int row = 0; row < rowElements; row++)
+        {
+            var columns = new byte[columnElements][];
+            for (int column = 0; column < columnElements; column++)
+            {
+                var byteValue = stream.ReadElement(endian, byteArraySize);
+                columns[column] = byteValue;
+            }
+
+            tableData.Add(columns.ToList());
+        }
+
+        return tableData;
+    }
+}
+
+public static class ByteExtensions
+{
+    public static List<List<string>> ParseDataValue(this List<List<byte[]>> tableByteData, StorageType storageType, string expression, string format)
+    {
+        var output = tableByteData.Select(s => s.Select(b => b.ParseDataValue(storageType, expression, format)).ToList()).ToList();
+
+        return output;
     }
 
     public static string ParseDataValue(this byte[] byteData, StorageType storageType, string expression, string format)
@@ -73,9 +95,22 @@ public static class GlobalExtensions
                 throw new Exception($"{storageType.ToString()} is a unhandled (unsupported) storage type.");
         }
 
-        return CalcValue(expression, format, value).ToString();
+        return value.CalcValue(expression, format).ToString();
     }
 
+    public static void ReverseBytes(this byte[] inputBytes, string endian)
+    {
+        if (endian == null || endian?.ToLower() != "big")
+        {
+            return;
+        }
+
+        Array.Reverse(inputBytes);
+    }
+}
+
+public static class StorageTypeExtensions
+{
     public static int ParseStorageSize(this StorageType input)
     {
         switch (input)
@@ -124,20 +159,60 @@ public static class GlobalExtensions
                 throw new Exception($"{input.ToString()} is a unhandled (unsupported) storage type.");
         }
     }
+}
 
-    public static void ReverseBytes(this byte[] inputBytes, string endian)
+public static class ScalingExtensions
+{
+    public static int ParseStorageSize(this Scaling scaling)
     {
-        if (endian == null || endian?.ToLower() != "big")
+        var storageType = scaling.StorageType;
+        var byteArraySize = storageType.ParseStorageSize();
+
+        if (!(byteArraySize == 0 && scaling?.Data is List<ScalingData> data))
         {
-            return;
+            return byteArraySize;
         }
 
-        Array.Reverse(inputBytes);
+        var result = data.GroupBy(d => d.Value.Length);
+
+        if (result.Count() > 1)
+        {
+            throw new InvalidDataException($"{scaling.Name} bloblist length is not consistent.");
+        }
+
+        byteArraySize = result.First().Key / 2;
+
+        return byteArraySize;
+    }
+}
+
+public static class GlobalExtensions
+{
+    public static int ConvertHexToInt(this String hexInput)
+    {
+        return int.Parse(hexInput, System.Globalization.NumberStyles.AllowHexSpecifier);
     }
 
-    public static T Cast<T>(object o)
+    private static int Format(string format)
     {
-        return (T)o;
+        try
+        {
+            format = format.Replace("%.", string.Empty).Replace("%", string.Empty).Replace("f", string.Empty);
+            return Convert.ToInt32(format);
+        }
+        catch
+        {
+            return 2;
+        }
+    }
+
+    public static string CalcValue(this double value, string expression, string format)
+    {
+        ExpressionParser a = new ExpressionParser();
+        a.Values.Add("x", value);
+        var result = a.Parse(expression);
+        var precision = Format(format);
+        return Math.Round((decimal)result, precision).ToString();
     }
 
     /// <summary>
