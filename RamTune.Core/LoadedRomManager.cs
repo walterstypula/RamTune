@@ -48,19 +48,38 @@ namespace RamTune.Core
             return loader.GetDefinitionByInternalId(internalId);
         }
 
-        public List<string> LoadAxisData(Axis axis)
+        public List<List<string>> LoadAxisData(Axis axis)
         {
             if (axis == null)
             {
-                return new List<string> { string.Empty };
+                return new List<List<string>>
+                {
+                    new List<string> { string.Empty }
+                };
             }
 
             if (axis.IsStaticAxis())
             {
-                return LoadStaticAxisData(axis).ToList();
+                var list = LoadStaticAxisData(axis).ToList();
+
+                if (axis.IsColumnAxis())
+                {
+                    return new List<List<string>> { list };
+                }
+                else
+                {
+                    return list.Select(s => new List<string> { s }).ToList();
+                }
             }
 
-            return LoadTableData(axis, axis.Elements, null).First().ToList();
+            if (axis.IsColumnAxis())
+            {
+                return LoadTableData(axis, axis.Elements, null);
+            }
+            else
+            {
+                return LoadTableData(axis, null, axis.Elements);
+            }
         }
 
         private List<string> LoadStaticAxisData(Axis axis)

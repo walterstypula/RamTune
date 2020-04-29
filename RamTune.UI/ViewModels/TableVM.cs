@@ -42,8 +42,8 @@ namespace RamTune.UI.ViewModels
             RowDesc = yAxis?.ToString();
             TableDesc = selectedTable.ToString();
 
-            ColumnHeaders = tableReader.LoadAxisData(xAxis);
-            RowHeaders = tableReader.LoadAxisData(yAxis);
+            //ColumnHeaders = tableReader.LoadAxisData(xAxis);
+            //RowHeaders = tableReader.LoadAxisData(yAxis);
             Data = tableReader.LoadTableData(selectedTable, columnElements, rowElements);
 
             if (decimal.TryParse(selectedTable.Scaling.Inc, out var increment))

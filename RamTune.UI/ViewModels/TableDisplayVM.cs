@@ -4,6 +4,7 @@ using RamTune.Core.Metadata;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace RamTune.UI.ViewModels
 {
@@ -12,9 +13,9 @@ namespace RamTune.UI.ViewModels
         private Table _table;
         private ITableReader _tableReader;
 
-        public ObservableCollection<CellVM> ColumnHeaders { get; set; }
+        public ObservableCollection<ObservableCollection<CellVM>> ColumnHeaders { get; set; }
 
-        public ObservableCollection<CellVM> RowHeaders { get; set; }
+        public ObservableCollection<ObservableCollection<CellVM>> RowHeaders { get; set; }
 
         public ObservableCollection<ObservableCollection<CellVM>> TableData { get; set; }
 
@@ -43,6 +44,7 @@ namespace RamTune.UI.ViewModels
             {
                 //Display YAxis in XAxis, display only.
                 xAxis = yAxis;
+                xAxis.Type = TableType.XAxis;
                 yAxis = null;
 
                 columnElements = rowElements;
@@ -53,31 +55,72 @@ namespace RamTune.UI.ViewModels
             RowDescription = yAxis?.ToString();
             TableDescription = _table.ToString();
 
-            ColumnHeaders = _tableReader.LoadAxisData(xAxis).ToCellObservableCollection();
-            RowHeaders = _tableReader.LoadAxisData(yAxis).ToCellObservableCollection();
-            TableData = _tableReader.LoadTableData(_table, columnElements, rowElements).ToCellObservableCollection();
+            ColumnHeaders = _tableReader.LoadAxisData(xAxis).ToCellObservableCollection(xAxis?.Scaling);
+            RowHeaders = _tableReader.LoadAxisData(yAxis).ToCellObservableCollection(yAxis?.Scaling);
+            TableData = _tableReader.LoadTableData(_table, columnElements, rowElements).ToCellObservableCollection(_table.Scaling);
+        }
+
+        private RelayCommand _addValueCommand;
+        public ICommand AddValueCommand => this.InitCommand(ref _addValueCommand, AddValue, delegate { return true; });
+
+        private RelayCommand _subtractValueCommand;
+        public ICommand SubtractValueCommand => this.InitCommand(ref _subtractValueCommand, SubtractValue, delegate { return true; });
+
+        public void AddValue(object parm)
+        {
+            AddValue(TableData);
+            AddValue(ColumnHeaders);
+            AddValue(RowHeaders);
+        }
+
+        public void SubtractValue(object parm)
+        {
+            SubtractValue(TableData);
+            SubtractValue(ColumnHeaders);
+            SubtractValue(RowHeaders);
+        }
+
+        private void AddValue(ObservableCollection<ObservableCollection<CellVM>> cells)
+        {
+            foreach (var row in cells)
+            {
+                foreach (var column in row)
+                {
+                    if (column.IsSelected)
+                    {
+                        column.IncrementValue();
+                    }
+                }
+            }
+        }
+
+        private void SubtractValue(ObservableCollection<ObservableCollection<CellVM>> cells)
+        {
+            foreach (var row in cells)
+            {
+                foreach (var column in row)
+                {
+                    if (column.IsSelected)
+                    {
+                        column.DecrementValue();
+                    }
+                }
+            }
         }
     }
 
     public static class ObservableCollectionExtension
     {
-        public static ObservableCollection<ObservableCollection<CellVM>> ToCellObservableCollection(this IEnumerable<IEnumerable<string>> tableData)
+        public static ObservableCollection<ObservableCollection<CellVM>> ToCellObservableCollection(this IEnumerable<IEnumerable<string>> tableData, Scaling scaling)
         {
             var rows = tableData.Select(o =>
             {
-                var columns = o.Select(s => new CellVM { Value = s });
+                var columns = o.Select(s => new CellVM { Value = s, Scaling = scaling });
 
                 return new ObservableCollection<CellVM>(columns);
             });
 
             return new ObservableCollection<ObservableCollection<CellVM>>(rows);
-        }
-
-        public static ObservableCollection<CellVM> ToCellObservableCollection(this IEnumerable<string> list)
-        {
-            var cellList = list.Select(s => new CellVM { Value = s });
-
-            return new ObservableCollection<CellVM>(cellList);
         }
     }
 }

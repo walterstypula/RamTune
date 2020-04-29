@@ -24,9 +24,9 @@ namespace RamTune.UI.ViewModels
             _definitionLoader = loader;
         }
 
-        public TableVM Table
+        public TableDisplayVM Table
         {
-            get { return Get<TableVM>(nameof(Table)); }
+            get { return Get<TableDisplayVM>(nameof(Table)); }
             set { Set(nameof(Table), value); }
         }
 
@@ -103,7 +103,7 @@ namespace RamTune.UI.ViewModels
                 return;
             }
 
-            Table = new TableVM(selectedTable, _loaderRomManager);
+            Table = new TableDisplayVM(selectedTable, _loaderRomManager);
         }
     }
 }

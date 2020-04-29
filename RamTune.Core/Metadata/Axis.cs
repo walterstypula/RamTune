@@ -23,5 +23,12 @@ namespace RamTune.Core.Metadata
 
             return staticAxisTypes.Any(a => a == (int)axis.Type);
         }
+
+        public static bool IsColumnAxis ( this Axis axis)
+        {
+            var axisTypes = new[] { (int)AxisType.StaticXAxis, (int)AxisType.XAxis };
+
+            return axisTypes.Any(a => a == (int)axis.Type);
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace RamTune.Core
 {
     public interface ITableReader
     {
-        List<string> LoadAxisData(Axis axis);
+        List<List<string>> LoadAxisData(Axis axis);
 
         List<List<string>> LoadTableData(TableBase table, int? columnElements, int? rowElements);
 

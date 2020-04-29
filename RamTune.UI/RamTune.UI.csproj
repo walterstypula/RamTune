@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MVVM\MVVM.csproj" />
-    <ProjectReference Include="..\RamTune.Controls\RamTune.Controls.csproj" />
     <ProjectReference Include="..\RamTune.Core\RamTune.Core.csproj" />
   </ItemGroup>
 

@@ -3,10 +3,9 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:controls="clr-namespace:RamTune.Controls;assembly=RamTune.Controls"
-        xmlns:converters="clr-namespace:RamTune.UI"
-        xmlns:c="clr-namespace:RamTune.Controls.Converters;assembly=RamTune.Controls"
+		xmlns:converters="clr-namespace:RamTune.UI"
 		xmlns:local="clr-namespace:RamTune.UI"
+        xmlns:views="clr-namespace:RamTune.UI.Views"
 		mc:Ignorable="d"
 		Title="RamTune"
 		Width="900"
@@ -15,7 +14,6 @@
 		Height="540">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <c:ABC x:Key="ABC"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -84,13 +82,13 @@
                     <RowDefinition Height="40"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=Table.ColumnDesc}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Bottom" />
-                <Label Grid.Row="1" Grid.Column="0" Content="{Binding Path=Table.RowDesc}" Foreground="Yellow" VerticalAlignment="Center" VerticalContentAlignment="Bottom">
+                <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=Table.ColumnDescription}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Bottom" />
+                <Label Grid.Row="1" Grid.Column="0" Content="{Binding Path=Table.RowDescription}" Foreground="Yellow" VerticalAlignment="Center" VerticalContentAlignment="Bottom">
                     <Label.LayoutTransform>
                         <RotateTransform Angle="270" />
                     </Label.LayoutTransform>
                 </Label>
-                <Label Grid.Row="2" Grid.Column="1" Content="{Binding Path=Table.TableDesc}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Top" />
+                <Label Grid.Row="2" Grid.Column="1" Content="{Binding Path=Table.TableDescription}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Top" />
                 <ScrollViewer Margin="5" CanContentScroll="False" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1">
                     <ScrollViewer.InputBindings>
                         <KeyBinding Key="OemPlus" Command="{Binding Path=Table.AddValueCommand, Mode=OneWay}" CommandParameter="{Binding Path=Table.Increment}" />
@@ -101,12 +99,13 @@
                         </Style>
                     </ScrollViewer.Resources>
                     <StackPanel>
-                        <controls:FlexGrid Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        <views:Table DataContext="{Binding Table}" />
+                        <!--<controls:FlexGrid Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center"
                                             SelectedCellIndexes="{Binding Path=Table.SelectedCellIndexes}"
                                             Data="{Binding Table.Data, Mode=TwoWay,UpdateSourceTrigger=Explicit}"  
                                             ColumnHeaders="{Binding Path=Table.ColumnHeaders}" 
                                             RowHeaders="{Binding Path=Table.RowHeaders}">
-                        </controls:FlexGrid>
+                        </controls:FlexGrid>-->
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RamTune.UI", "RamTune.UI\RamTune.UI.csproj", "{26E15976-BF48-47F8-B941-BCFBD1178CBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RamTune.UI", "RamTune.UI\RamTune.UI.csproj", "{26E15976-BF48-47F8-B941-BCFBD1178CBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVM", "MVVM\MVVM.csproj", "{AEF09B46-168C-4DB5-AFEB-018564E88DC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MVVM", "MVVM\MVVM.csproj", "{AEF09B46-168C-4DB5-AFEB-018564E88DC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RamTune.Core", "RamTune.Core\RamTune.Core.csproj", "{C7695375-FFFB-42A3-B94D-D4445385CD1E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RamTune.Controls", "RamTune.Controls\RamTune.Controls.csproj", "{A1B17177-7C7A-4357-826D-36F3FD156978}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RamTune.Core", "RamTune.Core\RamTune.Core.csproj", "{C7695375-FFFB-42A3-B94D-D4445385CD1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +27,6 @@ Global
 		{C7695375-FFFB-42A3-B94D-D4445385CD1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7695375-FFFB-42A3-B94D-D4445385CD1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7695375-FFFB-42A3-B94D-D4445385CD1E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A1B17177-7C7A-4357-826D-36F3FD156978}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1B17177-7C7A-4357-826D-36F3FD156978}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1B17177-7C7A-4357-826D-36F3FD156978}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1B17177-7C7A-4357-826D-36F3FD156978}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

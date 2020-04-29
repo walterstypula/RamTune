@@ -1,12 +1,84 @@
 ﻿<UserControl x:Class="RamTune.UI.Views.Table"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:RamTune.UI.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             xmlns:ap="clr-namespace:RamTune.UI.AttachedProperties"
+             mc:Ignorable="d"
+	         Foreground="White">
+    <UserControl.Resources>
+        <DataTemplate x:Key ="CellTemplate">
+            <Grid xmlns:i="http://schemas.microsoft.com/xaml/behaviors" Focusable="True"
+                  ap:CellSelectionBehavior.MouseDownPrecedence="True"
+                  ap:CellSelectionBehavior.IsSelected="{Binding Path=IsSelected, Mode=TwoWay}"
+                  MinWidth="50">
+                <Grid.InputBindings>
+                    <KeyBinding Key="OemPlus" Command="{Binding DataContext.AddValueCommand, ElementName=MainList}" />
+                    <KeyBinding Key="OemMinus" Command="{Binding DataContext.SubstractValueCommand, ElementName=MainList}" />
+                </Grid.InputBindings>
+
+                <Border x:Name ="Border" BorderBrush ="DimGray" BorderThickness ="1" Focusable="True" Background="Transparent">
+                    <TextBlock x:Name ="TextBlock"
+                               Focusable ="True"
+                               HorizontalAlignment ="Center"
+                               VerticalAlignment ="Center"
+                               FontSize ="14"
+                               Text ="{Binding Path=Value}">
+
+                        <TextBlock.BitmapEffect>
+                            <DropShadowBitmapEffect />
+                        </TextBlock.BitmapEffect>
+                    </TextBlock>
+                </Border>
+            </Grid>
+
+            <DataTemplate.Triggers>
+                <DataTrigger Binding ="{Binding IsSelected}" Value ="True">
+                    <Setter TargetName ="Border" Property ="Background" Value="Blue" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+        <DataTemplate x:Key ="RowTemplate">
+            <ItemsControl ItemTemplate ="{StaticResource CellTemplate}" ItemsSource ="{Binding}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns ="{Binding Count}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <ItemsControl Grid.Column="0" Grid.Row="1" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=RowHeaders}" x:Name ="RowHeaders">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns ="1" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <ItemsControl Grid.Column="1" Grid.Row="0" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=ColumnHeaders}" x:Name ="ColumnHeaders">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns ="1" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <ItemsControl Grid.Column="1" Grid.Row="1" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=TableData}" x:Name ="MainList">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns ="1" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </Grid>
 </UserControl>
