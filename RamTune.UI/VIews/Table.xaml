@@ -5,45 +5,57 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:RamTune.UI.Views"
              xmlns:ap="clr-namespace:RamTune.UI.AttachedProperties"
+             xmlns:i ="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
 	         Foreground="White">
     <UserControl.Resources>
         <DataTemplate x:Key ="CellTemplate">
-            <Grid xmlns:i="http://schemas.microsoft.com/xaml/behaviors" Focusable="True"
-                  ap:CellSelectionBehavior.MouseDownPrecedence="True"
+            <Grid xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                   ap:CellSelectionBehavior.IsSelected="{Binding Path=IsSelected, Mode=TwoWay}"
-                  MinWidth="50">
+                  Focusable="True"
+                  IsHitTestVisible="True"
+                  MinWidth="50"
+                  x:Name="bob">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Style.Triggers>
+                            <Trigger Property="ap:CellSelectionBehavior.IsSelected" Value="True">
+                                <Setter Property="Background" Value="#FAA634" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <i:Interaction.Behaviors>
+                    <ap:CellSelectionBehavior />
+                </i:Interaction.Behaviors>
                 <Grid.InputBindings>
                     <KeyBinding Key="OemPlus" Command="{Binding DataContext.AddValueCommand, ElementName=MainList}" />
-                    <KeyBinding Key="OemMinus" Command="{Binding DataContext.SubstractValueCommand, ElementName=MainList}" />
+                    <KeyBinding Key="OemMinus" Command="{Binding DataContext.SubtractValueCommand, ElementName=MainList}" />
                 </Grid.InputBindings>
 
-                <Border x:Name ="Border" BorderBrush ="DimGray" BorderThickness ="1" Focusable="True" Background="Transparent">
+                <Border x:Name ="Border"
+                        BorderBrush ="DimGray"
+                        BorderThickness ="1"
+                        Focusable="False">
                     <TextBlock x:Name ="TextBlock"
-                               Focusable ="True"
                                HorizontalAlignment ="Center"
                                VerticalAlignment ="Center"
                                FontSize ="14"
-                               Text ="{Binding Path=Value}">
-
+                               Text ="{Binding Path=Value}"
+                               Focusable="False">
                         <TextBlock.BitmapEffect>
                             <DropShadowBitmapEffect />
                         </TextBlock.BitmapEffect>
                     </TextBlock>
                 </Border>
             </Grid>
-
-            <DataTemplate.Triggers>
-                <DataTrigger Binding ="{Binding IsSelected}" Value ="True">
-                    <Setter TargetName ="Border" Property ="Background" Value="Blue" />
-                </DataTrigger>
-            </DataTemplate.Triggers>
         </DataTemplate>
         <DataTemplate x:Key ="RowTemplate">
-            <ItemsControl ItemTemplate ="{StaticResource CellTemplate}" ItemsSource ="{Binding}">
+            <ItemsControl ItemTemplate ="{StaticResource CellTemplate}" ItemsSource ="{Binding}" Focusable="False">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns ="{Binding Count}" />
+                        <UniformGrid Columns ="{Binding Count}" Focusable="False" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
@@ -59,24 +71,24 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <ItemsControl Grid.Column="0" Grid.Row="1" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=RowHeaders}" x:Name ="RowHeaders">
+        <ItemsControl Grid.Column="0" Grid.Row="1" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=RowHeaders}" x:Name ="RowHeaders" Focusable="False">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Columns ="1" />
+                    <UniformGrid Columns ="1" Focusable="False" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-        <ItemsControl Grid.Column="1" Grid.Row="0" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=ColumnHeaders}" x:Name ="ColumnHeaders">
+        <ItemsControl Grid.Column="1" Grid.Row="0" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=ColumnHeaders}" x:Name ="ColumnHeaders" Focusable="False">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Columns ="1" />
+                    <UniformGrid Columns ="1" Focusable="False" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-        <ItemsControl Grid.Column="1" Grid.Row="1" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=TableData}" x:Name ="MainList">
+        <ItemsControl Grid.Column="1" Grid.Row="1" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=TableData}" x:Name ="MainList" Focusable="False">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Columns ="1" />
+                    <UniformGrid Columns ="1" Focusable="False" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>

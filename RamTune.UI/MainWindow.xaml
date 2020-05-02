@@ -89,15 +89,7 @@
                     </Label.LayoutTransform>
                 </Label>
                 <Label Grid.Row="2" Grid.Column="1" Content="{Binding Path=Table.TableDescription}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Top" />
-                <ScrollViewer Margin="5" CanContentScroll="False" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1">
-                    <ScrollViewer.InputBindings>
-                        <KeyBinding Key="OemPlus" Command="{Binding Path=Table.AddValueCommand, Mode=OneWay}" CommandParameter="{Binding Path=Table.Increment}" />
-                        <KeyBinding Key="OemMinus" Command="{Binding Path=Table.SubtractValueCommand, Mode=OneWay}" CommandParameter="{Binding Path=Table.Increment}" />
-                    </ScrollViewer.InputBindings>
-                    <ScrollViewer.Resources>
-                        <Style TargetType="ScrollBar">
-                        </Style>
-                    </ScrollViewer.Resources>
+                <ScrollViewer Margin="5" CanContentScroll="False" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1" Focusable="False">
                     <StackPanel>
                         <views:Table DataContext="{Binding Table}" />
                         <!--<controls:FlexGrid Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center"

@@ -1,26 +1,37 @@
-﻿using System.Windows;
+﻿using Microsoft.Xaml.Behaviors;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace RamTune.UI.AttachedProperties
 {
-    public class CellSelectionBehavior : FrameworkElement
+    public class CellSelectionBehavior : Behavior<UIElement>
     {
         private static bool _isMouseDown;
         private static UIElement _test;
 
-        public static readonly DependencyProperty MouseDownPrecedenceProperty =
-           DependencyProperty.RegisterAttached("MouseDownPrecedence", typeof(bool), typeof(CellSelectionBehavior), new UIPropertyMetadata(false, OnMouseDownChanged));
-
-        public static bool GetMouseDownPrecedence(UIElement obj)
+        protected override void OnAttached()
         {
-            return (bool)obj.GetValue(MouseDownPrecedenceProperty);
+            base.OnAttached();
+            AssociatedObject.MouseDown += IsMouseDownBehavior_MouseDown;
+            AssociatedObject.MouseUp += IsMouseDownBehavior_MouseUp;
+            AssociatedObject.MouseEnter += IsMouseDownBehavior_MouseEnter;
+            AssociatedObject.GotFocus += AssociatedObject_GotFocus;
         }
 
-        public static void SetMouseDownPrecedence(UIElement obj, bool value)
+        private void AssociatedObject_GotFocus(object sender, RoutedEventArgs e)
         {
-            obj.SetValue(MouseDownPrecedenceProperty, value);
+            if (sender is UIElement uiElement)
+            {
+                if (_test != null)
+                {
+                    ForceDeselect(_test);
+                }
+
+                _test = FindParentItemsControl(uiElement);
+                SetIsSelected(uiElement, true);
+            }
         }
 
         public static readonly DependencyProperty IsSelectedProperty =
@@ -47,13 +58,6 @@ namespace RamTune.UI.AttachedProperties
         public static int InitialRowStart { get; private set; }
         public static int InitialColumnStart { get; private set; }
 
-        private static void OnMouseDownChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((UIElement)d).MouseDown += IsMouseDownBehavior_MouseDown;
-            ((UIElement)d).MouseUp += IsMouseDownBehavior_MouseUp;
-            ((UIElement)d).MouseEnter += IsMouseDownBehavior_MouseEnter;
-        }
-
         private static void IsMouseDownBehavior_MouseEnter(object sender, MouseEventArgs e)
         {
             if (sender is UIElement uiElement)
@@ -67,6 +71,7 @@ namespace RamTune.UI.AttachedProperties
             if (sender is UIElement uiElement)
             {
                 _isMouseDown = true;
+                uiElement.Focus();
 
                 if (_test != null)
                 {
@@ -153,7 +158,7 @@ namespace RamTune.UI.AttachedProperties
         private static void ForceDeselect(UIElement uiElement)
         {
             var rowUniformGrid = VisualTreeExtensions.FindChild<UniformGrid>(uiElement);
-            
+
             for (int i = 0; i < rowUniformGrid.Children.Count; i++)
             {
                 var item = VisualTreeExtensions.FindChild<UniformGrid>(rowUniformGrid.Children[i]);
