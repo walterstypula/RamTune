@@ -40,11 +40,11 @@ namespace RamTune.UI.ViewModels
             var columnElements = xAxis?.Elements;
             var rowElements = yAxis?.Elements;
 
-            if (xAxis == null)
+            if (xAxis == null && yAxis != null)
             {
                 //Display YAxis in XAxis, display only.
                 xAxis = yAxis;
-                xAxis.Type = TableType.XAxis;
+                xAxis.Type =  yAxis.IsStaticAxis() ? TableType.StaticXAxis : TableType.XAxis;
                 yAxis = null;
 
                 columnElements = rowElements;
