@@ -41,7 +41,6 @@
                     <TextBlock x:Name ="TextBlock"
                                HorizontalAlignment ="Center"
                                VerticalAlignment ="Center"
-                               FontSize ="14"
                                Text ="{Binding Path=Value}"
                                Focusable="False">
                         <TextBlock.BitmapEffect>

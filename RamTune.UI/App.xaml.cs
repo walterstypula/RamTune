@@ -1,6 +1,5 @@
 ﻿using RamTune.Core.Metadata;
 using RamTune.UI.ViewModels;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
@@ -12,10 +11,8 @@ namespace RamTune.UI
     /// </summary>
     public partial class App : Application
     {
-        protected override void OnStartup(StartupEventArgs e)
+        private void OnStartup(object sender, StartupEventArgs e)
         {
-            base.OnStartup(e);
-
             var loader = new DefinitionLoader();
 
             //TODO add definitions loading screen
