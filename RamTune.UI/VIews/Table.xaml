@@ -17,6 +17,7 @@
                   MinWidth="50">
                 <Grid.Style>
                     <Style TargetType="Grid">
+                        <Setter Property="Background" Value="Transparent" />
                         <Style.Triggers>
                             <Trigger Property="ap:CellSelectionBehavior.IsSelected" Value="True">
                                 <Setter Property="Background" Value="#FAA634" />
@@ -47,12 +48,12 @@
                                 <Setter Property="Foreground">
                                     <Setter.Value>
                                         <MultiBinding Converter="{StaticResource CellColorConverter}">
-                                            <Binding Path="Value"/>
-                                            <Binding Path="Scaling"/>
+                                            <Binding Path="Value" />
+                                            <Binding Path="Scaling" />
                                         </MultiBinding>
                                     </Setter.Value>
                                 </Setter>
-                            </Style>   
+                            </Style>
                         </TextBlock.Style>
                         <TextBlock.BitmapEffect>
                             <DropShadowBitmapEffect />
