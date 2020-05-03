@@ -52,10 +52,7 @@ namespace RamTune.Core
         {
             if (axis == null)
             {
-                return new List<List<string>>
-                {
-                    new List<string> { string.Empty }
-                };
+                return null;
             }
 
             if (axis.IsStaticAxis())

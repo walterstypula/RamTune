@@ -13,9 +13,7 @@
             <Grid xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                   ap:CellSelectionBehavior.IsSelected="{Binding Path=IsSelected, Mode=TwoWay}"
                   Focusable="True"
-                  IsHitTestVisible="True"
-                  MinWidth="50"
-                  x:Name="bob">
+                  MinWidth="50">
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Setter Property="Background" Value="Transparent" />
@@ -42,6 +40,7 @@
                                HorizontalAlignment ="Center"
                                VerticalAlignment ="Center"
                                Text ="{Binding Path=Value}"
+                               Padding="5,2,5,2"
                                Focusable="False">
                         <TextBlock.BitmapEffect>
                             <DropShadowBitmapEffect />
@@ -61,35 +60,39 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <ItemsControl Grid.Column="0" Grid.Row="1" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=RowHeaders}" x:Name ="RowHeaders" Focusable="False">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns ="1" Focusable="False" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-        <ItemsControl Grid.Column="1" Grid.Row="0" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=ColumnHeaders}" x:Name ="ColumnHeaders" Focusable="False">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns ="1" Focusable="False" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-        <ItemsControl Grid.Column="1" Grid.Row="1" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=TableData}" x:Name ="MainList" Focusable="False">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns ="1" Focusable="False" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-    </Grid>
+    <StackPanel Orientation="Horizontal">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <ItemsControl Grid.Row="1" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=RowHeaders}" x:Name ="RowHeaders" Focusable="False">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns ="1" Focusable="False" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <ItemsControl Grid.Row="0" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=ColumnHeaders}" x:Name ="ColumnHeaders" Focusable="False">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns ="1" Focusable="False" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+            <ItemsControl Grid.Row="1" ItemTemplate ="{StaticResource RowTemplate}" ItemsSource ="{Binding Path=TableData}" x:Name ="MainList" Focusable="False">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns ="1" Focusable="False" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Grid>
+    </StackPanel>
 </UserControl>

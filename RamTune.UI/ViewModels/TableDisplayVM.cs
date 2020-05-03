@@ -113,6 +113,11 @@ namespace RamTune.UI.ViewModels
     {
         public static ObservableCollection<ObservableCollection<CellVM>> ToCellObservableCollection(this IEnumerable<IEnumerable<string>> tableData, Scaling scaling)
         {
+            if(tableData == null)
+            {
+                return null;
+            }
+
             var rows = tableData.Select(o =>
             {
                 var columns = o.Select(s => new CellVM { Value = s, Scaling = scaling });

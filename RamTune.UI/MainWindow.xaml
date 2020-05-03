@@ -90,30 +90,33 @@
             </TreeView>
 
             <Grid Grid.Row="1" Grid.Column="2">
-                <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="40"></RowDefinition>
-                    </Grid.RowDefinitions>
+                <ScrollViewer Margin="5" CanContentScroll="False" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Focusable="False">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="1" Content="{Binding Path=Table.RowDescription}" Foreground="Yellow" VerticalAlignment="Center" VerticalContentAlignment="Bottom">
+                                <Label.LayoutTransform>
+                                    <RotateTransform Angle="270" />
+                                </Label.LayoutTransform>
+                            </Label>
+                        </Grid>
 
-                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=Table.ColumnDescription}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Bottom" />
-                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding Path=Table.RowDescription}" Foreground="Yellow" VerticalAlignment="Center" VerticalContentAlignment="Bottom">
-                        <Label.LayoutTransform>
-                            <RotateTransform Angle="270" />
-                        </Label.LayoutTransform>
-                    </Label>
-                    <Label Grid.Row="2" Grid.Column="1" Content="{Binding Path=Table.TableDescription}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Top" />
-                    <ScrollViewer Margin="5" CanContentScroll="False" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1" Focusable="False">
-                        <StackPanel>
-                            <views:Table DataContext="{Binding Table}" />
-                        </StackPanel>
-                    </ScrollViewer>
-                </Grid>
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Label       Grid.Row="0" Content="{Binding Path=Table.ColumnDescription}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Bottom" />
+                            <views:Table Grid.Row="1" DataContext="{Binding Table}" HorizontalAlignment="Center" />
+                            <Label       Grid.Row="2" Content="{Binding Path=Table.TableDescription}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Top" />
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
         </Grid>
     </DockPanel>

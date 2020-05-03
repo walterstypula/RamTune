@@ -6,7 +6,7 @@
     <Application.Resources>
         <FontFamily x:Key="FontAwesome">/Fonts/FontAwesome.ttf#Font Awesome 5 Free Solid</FontFamily>
         <Style x:Key="WinAll" TargetType="{x:Type Window}">
-            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontSize" Value="16" />
         </Style>
     </Application.Resources>
 </Application>
