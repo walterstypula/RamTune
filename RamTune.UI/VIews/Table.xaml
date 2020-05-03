@@ -5,10 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:RamTune.UI.Views"
              xmlns:ap="clr-namespace:RamTune.UI.AttachedProperties"
-             xmlns:i ="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:converters="clr-namespace:RamTune.UI.Coverters"
              mc:Ignorable="d"
 	         Foreground="White">
     <UserControl.Resources>
+        <converters:CellColorConverter x:Key="CellColorConverter" />
         <DataTemplate x:Key ="CellTemplate">
             <Grid xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                   ap:CellSelectionBehavior.IsSelected="{Binding Path=IsSelected, Mode=TwoWay}"
@@ -16,7 +17,6 @@
                   MinWidth="50">
                 <Grid.Style>
                     <Style TargetType="Grid">
-                        <Setter Property="Background" Value="Transparent" />
                         <Style.Triggers>
                             <Trigger Property="ap:CellSelectionBehavior.IsSelected" Value="True">
                                 <Setter Property="Background" Value="#FAA634" />
@@ -42,6 +42,18 @@
                                Text ="{Binding Path=Value}"
                                Padding="5,2,5,2"
                                Focusable="False">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground">
+                                    <Setter.Value>
+                                        <MultiBinding Converter="{StaticResource CellColorConverter}">
+                                            <Binding Path="Value"/>
+                                            <Binding Path="Scaling"/>
+                                        </MultiBinding>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>   
+                        </TextBlock.Style>
                         <TextBlock.BitmapEffect>
                             <DropShadowBitmapEffect />
                         </TextBlock.BitmapEffect>
