@@ -6,8 +6,7 @@
              xmlns:local="clr-namespace:RamTune.UI.Views"
              xmlns:ap="clr-namespace:RamTune.UI.AttachedProperties"
              xmlns:converters="clr-namespace:RamTune.UI.Coverters"
-             mc:Ignorable="d"
-	         Foreground="White">
+             mc:Ignorable="d">
     <UserControl.Resources>
         <converters:CellColorConverter x:Key="CellColorConverter" />
         <DataTemplate x:Key ="CellTemplate">
@@ -20,7 +19,7 @@
                         <Setter Property="Background" Value="Transparent" />
                         <Style.Triggers>
                             <Trigger Property="ap:CellSelectionBehavior.IsSelected" Value="True">
-                                <Setter Property="Background" Value="#FAA634" />
+                                <Setter Property="Background" Value="#0078D7" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -53,11 +52,13 @@
                                         </MultiBinding>
                                     </Setter.Value>
                                 </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                                        <Setter Property="Foreground" Value="White" />
+                                    </DataTrigger>
+                                </Style.Triggers>
                             </Style>
                         </TextBlock.Style>
-                        <TextBlock.BitmapEffect>
-                            <DropShadowBitmapEffect />
-                        </TextBlock.BitmapEffect>
                     </TextBlock>
                 </Border>
             </Grid>

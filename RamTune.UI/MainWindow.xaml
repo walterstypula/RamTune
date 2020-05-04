@@ -10,7 +10,7 @@
 		Title="RamTune"
 		Width="900"
 		AllowsTransparency="False"
-		Background="Black"
+		Background="#252526"
 		Height="540"
         Style="{StaticResource WinAll}">
     <Window.Resources>
@@ -27,11 +27,9 @@
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Margin" Value="5,2,5,2" />
             <Setter Property="FontSize" Value="35" />
-            <Setter Property="Background" Value="Transparent" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="#FAA634" />
-                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Foreground" Value="#0078D7" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -64,7 +62,7 @@
 				  xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
                 <TreeView.Resources>
                     <Style TargetType="TreeView">
-                        <Setter Property="Background" Value="Black" />
+                        <Setter Property="Background" Value="{x:Null}" />
                     </Style>
                     <Style TargetType="Label">
                         <Setter Property="Foreground" Value="White" />
@@ -79,10 +77,8 @@
                     <HierarchicalDataTemplate ItemsSource="{Binding}">
                         <Label Content="{Binding Key}" />
                         <HierarchicalDataTemplate.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding}">
-                                <StackPanel Orientation="Horizontal">
+                            <HierarchicalDataTemplate ItemsSource="{Binding}">                   
                                     <Label Content="{Binding Name}" />
-                                </StackPanel>
                             </HierarchicalDataTemplate>
                         </HierarchicalDataTemplate.ItemTemplate>
                     </HierarchicalDataTemplate>

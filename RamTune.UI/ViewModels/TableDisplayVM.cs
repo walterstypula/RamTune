@@ -82,6 +82,11 @@ namespace RamTune.UI.ViewModels
 
         private void AddValue(ObservableCollection<ObservableCollection<CellVM>> cells)
         {
+            if(cells == null)
+            {
+                return;
+            }
+
             foreach (var row in cells)
             {
                 foreach (var column in row)
@@ -96,6 +101,11 @@ namespace RamTune.UI.ViewModels
 
         private void SubtractValue(ObservableCollection<ObservableCollection<CellVM>> cells)
         {
+            if (cells == null)
+            {
+                return;
+            }
+
             foreach (var row in cells)
             {
                 foreach (var column in row)

@@ -1,5 +1,6 @@
 ﻿using RamTune.Core.Metadata;
 using System;
+using System.Collections.Generic;
 using System.Windows.Data;
 using System.Windows.Media;
 
@@ -7,6 +8,50 @@ namespace RamTune.UI.Coverters
 {
     public class CellColorConverter : IMultiValueConverter
     {
+        private List<Color> _heatMapColors = new List<Color>
+        {
+            Color.FromRgb(143, 143, 255),//Blue
+            Color.FromRgb(0, 255, 255),//Cyan
+            Color.FromRgb(0, 255, 0),//Green
+            Color.FromRgb(255, 255, 0),//Yellow
+            Color.FromRgb(255, 0, 0),//Red
+        };
+
+        /// <summary>
+        /// Courtesy of Davide Dolla https://stackoverflow.com/a/37911674
+        /// </summary>
+        /// <param name="tableValue"></param>
+        /// <param name="scalingMinValue"></param>
+        /// <param name="scalingMaxValue"></param>
+        /// <returns></returns>
+        private Color GetColorForValue(double tableValue, double scalingMinValue, double scalingMaxValue)
+        {
+            var colorCount = _heatMapColors.Count - 1;
+
+            var valuePercentage = (tableValue - scalingMinValue) / (scalingMaxValue - scalingMinValue); // value%
+            var colorPercentage = 1d / colorCount; // % of each block of color. the last is the "100% Color"
+            var colorBlockIndex = (int)(valuePercentage / colorPercentage); // the integer part repersents how many block to skip
+            var valuePercentageResidual = valuePercentage - (colorBlockIndex * colorPercentage); //remove the part represented of block
+            var percentTargetColor = valuePercentageResidual / colorPercentage; // % of color of this block that will be filled
+
+            var cTarget = _heatMapColors[colorBlockIndex];
+            var cNext = tableValue >= scalingMaxValue
+                               ? _heatMapColors[colorBlockIndex]
+                               : _heatMapColors[colorBlockIndex + 1];
+
+            var deltaR = cNext.R - cTarget.R;
+            var deltaG = cNext.G - cTarget.G;
+            var deltaB = cNext.B - cTarget.B;
+
+            var R = cTarget.R + (deltaR * percentTargetColor);
+            var G = cTarget.G + (deltaG * percentTargetColor);
+            var B = cTarget.B + (deltaB * percentTargetColor);
+
+            var c = Color.FromRgb((byte)R, (byte)G, (byte)B);
+
+            return c;
+        }
+
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var value = values[0] as string;
@@ -20,42 +65,13 @@ namespace RamTune.UI.Coverters
                 return new SolidColorBrush(Colors.White);
             }
 
-            var color = GetColor(min, max, current);
-
+            var color = GetColorForValue(current, min, max);
             return new SolidColorBrush(color);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException("CellColorConverter is a OneWay converter.");
-        }
-
-        private static Color GetColor(float min, float max, float value)
-        {
-            double middle = min + (max - min) / 2;
-            double brightness;
-            double unbrightness;
-            if (value > middle)
-            {
-                brightness = (value - middle) / (max - middle);
-                unbrightness = 1 - brightness;
-
-                byte red = 255;
-                byte green = 255;
-                byte blue = (byte)(255 * unbrightness);
-
-                return Color.FromRgb(red, green, blue);
-            }
-            else
-            {
-                brightness = (middle - value) / (middle - min);
-                unbrightness = ((1 - brightness) + 1) / 2;
-
-                byte red = (byte)(255 * unbrightness);
-                byte green = (byte)(255 * unbrightness);
-                byte blue = 255;
-                return Color.FromRgb(red, green, blue);
-            }
         }
     }
 }
