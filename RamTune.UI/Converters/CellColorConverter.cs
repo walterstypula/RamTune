@@ -26,13 +26,16 @@ namespace RamTune.UI.Coverters
         /// <returns></returns>
         private Color GetColorForValue(double tableValue, double scalingMinValue, double scalingMaxValue)
         {
-            var colorCount = _heatMapColors.Count - 1;
+            var colorCount = _heatMapColors.Count -1;
 
             var valuePercentage = (tableValue - scalingMinValue) / (scalingMaxValue - scalingMinValue); // value%
             var colorPercentage = 1d / colorCount; // % of each block of color. the last is the "100% Color"
             var colorBlockIndex = (int)(valuePercentage / colorPercentage); // the integer part repersents how many block to skip
             var valuePercentageResidual = valuePercentage - (colorBlockIndex * colorPercentage); //remove the part represented of block
             var percentTargetColor = valuePercentageResidual / colorPercentage; // % of color of this block that will be filled
+
+            colorBlockIndex = colorBlockIndex >= colorCount ? colorCount : colorBlockIndex;
+            colorBlockIndex = Math.Abs(colorBlockIndex);
 
             var cTarget = _heatMapColors[colorBlockIndex];
             var cNext = tableValue >= scalingMaxValue
