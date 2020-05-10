@@ -130,7 +130,7 @@ namespace RamTune.UI.ViewModels
 
             var rows = tableData.Select(o =>
             {
-                var columns = o.Select(s => new CellVM { ByteValue = s, Scaling = scaling, IsStaticAxis = isStaticAxis.GetValueOrDefault() });
+                var columns = o.Select(s => new CellVM { ByteValue = s, Scaling = scaling, IsStatic = isStaticAxis.GetValueOrDefault() });
 
                 return new ObservableCollection<CellVM>(columns);
             });

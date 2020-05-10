@@ -1,15 +1,16 @@
 ﻿using MVVM;
 using RamTune.Core.Metadata;
 using System.Linq;
+using System.Text;
 
 namespace RamTune.UI.ViewModels
 {
     public class CellVM : ViewModelBase
     {
-        public bool IsStaticAxis
+        public bool IsStatic
         {
-            get { return Get<bool>(nameof(IsStaticAxis)); }
-            set { Set(nameof(IsStaticAxis), value); }
+            get { return Get<bool>(nameof(IsStatic)); }
+            set { Set(nameof(IsStatic), value); }
         }
 
         public bool IsSelected
@@ -28,26 +29,24 @@ namespace RamTune.UI.ViewModels
         {
             get
             {
-                var scaling = Scaling;
-                var storageType = scaling.StorageType;
-                var expression = scaling.ToExpr;
-                var format = scaling.Format;
-
-                return ByteValue.ParseDataValue(storageType, expression, format);
+                return IsStatic
+                        ? Encoding.UTF8.GetString(ByteValue)
+                        : ByteValue.ParseDataValue(Scaling.StorageType, Scaling.ToExpr, Scaling.Format);
             }
-            set
+            private set
             {
-                var scaling = Scaling;
-                var storageType = scaling.StorageType;
-                var expression = scaling.FrExpr;
-
+                var output = value.ParseStringValue(Scaling.StorageType, Scaling.FrExpr);
                 var currentValue = Get<byte[]>(nameof(ByteValue));
-                var output = value.ParseStringValue(storageType, expression);
+
+                var isIncrement = decimal.Parse(value) > decimal.Parse(DisplayValue);
 
                 while (currentValue.SequenceEqual(output))
                 {
-                    value = Scaling.IncrementValue(value);
-                    output = value.ParseStringValue(storageType, expression);
+                    value = isIncrement
+                                ? Scaling.IncrementValue(value)
+                                : Scaling.DecrementValue(value);
+
+                    output = value.ParseStringValue(Scaling.StorageType, Scaling.FrExpr);
                 }
 
                 Set(nameof(ByteValue), output);
@@ -59,16 +58,31 @@ namespace RamTune.UI.ViewModels
 
         public void IncrementValue()
         {
+            if (IsStatic)
+            {
+                return;
+            }
+
             DisplayValue = Scaling.IncrementValue(DisplayValue);
         }
 
         public void DecrementValue()
         {
+            if (IsStatic)
+            {
+                return;
+            }
+
             DisplayValue = Scaling.DecrementValue(DisplayValue);
         }
 
         public void SetValue(string value)
         {
+            if (IsStatic)
+            {
+                return;
+            }
+
             DisplayValue = Scaling.SetValue(value);
         }
     }
