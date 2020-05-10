@@ -48,7 +48,7 @@ namespace RamTune.Core
             return loader.GetDefinitionByInternalId(internalId);
         }
 
-        public List<List<string>> LoadAxisData(Axis axis)
+        public List<List<byte[]>> LoadAxisData(Axis axis)
         {
             if (axis == null)
             {
@@ -61,11 +61,11 @@ namespace RamTune.Core
 
                 if (axis.IsColumnAxis())
                 {
-                    return new List<List<string>> { list };
+                    return new List<List<byte[]>> { list };
                 }
                 else
                 {
-                    return list.Select(s => new List<string> { s }).ToList();
+                    return list.Select(s => new List<byte[]> { s }).ToList();
                 }
             }
 
@@ -79,20 +79,18 @@ namespace RamTune.Core
             }
         }
 
-        private List<string> LoadStaticAxisData(Axis axis)
+        private List<byte[]> LoadStaticAxisData(Axis axis)
         {
-            return axis.Data;
+            var data = axis.Data;
+            return data.Select(s => Encoding.UTF8.GetBytes(s)).ToList();
         }
 
-        public List<List<string>> LoadTableData(TableBase table, int? columnElements, int? rowElements)
+        public List<List<byte[]>> LoadTableData(TableBase table, int? columnElements, int? rowElements)
         {
             var columns = columnElements ?? 1;
             var rows = rowElements ?? 1;
 
             var endian = table.Scaling.Endian;
-            var storageType = table.Scaling.StorageType;
-            var expression = table.Scaling.ToExpr;
-            var format = table.Scaling.Format;
             var byteArraySize = table.Scaling.ParseStorageSize();
             var address = table.Address.ConvertHexToInt();
 
@@ -102,8 +100,7 @@ namespace RamTune.Core
             }
 
             var tableData = _romStream.Read(address, columns, rows, endian, byteArraySize);
-
-            return tableData.ParseDataValue(storageType, expression, format);
+            return tableData;
         }
     }
 }

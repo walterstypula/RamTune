@@ -5,9 +5,9 @@ namespace RamTune.Core
 {
     public interface ITableReader
     {
-        List<List<string>> LoadAxisData(Axis axis);
+        List<List<byte[]>> LoadAxisData(Axis axis);
 
-        List<List<string>> LoadTableData(TableBase table, int? columnElements, int? rowElements);
+        List<List<byte[]>> LoadTableData(TableBase table, int? columnElements, int? rowElements);
 
 
         public Definition Rom { get; set; }

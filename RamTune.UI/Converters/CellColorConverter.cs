@@ -1,6 +1,7 @@
 ﻿using RamTune.Core.Metadata;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
@@ -26,7 +27,7 @@ namespace RamTune.UI.Coverters
         /// <returns></returns>
         private Color GetColorForValue(double tableValue, double scalingMinValue, double scalingMaxValue)
         {
-            var colorCount = _heatMapColors.Count -1;
+            var colorCount = _heatMapColors.Count - 1;
 
             var valuePercentage = (tableValue - scalingMinValue) / (scalingMaxValue - scalingMinValue); // value%
             var colorPercentage = 1d / colorCount; // % of each block of color. the last is the "100% Color"
@@ -55,13 +56,13 @@ namespace RamTune.UI.Coverters
             return c;
         }
 
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var value = values[0] as string;
+            var itemValue = values[0] as string;
             var scaling = values[1] as Scaling;
 
             if (scaling == null
-                || !float.TryParse(value, out var current)
+                || !float.TryParse(itemValue, out var current)
                 || !float.TryParse(scaling.Min, out var min)
                 || !float.TryParse(scaling.Max, out var max))
             {
@@ -72,9 +73,9 @@ namespace RamTune.UI.Coverters
             return new SolidColorBrush(color);
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException("CellColorConverter is a OneWay converter.");
+            throw new NotImplementedException();
         }
     }
 }

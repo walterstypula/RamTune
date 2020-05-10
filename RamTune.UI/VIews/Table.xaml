@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:RamTune.UI.Views"
              xmlns:ap="clr-namespace:RamTune.UI.AttachedProperties"
              xmlns:converters="clr-namespace:RamTune.UI.Coverters"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d">
     <UserControl.Resources>
         <converters:CellColorConverter x:Key="CellColorConverter" />
@@ -39,7 +40,7 @@
                     <TextBlock x:Name ="TextBlock"
                                HorizontalAlignment ="Center"
                                VerticalAlignment ="Center"
-                               Text ="{Binding Path=Value}"
+                               Text="{Binding Path=DisplayValue}"
                                Padding="5,2,5,2"
                                Focusable="False">
                         <TextBlock.Style>
@@ -47,7 +48,7 @@
                                 <Setter Property="Foreground">
                                     <Setter.Value>
                                         <MultiBinding Converter="{StaticResource CellColorConverter}">
-                                            <Binding Path="Value" />
+                                            <Binding Path="DisplayValue" />
                                             <Binding Path="Scaling" />
                                         </MultiBinding>
                                     </Setter.Value>

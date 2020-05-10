@@ -55,9 +55,9 @@ namespace RamTune.UI.ViewModels
             RowDescription = yAxis?.ToString();
             TableDescription = _table.ToString();
 
-            ColumnHeaders = _tableReader.LoadAxisData(xAxis).ToCellObservableCollection(xAxis?.Scaling);
-            RowHeaders = _tableReader.LoadAxisData(yAxis).ToCellObservableCollection(yAxis?.Scaling);
-            TableData = _tableReader.LoadTableData(_table, columnElements, rowElements).ToCellObservableCollection(_table.Scaling);
+            ColumnHeaders = _tableReader.LoadAxisData(xAxis).ToCellObservableCollection(xAxis?.Scaling, xAxis?.IsStaticAxis());
+            RowHeaders = _tableReader.LoadAxisData(yAxis).ToCellObservableCollection(yAxis?.Scaling, yAxis?.IsStaticAxis());
+            TableData = _tableReader.LoadTableData(_table, columnElements, rowElements).ToCellObservableCollection(_table.Scaling, false);
         }
 
         private RelayCommand _addValueCommand;
@@ -121,7 +121,7 @@ namespace RamTune.UI.ViewModels
 
     public static class ObservableCollectionExtension
     {
-        public static ObservableCollection<ObservableCollection<CellVM>> ToCellObservableCollection(this IEnumerable<IEnumerable<string>> tableData, Scaling scaling)
+        public static ObservableCollection<ObservableCollection<CellVM>> ToCellObservableCollection(this IEnumerable<IEnumerable<byte[]>> tableData, Scaling scaling, bool? isStaticAxis)
         {
             if(tableData == null)
             {
@@ -130,7 +130,7 @@ namespace RamTune.UI.ViewModels
 
             var rows = tableData.Select(o =>
             {
-                var columns = o.Select(s => new CellVM { Value = s, Scaling = scaling });
+                var columns = o.Select(s => new CellVM { ByteValue = s, Scaling = scaling, IsStaticAxis = isStaticAxis.GetValueOrDefault() });
 
                 return new ObservableCollection<CellVM>(columns);
             });

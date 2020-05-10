@@ -54,6 +54,48 @@ public static class ByteExtensions
         return output;
     }
 
+    public static byte[] ParseStringValue(this string data, StorageType storageType, string expression)
+    {
+        var value = double.Parse(data);
+        var output = value.CalcValue(expression);
+
+        switch (storageType)
+        {
+            case StorageType.uint32:
+                return BitConverter.GetBytes((uint)output);
+
+            case StorageType.int32:
+                return BitConverter.GetBytes((int)output);
+
+            case StorageType.uint16:
+                return BitConverter.GetBytes((ushort)output);
+
+            case StorageType.int16:
+                return BitConverter.GetBytes((short)output);
+
+            case StorageType.@float:
+                return BitConverter.GetBytes((float)output);
+
+            case StorageType.uint8:
+                return BitConverter.GetBytes((sbyte)output);
+
+            case StorageType.int8:
+                return BitConverter.GetBytes((byte)output);
+
+            case StorageType.bloblist:
+                break;
+
+            case StorageType.Unknown:
+                break;
+
+            default:
+                break;
+        }
+
+        var bytesData = BitConverter.GetBytes(output);
+        return bytesData;
+    }
+
     public static string ParseDataValue(this byte[] byteData, StorageType storageType, string expression, string format)
     {
         double value;
@@ -206,13 +248,19 @@ public static class GlobalExtensions
         }
     }
 
-    public static string CalcValue(this double value, string expression, string format)
+    public static double CalcValue(this double value, string expression, string format = null)
     {
         ExpressionParser a = new ExpressionParser();
         a.Values.Add("x", value);
         var result = a.Parse(expression);
+
+        if (format == null)
+        {
+            return result;
+        }
+
         var precision = Format(format);
-        return Math.Round((decimal)result, precision).ToString();
+        return Math.Round((double)result, precision);
     }
 
     /// <summary>
