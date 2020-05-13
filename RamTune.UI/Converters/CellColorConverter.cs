@@ -58,11 +58,11 @@ namespace RamTune.UI.Coverters
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var itemValue = values[0] as string;
+            var value = values[0] as string;
             var scaling = values[1] as Scaling;
 
             if (scaling == null
-                || !float.TryParse(itemValue, out var current)
+                || !float.TryParse(value, out var current)
                 || !float.TryParse(scaling.Min, out var min)
                 || !float.TryParse(scaling.Max, out var max))
             {

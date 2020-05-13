@@ -2,6 +2,7 @@
 using RamTune.Core.Metadata;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -47,99 +48,6 @@ public static class StreamExtensions
 
 public static class ByteExtensions
 {
-    public static List<List<string>> ParseDataValue(this List<List<byte[]>> tableByteData, StorageType storageType, string expression, string format)
-    {
-        var output = tableByteData.Select(s => s.Select(b => b.ParseDataValue(storageType, expression, format)).ToList()).ToList();
-
-        return output;
-    }
-
-    public static byte[] ParseStringValue(this string data, StorageType storageType, string expression)
-    {
-        var value = double.Parse(data);
-        var output = value.CalcValue(expression);
-
-        switch (storageType)
-        {
-            case StorageType.uint32:
-                return BitConverter.GetBytes((uint)output);
-
-            case StorageType.int32:
-                return BitConverter.GetBytes((int)output);
-
-            case StorageType.uint16:
-                return BitConverter.GetBytes((ushort)output);
-
-            case StorageType.int16:
-                return BitConverter.GetBytes((short)output);
-
-            case StorageType.@float:
-                return BitConverter.GetBytes((float)output);
-
-            case StorageType.uint8:
-                return BitConverter.GetBytes((sbyte)output);
-
-            case StorageType.int8:
-                return BitConverter.GetBytes((byte)output);
-
-            case StorageType.bloblist:
-                break;
-
-            case StorageType.Unknown:
-                break;
-
-            default:
-                break;
-        }
-
-        var bytesData = BitConverter.GetBytes(output);
-        return bytesData;
-    }
-
-    public static string ParseDataValue(this byte[] byteData, StorageType storageType, string expression, string format)
-    {
-        double value;
-
-        switch (storageType)
-        {
-            case StorageType.uint16:
-                value = BitConverter.ToUInt16(byteData);
-                break;
-
-            case StorageType.int16:
-                value = BitConverter.ToInt16(byteData);
-                break;
-
-            case StorageType.uint32:
-                value = BitConverter.ToUInt32(byteData);
-                break;
-
-            case StorageType.int32:
-                value = BitConverter.ToInt32(byteData);
-                break;
-
-            case StorageType.uint8:
-                value = (byte)byteData[0];
-                break;
-
-            case StorageType.int8:
-                value = (sbyte)byteData[0];
-                break;
-
-            case StorageType.@float:
-                value = (double)BitConverter.ToSingle(byteData);
-                break;
-
-            case StorageType.bloblist:
-                return BitConverter.ToString(byteData).Replace("-", string.Empty);
-
-            default:
-                throw new Exception($"{storageType.ToString()} is a unhandled (unsupported) storage type.");
-        }
-
-        return value.CalcValue(expression, format).ToString();
-    }
-
     public static void ReverseBytes(this byte[] inputBytes, string endian)
     {
         if (endian == null || endian?.ToLower() != "big")
@@ -205,6 +113,108 @@ public static class StorageTypeExtensions
 
 public static class ScalingExtensions
 {
+    public static byte[] GetBytesValue(this Scaling scaling, string data)
+    {
+        var storageType = scaling.StorageType;
+
+        if (storageType == StorageType.bloblist)
+        {
+            var stringValue = scaling.Data.First(d => d.Name == data).Value;
+            var byteValue = stringValue.ConvertHexIntoBytes();
+
+            return byteValue;
+        }
+
+        var expression = scaling.FrExpr;
+        var value = double.Parse(data);
+        var output = value.CalcValue(expression);
+
+        switch (storageType)
+        {
+            case StorageType.uint32:
+                return BitConverter.GetBytes((uint)output);
+
+            case StorageType.int32:
+                return BitConverter.GetBytes((int)output);
+
+            case StorageType.uint16:
+                return BitConverter.GetBytes((ushort)output);
+
+            case StorageType.int16:
+                return BitConverter.GetBytes((short)output);
+
+            case StorageType.@float:
+                return BitConverter.GetBytes((float)output);
+
+            case StorageType.uint8:
+                return BitConverter.GetBytes((sbyte)output);
+
+            case StorageType.int8:
+                return BitConverter.GetBytes((byte)output);
+
+            case StorageType.Unknown:
+                break;
+
+            default:
+                break;
+        }
+
+        var bytesData = BitConverter.GetBytes(output);
+        return bytesData;
+    }
+
+    public static string GetDisplayValue(this Scaling scaling, byte[] byteData)
+    {
+        var storageType = scaling.StorageType;
+        double value;
+
+        switch (storageType)
+        {
+            case StorageType.uint16:
+                value = BitConverter.ToUInt16(byteData);
+                break;
+
+            case StorageType.int16:
+                value = BitConverter.ToInt16(byteData);
+                break;
+
+            case StorageType.uint32:
+                value = BitConverter.ToUInt32(byteData);
+                break;
+
+            case StorageType.int32:
+                value = BitConverter.ToInt32(byteData);
+                break;
+
+            case StorageType.uint8:
+                value = (byte)byteData[0];
+                break;
+
+            case StorageType.int8:
+                value = (sbyte)byteData[0];
+                break;
+
+            case StorageType.@float:
+                value = (double)BitConverter.ToSingle(byteData);
+                break;
+
+            case StorageType.bloblist:
+                {
+                    var scalingData = scaling.Data;
+                    var data = BitConverter.ToString(byteData).Replace("-", string.Empty);
+                    return scalingData.First(s => s.Value == data).Name;
+                }
+
+            default:
+                throw new Exception($"{storageType.ToString()} is a unhandled (unsupported) storage type.");
+        }
+
+        var expression = scaling.ToExpr;
+        var format = scaling.Format;
+
+        return value.CalcValue(expression, format).ToString();
+    }
+
     public static int ParseStorageSize(this Scaling scaling)
     {
         var storageType = scaling.StorageType;
@@ -230,9 +240,16 @@ public static class ScalingExtensions
 
 public static class GlobalExtensions
 {
+    public static byte[] ConvertHexIntoBytes(this string hexInput)
+    {
+        return Enumerable.Range(0, hexInput.Length / 2)
+                         .Select(x => Convert.ToByte(hexInput.Substring(x * 2, 2), 16))
+                         .ToArray();
+    }
+
     public static int ConvertHexToInt(this String hexInput)
     {
-        return int.Parse(hexInput, System.Globalization.NumberStyles.AllowHexSpecifier);
+        return int.Parse(hexInput, NumberStyles.AllowHexSpecifier);
     }
 
     private static int Format(string format)
