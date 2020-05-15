@@ -1,15 +1,33 @@
 ﻿using MVVM;
 using RamTune.Core.Metadata;
+using System;
+using System.Linq;
 using System.Text;
 
 namespace RamTune.UI.ViewModels
 {
     public class CellVM : ViewModelBase
     {
+        private byte[] _unmodifiedValue = null;
+
         public byte[] ByteValue
         {
             get { return Get<byte[]>(nameof(ByteValue)); }
-            set { Set(nameof(ByteValue), value); }
+            set
+            {
+                if (_unmodifiedValue == null)
+                {
+                    _unmodifiedValue = Get<byte[]>(nameof(ByteValue));
+                }
+
+                Set(nameof(ByteValue), value);
+                OnPropertyChanged(nameof(IsDirty));
+            }
+        }
+
+        public bool IsDirty
+        {
+            get { return !_unmodifiedValue?.SequenceEqual(Get<byte[]>(nameof(ByteValue))) ?? false; }
         }
 
         public string DisplayValue
@@ -42,7 +60,7 @@ namespace RamTune.UI.ViewModels
 
         public Scaling Scaling { get; set; }
 
-        public void DecrementValue()
+        public void ChangeValue(Direction direction)
         {
             if (IsStatic)
             {
@@ -50,19 +68,7 @@ namespace RamTune.UI.ViewModels
             }
             var currentValue = DisplayValue;
             var currentByteValue = ByteValue;
-            DisplayValue = Scaling.DecrementValue(currentValue, currentByteValue);
-        }
-
-        public void IncrementValue()
-        {
-            if (IsStatic)
-            {
-                return;
-            }
-
-            var currentValue = DisplayValue;
-            var currentByteValue = ByteValue;
-            DisplayValue = Scaling.IncrementValue(currentValue, currentByteValue);
+            DisplayValue = Scaling.ChangeValue(currentValue, currentByteValue, direction);
         }
 
         public void SetValue(string value)

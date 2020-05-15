@@ -44,7 +44,7 @@ namespace RamTune.UI.ViewModels
             {
                 //Display YAxis in XAxis, display only.
                 xAxis = yAxis;
-                xAxis.Type =  yAxis.IsStaticAxis() ? TableType.StaticXAxis : TableType.XAxis;
+                xAxis.Type = yAxis.IsStaticAxis() ? TableType.StaticXAxis : TableType.XAxis;
                 yAxis = null;
 
                 columnElements = rowElements;
@@ -82,40 +82,25 @@ namespace RamTune.UI.ViewModels
 
         private void AddValue(ObservableCollection<ObservableCollection<CellVM>> cells)
         {
-            if(cells == null)
-            {
-                return;
-            }
+            ModifyCells(cells, Direction.Increment);
+        }
 
-            foreach (var row in cells)
+        private static void ModifyCells(ObservableCollection<ObservableCollection<CellVM>> cells, Direction direction)
+        {
+            var selectedCells = cells?.SelectMany(columns => columns)
+                                     .Where(cell => cell.IsSelected);
+
+            selectedCells ??= Enumerable.Empty<CellVM>();
+                                     
+            foreach (var cell in selectedCells)
             {
-                foreach (var column in row)
-                {
-                    if (column.IsSelected)
-                    {
-                        column.IncrementValue();
-                    }
-                }
+                cell.ChangeValue(direction);
             }
         }
 
         private void SubtractValue(ObservableCollection<ObservableCollection<CellVM>> cells)
         {
-            if (cells == null)
-            {
-                return;
-            }
-
-            foreach (var row in cells)
-            {
-                foreach (var column in row)
-                {
-                    if (column.IsSelected)
-                    {
-                        column.DecrementValue();
-                    }
-                }
-            }
+            ModifyCells(cells, Direction.Decrement);
         }
     }
 
@@ -123,7 +108,7 @@ namespace RamTune.UI.ViewModels
     {
         public static ObservableCollection<ObservableCollection<CellVM>> ToCellObservableCollection(this IEnumerable<IEnumerable<byte[]>> tableData, Scaling scaling, bool? isStaticAxis)
         {
-            if(tableData == null)
+            if (tableData == null)
             {
                 return null;
             }

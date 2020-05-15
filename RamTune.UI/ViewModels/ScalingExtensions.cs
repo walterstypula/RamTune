@@ -7,30 +7,16 @@ namespace RamTune.UI.ViewModels
 {
     public static class ScalingExtensions
     {
-        public static string DecrementValue(this Scaling scaling, string value, byte[] byteValue)
+        public static string ChangeValue(this Scaling scaling, string value, byte[] byteValue, Direction direction)
         {
-            var direction = -1;
+            var changeDirection = direction == Direction.Increment ? 1 : -1;
 
             if (scaling.StorageType == StorageType.bloblist)
             {
-                return GetNextBloblistItem(scaling.Data, value, direction);
+                return GetNextBloblistItem(scaling.Data, value, changeDirection);
             }
 
-            var updatedValue = CalcNextValue(value, scaling.Inc, direction, byteValue, scaling);
-
-            return updatedValue;
-        }
-
-        public static string IncrementValue(this Scaling scaling, string value, byte[] byteValue)
-        {
-            var direction = 1;
-
-            if (scaling.StorageType == StorageType.bloblist)
-            {
-                return GetNextBloblistItem(scaling.Data, value, direction);
-            }
-
-            var updatedValue = CalcNextValue(value, scaling.Inc, direction, byteValue, scaling);
+            var updatedValue = CalcNextValue(value, scaling.Inc, changeDirection, byteValue, scaling);
 
             return updatedValue;
         }
