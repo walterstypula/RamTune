@@ -30,9 +30,9 @@ namespace RamTune.UI.ViewModels
             set { Set(nameof(Table), value); }
         }
 
-        public IEnumerable<IGrouping<string, Table>> GroupedTables
+        public IEnumerable<GroupTableDisplayVM> GroupedTables
         {
-            get { return Get<IEnumerable<IGrouping<string, Table>>>(nameof(GroupedTables)); }
+            get { return Get<IEnumerable<GroupTableDisplayVM>>(nameof(GroupedTables)); }
             set { Set(nameof(GroupedTables), value); }
         }
 
@@ -61,7 +61,7 @@ namespace RamTune.UI.ViewModels
             {
                 if (_selectedItemChangedCommand == null)
                 {
-                    _selectedItemChangedCommand = new RelayCommand(parm => SelectedItemChanged(parm as Table));
+                    _selectedItemChangedCommand = new RelayCommand(parm => SelectedItemChanged(parm as TableDisplayVM));
                 }
 
                 return _selectedItemChangedCommand;
@@ -72,7 +72,14 @@ namespace RamTune.UI.ViewModels
         {
             _romStream = OpenRomFile();
             _loaderRomManager = new LoadedRomManager(_romStream, _definitionLoader);
-            GroupedTables = _loaderRomManager.Rom.Tables.GroupBy(g => g.Category);
+
+            var tables = _loaderRomManager.Rom.Tables.Select(t => new TableDisplayVM(t, _loaderRomManager));
+
+            var data = tables.GroupBy(g => g.Category)
+                                  .Select(g => new GroupTableDisplayVM() { Name = g.Key, Tables = g.Select(a => a).ToList() })
+                                  .ToList();
+
+            GroupedTables = data;
         }
 
         private Stream OpenRomFile()
@@ -96,14 +103,14 @@ namespace RamTune.UI.ViewModels
             return openRom;
         }
 
-        private void SelectedItemChanged(Table selectedTable)
+        private void SelectedItemChanged(TableDisplayVM selectedTable)
         {
             if (selectedTable == null)
             {
                 return;
             }
 
-            Table = new TableDisplayVM(selectedTable, _loaderRomManager);
+            Table = selectedTable;
         }
     }
 }

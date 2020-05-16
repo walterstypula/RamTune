@@ -19,16 +19,27 @@ namespace RamTune.UI.ViewModels
 
         public ObservableCollection<ObservableCollection<CellVM>> TableData { get; set; }
 
+        public bool IsVisible
+        {
+            get { return Get<bool>(nameof(IsVisible)); }
+            set { Set(nameof(IsVisible), value); }
+        }
+
         public string ColumnDescription { get; private set; }
 
         public string RowDescription { get; private set; }
 
         public object TableDescription { get; private set; }
 
+        public string Category { get { return _table.Category; } }
+
+        public string Name { get { return _table.Name; } }
+
         public TableDisplayVM(Table table, ITableReader tableReader)
         {
             _table = table;
             _tableReader = tableReader;
+            IsVisible = true;
             Load();
         }
 
@@ -91,7 +102,7 @@ namespace RamTune.UI.ViewModels
                                      .Where(cell => cell.IsSelected);
 
             selectedCells ??= Enumerable.Empty<CellVM>();
-                                     
+
             foreach (var cell in selectedCells)
             {
                 cell.ChangeValue(direction);

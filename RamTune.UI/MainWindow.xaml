@@ -6,6 +6,7 @@
 		xmlns:converters="clr-namespace:RamTune.UI"
 		xmlns:local="clr-namespace:RamTune.UI"
         xmlns:views="clr-namespace:RamTune.UI.Views"
+        xmlns:vm="clr-namespace:RamTune.UI.ViewModels"
 		mc:Ignorable="d"
 		Title="RamTune"
 		Width="900"
@@ -67,22 +68,30 @@
                     <Style TargetType="Label">
                         <Setter Property="Foreground" Value="White" />
                     </Style>
+                    <HierarchicalDataTemplate DataType="{x:Type vm:GroupTableDisplayVM}" ItemsSource="{Binding Tables}">
+                        <Label Content="{Binding Name}" />
+                    </HierarchicalDataTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type vm:TableDisplayVM}">
+                        <Label Content="{Binding Name}" />
+                    </HierarchicalDataTemplate>
                 </TreeView.Resources>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectedItemChanged">
                         <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" CommandParameter="{Binding SelectedItem, ElementName=TablesTV}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding}">
-                        <Label Content="{Binding Key}" />
-                        <HierarchicalDataTemplate.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding}">                   
-                                    <Label Content="{Binding Name}" />
-                            </HierarchicalDataTemplate>
-                        </HierarchicalDataTemplate.ItemTemplate>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                        <Style.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#0078D7" />
+                        </Style.Resources>
+                    </Style>
+                </TreeView.ItemContainerStyle>
             </TreeView>
 
             <Grid Grid.Row="1" Grid.Column="2">

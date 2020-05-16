@@ -14,7 +14,7 @@
             <Grid xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                   ap:CellSelectionBehavior.IsSelected="{Binding Path=IsSelected, Mode=TwoWay}"
                   Focusable="True"
-                  MinWidth="50">
+                  MinWidth="55">
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Setter Property="Background" Value="Transparent" />
@@ -41,7 +41,8 @@
                             <Setter Property="BorderBrush" Value="DimGray" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsDirty}" Value="True">
-                                    <Setter Property="Background" Value="#22CCCCCC" />
+                                    <Setter Property="Background" Value="#33CCCCCC" />
+                                    <Setter Property="BorderBrush" Value="White" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -65,6 +66,9 @@
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
                                         <Setter Property="Foreground" Value="White" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsDirty}" Value="True">
+                                        <Setter Property="FontWeight" Value="Bold" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
