@@ -13,6 +13,32 @@ namespace RamTune.UI.ViewModels
         private Table _table;
         private ITableReader _tableReader;
 
+        private void CheckDirty()
+        {
+            var isDirty = CheckDirty(ColumnHeaders) || CheckDirty(RowHeaders) || CheckDirty(TableData);
+            IsDirty = isDirty;
+        }
+
+        private bool CheckDirty(ObservableCollection<ObservableCollection<CellVM>> cells)
+        {
+            var isDirty = cells?.SelectMany(columns => columns)
+                                     .Any(cell => cell.IsDirty) ?? false;
+
+            return isDirty;
+        }
+
+        public bool IsDirty
+        {
+            get
+            {
+                return Get<bool>(nameof(IsDirty));
+            }
+            private set
+            {
+                Set(nameof(IsDirty), value);
+            }
+        }
+
         public ObservableCollection<ObservableCollection<CellVM>> ColumnHeaders { get; set; }
 
         public ObservableCollection<ObservableCollection<CellVM>> RowHeaders { get; set; }
@@ -96,7 +122,7 @@ namespace RamTune.UI.ViewModels
             ModifyCells(cells, Direction.Increment);
         }
 
-        private static void ModifyCells(ObservableCollection<ObservableCollection<CellVM>> cells, Direction direction)
+        private void ModifyCells(ObservableCollection<ObservableCollection<CellVM>> cells, Direction direction)
         {
             var selectedCells = cells?.SelectMany(columns => columns)
                                      .Where(cell => cell.IsSelected);
@@ -107,6 +133,8 @@ namespace RamTune.UI.ViewModels
             {
                 cell.ChangeValue(direction);
             }
+
+            CheckDirty();
         }
 
         private void SubtractValue(ObservableCollection<ObservableCollection<CellVM>> cells)

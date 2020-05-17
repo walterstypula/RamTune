@@ -64,15 +64,25 @@
                 <TreeView.Resources>
                     <Style TargetType="TreeView">
                         <Setter Property="Background" Value="{x:Null}" />
+                        <Setter Property="BorderBrush" Value="{x:Null}" />
                     </Style>
                     <Style TargetType="Label">
                         <Setter Property="Foreground" Value="White" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDirty}" Value="True">
+                                <Setter Property="Foreground" Value="Yellow"/>
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </DataTrigger>
+                        </Style.Triggers>
                     </Style>
                     <HierarchicalDataTemplate DataType="{x:Type vm:GroupTableDisplayVM}" ItemsSource="{Binding Tables}">
                         <Label Content="{Binding Name}" />
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type vm:TableDisplayVM}">
-                        <Label Content="{Binding Name}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="*" Visibility="{Binding IsDirty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <Label Content="{Binding Name}" />                            
+                        </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
                 <i:Interaction.Triggers>
