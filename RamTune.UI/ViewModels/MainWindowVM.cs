@@ -14,6 +14,10 @@ namespace RamTune.UI.ViewModels
 
         private RelayCommand _openRomCommand;
 
+        private RelayCommand _resetAllTableCellsCommand;
+
+        private RelayCommand _resetSelectedTableCellsCommand;
+
         private RelayCommand _selectedItemChangedCommand;
 
         private Stream _romStream;
@@ -47,6 +51,42 @@ namespace RamTune.UI.ViewModels
 
                 return _openRomCommand;
             }
+        }
+
+        public ICommand ResetAllTableCellsCommand
+        {
+            get
+            {
+                if (_resetAllTableCellsCommand == null)
+                {
+                    _resetAllTableCellsCommand = new RelayCommand(parm => ResetAllTableCells());
+                }
+
+                return _resetAllTableCellsCommand;
+            }
+        }
+
+        public ICommand ResetSelectedTableCellsCommand
+        {
+            get
+            {
+                if (_resetSelectedTableCellsCommand == null)
+                {
+                    _resetSelectedTableCellsCommand = new RelayCommand(parm => ResetSelectedTableCells());
+                }
+
+                return _resetSelectedTableCellsCommand;
+            }
+        }
+
+        private void ResetSelectedTableCells()
+        {
+            Table.ResetSelectedTableCells();
+        }
+
+        private void ResetAllTableCells()
+        {
+            Table.ResetAllTableCells();
         }
 
         public Definition LoadedRomDefinition

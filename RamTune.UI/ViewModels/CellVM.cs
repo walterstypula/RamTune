@@ -80,5 +80,11 @@ namespace RamTune.UI.ViewModels
 
             DisplayValue = Scaling.SetValue(value);
         }
+
+        public void ResetValue()
+        {
+            ByteValue = _unmodifiedValue;
+            OnPropertyChanged(nameof(DisplayValue));
+        }
     }
 }
