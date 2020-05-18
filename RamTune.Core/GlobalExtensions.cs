@@ -20,7 +20,7 @@ public static class StreamExtensions
 
     public static byte[] SeekAndReadElement(this Stream stream, string address, string endian, int byteArraySize)
     {
-        stream.Seek(address.ConvertHexToInt(), SeekOrigin.Begin);
+        stream.Seek(address.ConvertHexToInt().Value, SeekOrigin.Begin);
         return stream.ReadElement(endian, byteArraySize);
     }
 
@@ -247,8 +247,13 @@ public static class GlobalExtensions
                          .ToArray();
     }
 
-    public static int ConvertHexToInt(this String hexInput)
+    public static int? ConvertHexToInt(this String hexInput)
     {
+        if (string.IsNullOrWhiteSpace(hexInput))
+        {
+            return null;
+        }
+
         return int.Parse(hexInput, NumberStyles.AllowHexSpecifier);
     }
 

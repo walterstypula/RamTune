@@ -9,7 +9,10 @@ namespace RamTune.Core
 
         List<List<byte[]>> LoadTableData(TableBase table, int? columnElements, int? rowElements);
 
+        void ApplyChanges(long address, byte[] bytes);
 
-        public Definition Rom { get; set; }
+        Definition Rom { get; set; }
+
+        void Save();
     }
 }

@@ -10,7 +10,7 @@ namespace RamTune.UI.ViewModels
 {
     public static class ObservableCollectionExtension
     {
-        public static ObservableCollection<ObservableCollection<CellVM>> ToCellObservableCollection(this IEnumerable<IEnumerable<byte[]>> tableData, Scaling scaling, bool? isStaticAxis)
+        public static ObservableCollection<ObservableCollection<CellVM>> ToCellObservableCollection(this IEnumerable<IEnumerable<byte[]>> tableData, Scaling scaling, bool? isStaticAxis, int? address)
         {
             if (tableData == null)
             {
@@ -19,7 +19,23 @@ namespace RamTune.UI.ViewModels
 
             var rows = tableData.Select(o =>
             {
-                var columns = o.Select(s => new CellVM { ByteValue = s, Scaling = scaling, IsStatic = isStaticAxis.GetValueOrDefault() });
+                var columns = o.Select(s =>
+                {
+                    var cell = new CellVM
+                    {
+                        ByteValue = s,
+                        Scaling = scaling,
+                        IsStatic = isStaticAxis.GetValueOrDefault(),
+                        Address = address.GetValueOrDefault()
+                    };
+
+                    if (address.HasValue)
+                    {
+                        address++;
+                    }
+
+                    return cell;
+                });
 
                 return new ObservableCollection<CellVM>(columns);
             });
@@ -86,6 +102,7 @@ namespace RamTune.UI.ViewModels
             AddValue(TableData);
             AddValue(ColumnHeaders);
             AddValue(RowHeaders);
+            Apply();
         }
 
         public void ResetAllTableCells()
@@ -93,7 +110,7 @@ namespace RamTune.UI.ViewModels
             ResetCollection(RowHeaders);
             ResetCollection(ColumnHeaders);
             ResetCollection(TableData);
-            CheckDirty();
+            Apply();
         }
 
         public void ResetSelectedTableCells()
@@ -101,7 +118,7 @@ namespace RamTune.UI.ViewModels
             ResetSelectedCollection(RowHeaders);
             ResetSelectedCollection(ColumnHeaders);
             ResetSelectedCollection(TableData);
-            CheckDirty();
+            Apply();
         }
 
         public void SubtractValue(object parm)
@@ -109,6 +126,7 @@ namespace RamTune.UI.ViewModels
             SubtractValue(TableData);
             SubtractValue(ColumnHeaders);
             SubtractValue(RowHeaders);
+            Apply();
         }
 
         private void AddValue(ObservableCollection<ObservableCollection<CellVM>> cells)
@@ -153,9 +171,9 @@ namespace RamTune.UI.ViewModels
             RowDescription = yAxis?.ToString();
             TableDescription = _table.ToString();
 
-            ColumnHeaders = _tableReader.LoadAxisData(xAxis).ToCellObservableCollection(xAxis?.Scaling, xAxis?.IsStaticAxis());
-            RowHeaders = _tableReader.LoadAxisData(yAxis).ToCellObservableCollection(yAxis?.Scaling, yAxis?.IsStaticAxis());
-            TableData = _tableReader.LoadTableData(_table, columnElements, rowElements).ToCellObservableCollection(_table.Scaling, false);
+            ColumnHeaders = _tableReader.LoadAxisData(xAxis).ToCellObservableCollection(xAxis?.Scaling, xAxis?.IsStaticAxis(), xAxis?.Address?.ConvertHexToInt());
+            RowHeaders = _tableReader.LoadAxisData(yAxis).ToCellObservableCollection(yAxis?.Scaling, yAxis?.IsStaticAxis(), yAxis?.Address?.ConvertHexToInt());
+            TableData = _tableReader.LoadTableData(_table, columnElements, rowElements).ToCellObservableCollection(_table.Scaling, false, _table?.Address?.ConvertHexToInt());
         }
 
         private void ModifyCells(ObservableCollection<ObservableCollection<CellVM>> cells, Direction direction)
@@ -170,7 +188,24 @@ namespace RamTune.UI.ViewModels
                 cell.ChangeValue(direction);
             }
 
+            Apply();
+        }
+
+        private void Apply()
+        {
             CheckDirty();
+
+            var dirtyCells = TableData.SelectMany(s => s).Where(s => s.IsDirty);
+
+            foreach (var cell in dirtyCells)
+            {
+                var endian = this._table.Scaling.Endian;
+                var bytes = cell.ByteValue.ToArray();
+
+                bytes.ReverseBytes(endian);
+
+                _tableReader.ApplyChanges(cell.Address.GetValueOrDefault(), bytes);
+            }
         }
 
         private void ResetCollection(ObservableCollection<ObservableCollection<CellVM>> cells)
@@ -193,6 +228,8 @@ namespace RamTune.UI.ViewModels
             {
                 cell.ResetValue();
             }
+
+            Apply();
         }
 
         private void SubtractValue(ObservableCollection<ObservableCollection<CellVM>> cells)

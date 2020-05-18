@@ -20,7 +20,8 @@ namespace RamTune.UI.ViewModels
 
         private RelayCommand _selectedItemChangedCommand;
 
-        private Stream _romStream;
+        private RelayCommand _saveRomCommand;
+
         private ITableReader _loaderRomManager;
 
         public MainWindowVM(DefinitionLoader loader)
@@ -50,6 +51,19 @@ namespace RamTune.UI.ViewModels
                 }
 
                 return _openRomCommand;
+            }
+        }
+
+        public ICommand SaveRomCommand
+        {
+            get
+            {
+                if (_saveRomCommand == null)
+                {
+                    _saveRomCommand = new RelayCommand(parm => SaveRom());
+                }
+
+                return _saveRomCommand;
             }
         }
 
@@ -108,10 +122,15 @@ namespace RamTune.UI.ViewModels
             }
         }
 
+        private void SaveRom()
+        {
+            _loaderRomManager.Save();
+        }
+
         private void OpenRom()
         {
-            _romStream = OpenRomFile();
-            _loaderRomManager = new LoadedRomManager(_romStream, _definitionLoader);
+            var romStream = OpenRomFile();
+            _loaderRomManager = new LoadedRomManager(romStream, _definitionLoader);
 
             var tables = _loaderRomManager.Rom.Tables.Select(t => new TableDisplayVM(t, _loaderRomManager));
 

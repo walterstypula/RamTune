@@ -58,6 +58,8 @@ namespace RamTune.UI.ViewModels
             set { Set(nameof(IsStatic), value); }
         }
 
+        public long? Address { get; set; }
+
         public Scaling Scaling { get; set; }
 
         public void ChangeValue(Direction direction)

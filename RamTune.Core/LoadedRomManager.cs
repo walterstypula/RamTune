@@ -92,7 +92,7 @@ namespace RamTune.Core
 
             var endian = table.Scaling.Endian;
             var byteArraySize = table.Scaling.ParseStorageSize();
-            var address = table.Address.ConvertHexToInt();
+            var address = table.Address.ConvertHexToInt().Value;
 
             if (address > offset)
             {
@@ -101,6 +101,19 @@ namespace RamTune.Core
 
             var tableData = _romStream.Read(address, columns, rows, endian, byteArraySize);
             return tableData;
+        }
+
+        public void ApplyChanges(long address, byte[] bytes)
+        {
+            _romStream.Seek(address, SeekOrigin.Begin);
+            _romStream.Write(bytes, 0, bytes.Length);
+        }
+
+        public void Save()
+        {
+            _romStream.Seek(0, SeekOrigin.Begin);
+            using (FileStream file = new FileStream("file.bin", FileMode.Create, System.IO.FileAccess.Write))
+                _romStream.CopyTo(file);
         }
     }
 }
