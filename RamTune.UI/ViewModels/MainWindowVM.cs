@@ -124,7 +124,8 @@ namespace RamTune.UI.ViewModels
 
         private void SaveRom()
         {
-            _loaderRomManager.Save();
+            var filePath = Common.SaveFile("bin files|*.bin");
+            _loaderRomManager.Save(filePath);
         }
 
         private void OpenRom()

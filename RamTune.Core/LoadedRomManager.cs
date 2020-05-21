@@ -109,10 +109,10 @@ namespace RamTune.Core
             _romStream.Write(bytes, 0, bytes.Length);
         }
 
-        public void Save()
+        public void Save(string filePath)
         {
             _romStream.Seek(0, SeekOrigin.Begin);
-            using (FileStream file = new FileStream("file.bin", FileMode.Create, System.IO.FileAccess.Write))
+            using (FileStream file = new FileStream(filePath, FileMode.Create, System.IO.FileAccess.Write))
                 _romStream.CopyTo(file);
         }
     }
