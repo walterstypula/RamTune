@@ -29,8 +29,10 @@
                     <ap:CellSelectionBehavior />
                 </i:Interaction.Behaviors>
                 <Grid.InputBindings>
-                    <KeyBinding Key="OemPlus" Command="{Binding DataContext.AddValueCommand, ElementName=MainList}" />
-                    <KeyBinding Key="OemMinus" Command="{Binding DataContext.SubtractValueCommand, ElementName=MainList}" />
+                    <KeyBinding Key="OemPlus" Command="{Binding DataContext.FineIncrementCommand, ElementName=MainList}" />
+                    <KeyBinding Key="OemMinus" Command="{Binding DataContext.FineDecrementCommand, ElementName=MainList}" />
+                    <KeyBinding Key="OemCloseBrackets" Command="{Binding DataContext.CoarseIncrementCommand, ElementName=MainList}" />
+                    <KeyBinding Key="OemOpenBrackets" Command="{Binding DataContext.CoarseDecrementCommand, ElementName=MainList}" />
                 </Grid.InputBindings>
 
                 <Border x:Name ="Border"

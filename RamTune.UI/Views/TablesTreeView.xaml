@@ -9,6 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        
     </UserControl.Resources>
     <Grid>
         <TreeView x:Name="TablesTV" Width="Auto" ItemsSource="{Binding GroupedTables}"
@@ -21,6 +22,9 @@
                 </Style>
                 <Style TargetType="Label">
                     <Setter Property="Foreground" Value="White" />
+                </Style>
+                <Style TargetType="Label" x:Key="DirtyLabel" >
+                    <Setter Property="Foreground" Value="White" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsDirty}" Value="True">
                             <Setter Property="Foreground" Value="Yellow" />
@@ -31,12 +35,12 @@
                 <HierarchicalDataTemplate DataType="{x:Type vm:GroupTableDisplayVM}" ItemsSource="{Binding Tables}">
                     <Label Content="{Binding Name}" />
                 </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type vm:TableDisplayVM}">
+                <DataTemplate DataType="{x:Type vm:TableDisplayVM}">
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="*" Visibility="{Binding IsDirty, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <Label Content="{Binding Name}" />
+                        <Label Content="*" Visibility="{Binding IsDirty, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource DirtyLabel}"/>
+                        <Label Content="{Binding Name}" Style="{StaticResource DirtyLabel}" />
                     </StackPanel>
-                </HierarchicalDataTemplate>
+                </DataTemplate>
             </TreeView.Resources>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectedItemChanged">

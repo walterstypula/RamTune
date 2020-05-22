@@ -5,4 +5,10 @@
         Increment,
         Decrement
     }
+
+    public enum ChangeType
+    {
+        Fine,
+        Coarse
+    }
 }

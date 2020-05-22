@@ -62,7 +62,7 @@ namespace RamTune.UI.ViewModels
 
         public Scaling Scaling { get; set; }
 
-        public void ChangeValue(Direction direction)
+        public void ChangeValue(Direction direction, ChangeType changeType)
         {
             if (IsStatic)
             {
@@ -70,7 +70,7 @@ namespace RamTune.UI.ViewModels
             }
             var currentValue = DisplayValue;
             var currentByteValue = ByteValue;
-            DisplayValue = Scaling.ChangeValue(currentValue, currentByteValue, direction);
+            DisplayValue = Scaling.ChangeValue(currentValue, currentByteValue, direction, changeType);
         }
 
         public void SetValue(string value)

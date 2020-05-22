@@ -7,7 +7,7 @@ namespace RamTune.UI.ViewModels
 {
     public static class ScalingExtensions
     {
-        public static string ChangeValue(this Scaling scaling, string value, byte[] byteValue, Direction direction)
+        public static string ChangeValue(this Scaling scaling, string value, byte[] byteValue, Direction direction, ChangeType changeType)
         {
             var changeDirection = direction == Direction.Increment ? 1 : -1;
 
@@ -16,7 +16,7 @@ namespace RamTune.UI.ViewModels
                 return GetNextBloblistItem(scaling.Data, value, changeDirection);
             }
 
-            var updatedValue = CalcNextValue(value, scaling.Inc, changeDirection, byteValue, scaling);
+            var updatedValue = CalcNextValue(value, scaling.Inc, changeDirection, byteValue, scaling, changeType);
 
             return updatedValue;
         }
@@ -26,10 +26,14 @@ namespace RamTune.UI.ViewModels
             return value;
         }
 
-        private static string CalcNextValue(string currentValue, string adjustment, int direction, byte[] byteValue, Scaling scaling)
+        private static string CalcNextValue(string currentValue, string adjustment, int direction, byte[] byteValue, Scaling scaling, ChangeType changeType)
         {
             var val = decimal.Parse(currentValue);
             var adjust = decimal.Parse(adjustment, NumberStyles.Any) * direction;
+
+            adjust = changeType == ChangeType.Fine
+                    ? adjust
+                    : adjust * 10;
 
             val += adjust;
 
@@ -38,7 +42,7 @@ namespace RamTune.UI.ViewModels
 
             if (byteValue.SequenceEqual(output))
             {
-                newValue = CalcNextValue(newValue, adjustment, direction, byteValue, scaling);
+                newValue = CalcNextValue(newValue, adjustment, direction, byteValue, scaling, ChangeType.Fine);
             }
 
             return newValue;

@@ -46,8 +46,10 @@ namespace RamTune.UI.ViewModels
 
     public class TableDisplayVM : ViewModelBase
     {
-        private RelayCommand _addValueCommand;
-        private RelayCommand _subtractValueCommand;
+        private RelayCommand _fineIncrementCommand;
+        private RelayCommand _fineDecrementCommand;
+        private RelayCommand _coarseIncrementCommand;
+        private RelayCommand _coarseDecrementCommand;
         private Table _table;
         private ITableReader _tableReader;
 
@@ -59,13 +61,15 @@ namespace RamTune.UI.ViewModels
             Load();
         }
 
-        public ICommand AddValueCommand => this.InitCommand(ref _addValueCommand, AddValue, delegate { return true; });
+        public ObservableCollection<ObservableCollection<CellVM>> ColumnHeaders { get; set; }
+
+        public ObservableCollection<ObservableCollection<CellVM>> RowHeaders { get; set; }
+
+        public ObservableCollection<ObservableCollection<CellVM>> TableData { get; set; }
 
         public string Category { get { return _table.Category; } }
 
         public string ColumnDescription { get; private set; }
-
-        public ObservableCollection<ObservableCollection<CellVM>> ColumnHeaders { get; set; }
 
         public bool IsDirty
         {
@@ -89,19 +93,45 @@ namespace RamTune.UI.ViewModels
 
         public string RowDescription { get; private set; }
 
-        public ObservableCollection<ObservableCollection<CellVM>> RowHeaders { get; set; }
-
-        public ICommand SubtractValueCommand => this.InitCommand(ref _subtractValueCommand, SubtractValue, delegate { return true; });
-
-        public ObservableCollection<ObservableCollection<CellVM>> TableData { get; set; }
-
         public object TableDescription { get; private set; }
 
-        public void AddValue(object parm)
+        public ICommand FineDecrementCommand => this.InitCommand(ref _fineDecrementCommand, FineDecrement, delegate { return true; });
+
+        public ICommand FineIncrementCommand => this.InitCommand(ref _fineIncrementCommand, FineIncrement, delegate { return true; });
+
+        public ICommand CoarseDecrementCommand => this.InitCommand(ref _coarseDecrementCommand, CoarseDecrement, delegate { return true; });
+
+        public ICommand CoarseIncrementCommand => this.InitCommand(ref _coarseIncrementCommand, CoarseIncrement, delegate { return true; });
+
+        public void CoarseDecrement(object parm)
         {
-            AddValue(TableData);
-            AddValue(ColumnHeaders);
-            AddValue(RowHeaders);
+            ModifyCells(TableData, Direction.Decrement, ChangeType.Coarse);
+            ModifyCells(ColumnHeaders, Direction.Decrement, ChangeType.Coarse);
+            ModifyCells(RowHeaders, Direction.Decrement, ChangeType.Coarse);
+            Apply();
+        }
+
+        public void CoarseIncrement(object parm)
+        {
+            ModifyCells(TableData, Direction.Increment, ChangeType.Coarse);
+            ModifyCells(ColumnHeaders, Direction.Increment, ChangeType.Coarse);
+            ModifyCells(RowHeaders, Direction.Increment, ChangeType.Coarse);
+            Apply();
+        }
+
+        public void FineDecrement(object parm)
+        {
+            ModifyCells(TableData, Direction.Decrement, ChangeType.Fine);
+            ModifyCells(ColumnHeaders, Direction.Decrement, ChangeType.Fine);
+            ModifyCells(RowHeaders, Direction.Decrement, ChangeType.Fine);
+            Apply();
+        }
+
+        public void FineIncrement(object parm)
+        {
+            ModifyCells(TableData, Direction.Increment, ChangeType.Fine);
+            ModifyCells(ColumnHeaders, Direction.Increment, ChangeType.Fine);
+            ModifyCells(RowHeaders, Direction.Increment, ChangeType.Fine);
             Apply();
         }
 
@@ -119,19 +149,6 @@ namespace RamTune.UI.ViewModels
             ResetSelectedCollection(ColumnHeaders);
             ResetSelectedCollection(TableData);
             Apply();
-        }
-
-        public void SubtractValue(object parm)
-        {
-            SubtractValue(TableData);
-            SubtractValue(ColumnHeaders);
-            SubtractValue(RowHeaders);
-            Apply();
-        }
-
-        private void AddValue(ObservableCollection<ObservableCollection<CellVM>> cells)
-        {
-            ModifyCells(cells, Direction.Increment);
         }
 
         private void CheckDirty()
@@ -176,7 +193,7 @@ namespace RamTune.UI.ViewModels
             TableData = _tableReader.LoadTableData(_table, columnElements, rowElements).ToCellObservableCollection(_table.Scaling, false, _table?.Address?.ConvertHexToInt());
         }
 
-        private void ModifyCells(ObservableCollection<ObservableCollection<CellVM>> cells, Direction direction)
+        private void ModifyCells(ObservableCollection<ObservableCollection<CellVM>> cells, Direction direction, ChangeType changeType)
         {
             var selectedCells = cells?.SelectMany(columns => columns)
                                      .Where(cell => cell.IsSelected);
@@ -185,7 +202,7 @@ namespace RamTune.UI.ViewModels
 
             foreach (var cell in selectedCells)
             {
-                cell.ChangeValue(direction);
+                cell.ChangeValue(direction, changeType);
             }
 
             Apply();
@@ -230,11 +247,6 @@ namespace RamTune.UI.ViewModels
             }
 
             Apply();
-        }
-
-        private void SubtractValue(ObservableCollection<ObservableCollection<CellVM>> cells)
-        {
-            ModifyCells(cells, Direction.Decrement);
         }
     }
 }
