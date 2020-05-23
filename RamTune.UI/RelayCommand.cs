@@ -1,13 +1,4 @@
-﻿/*
- * Created by SharpDevelop.
- * User: Walter
- * Date: 05/28/2011
- * Time: 10:55
- *
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-
-using MVVM;
+﻿using MVVM;
 using System;
 using System.Windows.Input;
 
