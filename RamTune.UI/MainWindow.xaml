@@ -12,38 +12,10 @@
         AllowsTransparency="False"
         Background="#252526"
         Height="540"
-        Style="{StaticResource WinAll}">
-    <Window.Resources>
-         <Style TargetType="Button" x:Key="MenuButton">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <ContentPresenter Content="{TemplateBinding Content}" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="FontFamily" Value="{StaticResource FontAwesome}" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Margin" Value="5,2,5,2" />
-            <Setter Property="FontSize" Value="35" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="#0078D7" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
+>
 
     <DockPanel>
-
-        <Border BorderBrush="DimGray" BorderThickness="0 0 0 1" DockPanel.Dock="Top">
-            <StackPanel  Orientation="Horizontal">
-                <Button Content="&#xf07c;" Command="{Binding Path=OpenRomCommand}" Style="{StaticResource MenuButton}" ToolTip="Open Rom" />
-                <Button Content="&#xf0c7;" Command="{Binding Path=SaveRomCommand}" Style="{StaticResource MenuButton}" ToolTip="Save Rom" />
-                <Button Content="&#xf3e5;" Command="{Binding Path=ResetSelectedTableCellsCommand}" Style="{StaticResource MenuButton}" ToolTip="Reset Selected Table Cells" />
-                <Button Content="&#xf122;" Command="{Binding Path=ResetAllTableCellsCommand}" Style="{StaticResource MenuButton}" ToolTip="Reset All Table Cells" />
-            </StackPanel>
-        </Border>
+        <views:ActionMenu DockPanel.Dock="Top" DataContext="{Binding .}" />
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -53,39 +25,11 @@
                 <ColumnDefinition Width="2" />
                 <ColumnDefinition MinWidth="160" Width="160" />
             </Grid.ColumnDefinitions>
-            <GridSplitter Background="Azure" Grid.RowSpan="2" Grid.Column="1" Width="1" HorizontalAlignment="Stretch" />
-            <GridSplitter Background="Azure" Grid.RowSpan="2" Grid.Column="3" Width="1" HorizontalAlignment="Stretch" />
+            <GridSplitter Background="{StaticResource RamTune.Grid.Splitter}" Grid.RowSpan="2" Grid.Column="1" Width="1" HorizontalAlignment="Stretch" />
+            <GridSplitter Background="{StaticResource RamTune.Grid.Splitter}" Grid.RowSpan="2" Grid.Column="3" Width="1" HorizontalAlignment="Stretch" />
 
-            <views:TablesTreeView DataContext="{Binding .}"  Grid.Row="1" Grid.Column="0"/>
-            
-            <Grid Grid.Row="1" Grid.Column="2">
-                <ScrollViewer Margin="5" CanContentScroll="False" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Focusable="False">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <Label Grid.Row="1" Content="{Binding Path=Table.RowDescription}" Foreground="Yellow" VerticalAlignment="Center" VerticalContentAlignment="Bottom">
-                                <Label.LayoutTransform>
-                                    <RotateTransform Angle="270" />
-                                </Label.LayoutTransform>
-                            </Label>
-                        </Grid>
-                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <Label       Grid.Row="0" Content="{Binding Path=Table.ColumnDescription}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Bottom" />
-                            <views:Table Grid.Row="1" DataContext="{Binding Table}" HorizontalAlignment="Center" />
-                            <Label       Grid.Row="2" Content="{Binding Path=Table.TableDescription}" Foreground="Yellow" HorizontalAlignment="Center" VerticalContentAlignment="Top" />
-                        </Grid>
-                    </StackPanel>
-                </ScrollViewer>
-            </Grid>
+            <views:TablesTreeView DataContext="{Binding .}"  Grid.Row="1" Grid.Column="0" />
+            <views:TableWithDescriptions DataContext="{Binding .}" Grid.Row="1" Grid.Column="2"/>
         </Grid>
     </DockPanel>
 </Window>

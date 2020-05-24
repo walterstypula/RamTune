@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="RamTune.UI.Views.ActionMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RamTune.UI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Border BorderBrush="DimGray" BorderThickness="0 0 0 1" DockPanel.Dock="Top">
+        <StackPanel  Orientation="Horizontal">
+            <Button Content="&#xf07c;" Command="{Binding Path=OpenRomCommand}" Style="{StaticResource MenuButton}" ToolTip="Open Rom" />
+            <Button Content="&#xf0c7;" Command="{Binding Path=SaveRomCommand}" Style="{StaticResource MenuButton}" ToolTip="Save Rom" />
+            <Button Content="&#xf3e5;" Command="{Binding Path=ResetSelectedTableCellsCommand}" Style="{StaticResource MenuButton}" ToolTip="Reset Selected Table Cells" />
+            <Button Content="&#xf122;" Command="{Binding Path=ResetAllTableCellsCommand}" Style="{StaticResource MenuButton}" ToolTip="Reset All Table Cells" />
+        </StackPanel>
+    </Border>
+</UserControl>
