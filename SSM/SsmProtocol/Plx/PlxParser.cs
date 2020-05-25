@@ -101,9 +101,6 @@ namespace NSFW.PlxSensors
             Instance = instance;
         }
 
-        /// <summary>
-        /// FxCop recommended doing this...
-        /// </summary>
         public override bool Equals(object obj)
         {            
             if (obj is PlxSensorId)
