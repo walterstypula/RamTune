@@ -34,7 +34,7 @@
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -118,7 +118,6 @@
   <PropertyGroup>
     <PostBuildEvent>copy $(SolutionDir)lib\J2534Mock.dll $(TargetDir)
 copy $(SolutionDir)lib\J2534Mock.pdb $(TargetDir)
-<!--echo copy c:\util\msvcr90d.dll $(TargetDir)-->
-</PostBuildEvent>
+<!--echo copy c:\util\msvcr90d.dll $(TargetDir)--></PostBuildEvent>
   </PropertyGroup>
 </Project>
