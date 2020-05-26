@@ -14,7 +14,6 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
-using NateW.Ssm.Properties;
 
 namespace NateW.Ssm.ApplicationLogic
 {

@@ -3,25 +3,19 @@
 // MainForm.cs
 ///////////////////////////////////////////////////////////////////////////////
 using System;
-using System.IO;
-using System.IO.Ports;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Data;
-using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
 using System.Threading;
-using NateW.Ssm.Properties;
+using System.Windows.Forms;
 
 namespace NateW.Ssm.ApplicationLogic
 {
     public partial class MainForm
     {
         private bool exceptionLogged;
-            
+
         /// <summary>
         /// Invoke code on the appropriate thread for the UI.
         /// </summary>
@@ -160,7 +154,7 @@ namespace NateW.Ssm.ApplicationLogic
         /// Indicate whether or not the serial port list contains the given port name.
         /// </summary>
         /// <remarks>
-        /// This is invoked with the name of the port that was used the last 
+        /// This is invoked with the name of the port that was used the last
         /// time the application was run.  That port may or may not exist this
         /// time.
         /// </remarks>
@@ -175,7 +169,7 @@ namespace NateW.Ssm.ApplicationLogic
         /// Indicate whether or not the serial port list contains the given port name.
         /// </summary>
         /// <remarks>
-        /// This is invoked with the name of the port that was used the last 
+        /// This is invoked with the name of the port that was used the last
         /// time the application was run.  That port may or may not exist this
         /// time.
         /// </remarks>
@@ -220,7 +214,7 @@ namespace NateW.Ssm.ApplicationLogic
         /// <remarks>
         /// Will be invoked to select the port that was in use in the last
         /// session.
-        /// Consider: Have this return a boolean, get rid of the 
+        /// Consider: Have this return a boolean, get rid of the
         /// SerialPortListContains method.
         /// </remarks>
         /// <param name="name">name of the port to highlight in the UI</param>
@@ -235,7 +229,7 @@ namespace NateW.Ssm.ApplicationLogic
         /// <remarks>
         /// Will be invoked to select the port that was in use in the last
         /// session.
-        /// Consider: Have this return a boolean, get rid of the 
+        /// Consider: Have this return a boolean, get rid of the
         /// SerialPortListContains method.
         /// </remarks>
         /// <param name="name">name of the port to highlight in the UI</param>
@@ -270,7 +264,7 @@ namespace NateW.Ssm.ApplicationLogic
         {
             for (int i = 0; i < this.profiles.Items.Count; i++)
             {
-                PathDisplayAdaptor adaptor = (PathDisplayAdaptor) this.profiles.Items[i];
+                PathDisplayAdaptor adaptor = (PathDisplayAdaptor)this.profiles.Items[i];
                 if (adaptor.Equals(path))
                 {
                     this.profiles.SelectedIndex = i;
@@ -285,7 +279,7 @@ namespace NateW.Ssm.ApplicationLogic
         /// <returns>path to the profile file</returns>
         string IUserInterface.GetSelectedProfile()
         {
-            PathDisplayAdaptor adaptor = (PathDisplayAdaptor) this.profiles.SelectedItem;
+            PathDisplayAdaptor adaptor = (PathDisplayAdaptor)this.profiles.SelectedItem;
             if (adaptor == null)
             {
                 return null;
@@ -309,7 +303,7 @@ namespace NateW.Ssm.ApplicationLogic
         }
 
         /// <summary>
-        /// Ask the user if they want to save the given profile before 
+        /// Ask the user if they want to save the given profile before
         /// creating or opening a new profile/
         /// </summary>
         /// <param name="path">path to the modified profile</param>
@@ -333,29 +327,12 @@ namespace NateW.Ssm.ApplicationLogic
         {
             //string initialPath = Environment.CurrentDirectory;
 
-            Shell32.ShellClass shell = new Shell32.ShellClass();
-            Shell32.Folder2 folder = (Shell32.Folder2)shell.BrowseForFolder(
-                this.Handle.ToInt32(),
-                "Select Folder...",
-                0, // Options
-                this.lumberjack.Settings.LogFolderPath
-            );
-            path = folder.Self.Path;
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            var result = dialog.ShowDialog();
+
+            path = dialog.SelectedPath;
             this.folderLabel.Text = path;
-            
-            /*
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.CheckPathExists = true;
-            dialog.InitialDirectory = Settings.Default.LogFolderPath;
-            dialog.ValidateNames = true;
-            DialogResult result = dialog.ShowDialog(this);
-            if (result == DialogResult.OK)
-            {
-                string path = dialog.FileName;
-                path = Path.GetDirectoryName(path);
-                Settings.Default.LogFolderPath = path;
-            }
-            */
+
             //Environment.CurrentDirectory = initialPath;
             return DialogResult.OK; // TODO: really?
         }
@@ -402,7 +379,7 @@ namespace NateW.Ssm.ApplicationLogic
         /// Show why logging just failed.
         /// </summary>
         /// <remarks>
-        /// Users may not understand, but it will be helpful for diagnosing 
+        /// Users may not understand, but it will be helpful for diagnosing
         /// problems reported in the field.
         /// </remarks>
         /// <param name="ex">what went wrong</param>
@@ -428,7 +405,7 @@ namespace NateW.Ssm.ApplicationLogic
         }
 
         /// <summary>
-        /// Update the UI to show that an ECU has been connected or 
+        /// Update the UI to show that an ECU has been connected or
         /// disconnected.
         /// </summary>
         /// <param name="connected">true if an ECU has been connected, false
@@ -580,7 +557,7 @@ namespace NateW.Ssm.ApplicationLogic
         void IUserInterface.ShowNewProfileSettings(LogProfile profile)
         {
             Trace("ShowNewProfileSettings");
-                        
+
             foreach (DataGridViewRow row in this.parameterGrid.Rows)
             {
                 row.Cells[(int)GridColumns.Enabled].Value = false;
