@@ -3,19 +3,16 @@
 // Lumberjack.cs
 // Core application logic for Win32 and WinCE versions of the SSM logger
 ///////////////////////////////////////////////////////////////////////////////
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.IO.Ports;
-using System.Threading;
 using NateW.Ssm.ApplicationLogic.Properties;
-using System.Collections.Specialized;
-using System.Diagnostics;
+using System;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
+[assembly: InternalsVisibleTo("NateW.Ssm.Lumberjack.Core.Test")]
+
 namespace NateW.Ssm.ApplicationLogic
-{    
+{
     public partial class Lumberjack : IDisposable
     {
         private const string WindowCaption = "Lumberjack";
@@ -33,7 +30,7 @@ namespace NateW.Ssm.ApplicationLogic
         private string startPort;
         private bool ignoreProfileSettingsChangeNotifications;
         private bool ignoreSerialPortChangeNotifications;
-        
+
         /// <summary>
         /// Application settings.
         /// </summary>
@@ -191,7 +188,7 @@ namespace NateW.Ssm.ApplicationLogic
 
             // Suppress change notifications while the UI is initialized
             this.ignoreSerialPortChangeNotifications = true;
-            
+
             this.InitializeLogFolderPath();
             this.InitializeProfileList();
             this.InitializeSerialPortList();
@@ -219,20 +216,20 @@ namespace NateW.Ssm.ApplicationLogic
             }
             this.ui.SelectPlxSerialPort(lastPort);
 
-/*            if (this.startProfile != null)
-            {
-                this.Settings.LastProfilePath = this.startProfile;
-                this.startProfile = null;
-            }
+            /*            if (this.startProfile != null)
+                        {
+                            this.Settings.LastProfilePath = this.startProfile;
+                            this.startProfile = null;
+                        }
 
-            if (!string.IsNullOrEmpty(this.Settings.LastProfilePath))
-            {
-                // This causes a change notification which causes Lumberjack to start logging
-                // If no profile can be selected, logging will start when the users chooses a parameter
-                this.ignoreProfileSettingsChangeNotifications = false;
-                this.ui.SelectProfile(this.Settings.LastProfilePath);
-            }
-            */
+                        if (!string.IsNullOrEmpty(this.Settings.LastProfilePath))
+                        {
+                            // This causes a change notification which causes Lumberjack to start logging
+                            // If no profile can be selected, logging will start when the users chooses a parameter
+                            this.ignoreProfileSettingsChangeNotifications = false;
+                            this.ui.SelectProfile(this.Settings.LastProfilePath);
+                        }
+                        */
             this.SetTitle();
         }
 
@@ -250,7 +247,7 @@ namespace NateW.Ssm.ApplicationLogic
                 cancel = true;
                 return;
             }
-                
+
             if (this.currentProfileIsChanged && !PromptToSaveChangedProfile())
             {
                 cancel = true;
@@ -307,7 +304,6 @@ namespace NateW.Ssm.ApplicationLogic
 
             this.ui.PopulateParameterList(this.database);
         }
-
 
         /// <summary>
         /// Call this if the user wants to reconnect to the ECU.
@@ -455,7 +451,7 @@ namespace NateW.Ssm.ApplicationLogic
                 Trace("Lumberjack.SelectedProfileSettingsChanged: ignoring");
                 return;
             }
-            Trace("Lumberjack.SelectedProfileSettingsChanged: creating new profile");            
+            Trace("Lumberjack.SelectedProfileSettingsChanged: creating new profile");
 
             LogProfile profile = LogProfile.CreateInstance();
             this.ui.GetNewProfileSettings(profile);
@@ -466,7 +462,7 @@ namespace NateW.Ssm.ApplicationLogic
             this.currentProfileIsChanged = true;
             this.SetTitle();
         }
-        
+
         /// <summary>
         /// Call this when the user wants to select a new folder to store logs in.
         /// </summary>
@@ -481,7 +477,7 @@ namespace NateW.Ssm.ApplicationLogic
                 this.Settings.Save();
             }
         }
-        
+
         /// <summary>
         /// Directory with canned profiles & SSM database
         /// </summary>

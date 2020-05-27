@@ -21,7 +21,7 @@ namespace NateW.Ssm.Protocol.Test
         {
             try
             {
-                File.Copy(@"..\..\..\Configuration\logger.xml", "logger.xml");
+                File.Copy(@"..\..\..\..\Configuration\logger.xml", "logger.xml");
             }
             catch (IOException ex)
             {
@@ -30,7 +30,7 @@ namespace NateW.Ssm.Protocol.Test
 
             try
             {
-                File.Copy(@"..\..\..\Configuration\logger.dtd", "logger.dtd");
+                File.Copy(@"..\..\..\..\Configuration\logger.dtd", "logger.dtd");
             }
             catch (IOException ex)
             {
@@ -42,7 +42,7 @@ namespace NateW.Ssm.Protocol.Test
         {
             try
             {
-                File.Copy(@"..\..\..\J2534Mock\Debug\J2534Mock.dll", "J2534Mock.dll");
+                File.Copy(@"..\..\..\..\J2534Mock\Debug\J2534Mock.dll", "J2534Mock.dll");
             }
             catch(IOException ex)
             {
@@ -51,7 +51,7 @@ namespace NateW.Ssm.Protocol.Test
 
             try
             {
-                File.Copy(@"..\..\..\J2534Mock\Debug\J2534Mock.pdb", "J2534Mock.pdb");
+                File.Copy(@"..\..\..\..\J2534Mock\Debug\J2534Mock.pdb", "J2534Mock.pdb");
             }
             catch(IOException ex)
             {
