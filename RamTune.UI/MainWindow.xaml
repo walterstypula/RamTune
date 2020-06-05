@@ -12,24 +12,14 @@
         AllowsTransparency="False"
         Background="#252526"
         Height="540"
->
-
+        xmlns:viewmodels="clr-namespace:RamTune.UI.ViewModels">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewmodels:RomEditorVM}">
+            <views:RomEditor />
+        </DataTemplate>
+    </Window.Resources>
     <DockPanel>
         <views:ActionMenu DockPanel.Dock="Top" DataContext="{Binding .}" />
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="160" Width="300" />
-                <ColumnDefinition Width="2" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="2" />
-                <ColumnDefinition MinWidth="160" Width="160" />
-            </Grid.ColumnDefinitions>
-            <GridSplitter Background="{StaticResource RamTune.Grid.Splitter}" Grid.RowSpan="2" Grid.Column="1" Width="1" HorizontalAlignment="Stretch" />
-            <GridSplitter Background="{StaticResource RamTune.Grid.Splitter}" Grid.RowSpan="2" Grid.Column="3" Width="1" HorizontalAlignment="Stretch" />
-
-            <views:TablesTreeView DataContext="{Binding .}"  Grid.Row="1" Grid.Column="0" />
-            <views:TableWithDescriptions DataContext="{Binding .}" Grid.Row="1" Grid.Column="2"/>
-        </Grid>
+        <ContentControl Content="{Binding ViewContext}" />
     </DockPanel>
 </Window>

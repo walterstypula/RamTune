@@ -2,7 +2,7 @@
 {
     public class ActionItem
     {
-        public ActionItem(string actionName, object actionSource, object[] param)
+        public ActionItem(string actionName, object actionSource, object param = null)
         {
             this.ActionName = actionName;
             this.ActionSource = actionSource;
@@ -15,7 +15,7 @@
         public object ActionSource
         { get; private set; }
 
-        public object[] Param
+        public object Param
         { get; private set; }
     }
 }

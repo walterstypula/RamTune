@@ -8,25 +8,44 @@ using System.Windows.Input;
 
 namespace RamTune.UI.ViewModels
 {
-    public class MainWindowVM : ViewModelBase
+    public class RomEditorVM : ViewModelBase
     {
+        private ActionInvoker _actionHandler = null;
+
         private DefinitionLoader _definitionLoader;
-
-        private RelayCommand _openRomCommand;
-
-        private RelayCommand _resetAllTableCellsCommand;
-
-        private RelayCommand _resetSelectedTableCellsCommand;
-
-        private RelayCommand _selectedItemChangedCommand;
-
-        private RelayCommand _saveRomCommand;
 
         private ITableReader _loaderRomManager;
 
-        public MainWindowVM(DefinitionLoader loader)
+        public RomEditorVM(DefinitionLoader loader)
         {
             _definitionLoader = loader;
+            _actionHandler = new ActionInvoker(OnAction);
+            MessageBus.Instance.Subscribe(Actions.OPEN_ROM, _actionHandler);
+            MessageBus.Instance.Subscribe(Actions.SAVE_ROM, _actionHandler);
+            MessageBus.Instance.Subscribe(Actions.RESET_SELECTED_TABLE_CELLS, _actionHandler);
+            MessageBus.Instance.Subscribe(Actions.RESET_ALL_TABLE_CELLS, _actionHandler);
+        }
+
+        private void OnAction(ActionItem action)
+        {
+            switch (action.ActionName)
+            {
+                case Actions.OPEN_ROM:
+                    OpenRom(action.Param as Stream);
+                    break;
+
+                case Actions.SAVE_ROM:
+                    SaveRom(action.Param as string);
+                    break;
+
+                case Actions.RESET_ALL_TABLE_CELLS:
+                    ResetAllTableCells();
+                    break;
+
+                case Actions.RESET_SELECTED_TABLE_CELLS:
+                    ResetSelectedTableCells();
+                    break;
+            }
         }
 
         public TableDisplayVM Table
@@ -39,58 +58,6 @@ namespace RamTune.UI.ViewModels
         {
             get { return Get<IEnumerable<GroupTableDisplayVM>>(nameof(GroupedTables)); }
             set { Set(nameof(GroupedTables), value); }
-        }
-
-        public ICommand OpenRomCommand
-        {
-            get
-            {
-                if (_openRomCommand == null)
-                {
-                    _openRomCommand = new RelayCommand(parm => OpenRom());
-                }
-
-                return _openRomCommand;
-            }
-        }
-
-        public ICommand SaveRomCommand
-        {
-            get
-            {
-                if (_saveRomCommand == null)
-                {
-                    _saveRomCommand = new RelayCommand(parm => SaveRom());
-                }
-
-                return _saveRomCommand;
-            }
-        }
-
-        public ICommand ResetAllTableCellsCommand
-        {
-            get
-            {
-                if (_resetAllTableCellsCommand == null)
-                {
-                    _resetAllTableCellsCommand = new RelayCommand(parm => ResetAllTableCells());
-                }
-
-                return _resetAllTableCellsCommand;
-            }
-        }
-
-        public ICommand ResetSelectedTableCellsCommand
-        {
-            get
-            {
-                if (_resetSelectedTableCellsCommand == null)
-                {
-                    _resetSelectedTableCellsCommand = new RelayCommand(parm => ResetSelectedTableCells());
-                }
-
-                return _resetSelectedTableCellsCommand;
-            }
         }
 
         private void ResetSelectedTableCells()
@@ -113,24 +80,24 @@ namespace RamTune.UI.ViewModels
         {
             get
             {
-                if (_selectedItemChangedCommand == null)
+                var selectedItemChangedCommand = Get<RelayCommand>(nameof(SelectedItemChangedCommand));
+                if (selectedItemChangedCommand == null)
                 {
-                    _selectedItemChangedCommand = new RelayCommand(parm => SelectedItemChanged(parm as TableDisplayVM));
+                    selectedItemChangedCommand = new RelayCommand(parm => SelectedItemChanged(parm as TableDisplayVM));
+                    Set(nameof(SelectedItemChangedCommand), selectedItemChangedCommand);
                 }
 
-                return _selectedItemChangedCommand;
+                return selectedItemChangedCommand;
             }
         }
 
-        private void SaveRom()
+        private void SaveRom(string filePath)
         {
-            var filePath = Common.SaveFile("bin files|*.bin");
             _loaderRomManager.Save(filePath);
         }
 
-        private void OpenRom()
+        private void OpenRom(Stream romStream)
         {
-            var romStream = OpenRomFile();
             _loaderRomManager = new LoadedRomManager(romStream, _definitionLoader);
 
             var tables = _loaderRomManager.Rom.Tables.Select(t => new TableDisplayVM(t, _loaderRomManager));
@@ -140,27 +107,6 @@ namespace RamTune.UI.ViewModels
                                   .ToList();
 
             GroupedTables = data;
-        }
-
-        private Stream OpenRomFile()
-        {
-            string path = Common.SelectFile("bin files|*.bin");
-
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new FileNotFoundException($"Selected file: '{path}' not found");
-            }
-
-            Stream openRom;
-            using (FileStream fileStream = File.OpenRead(path))
-            {
-                MemoryStream ms = new MemoryStream();
-                ms.SetLength(fileStream.Length);
-                fileStream.Read(ms.GetBuffer(), 0, (int)fileStream.Length);
-                openRom = ms;
-            }
-
-            return openRom;
         }
 
         private void SelectedItemChanged(TableDisplayVM selectedTable)
