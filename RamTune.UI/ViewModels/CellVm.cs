@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RamTune.UI.ViewModels
 {
-    public class CellVM : ViewModelBase
+    public class CellVm : ViewModelBase
     {
         private byte[] _unmodifiedValue = null;
 

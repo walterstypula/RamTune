@@ -10,7 +10,7 @@ namespace RamTune.UI.ViewModels
 {
     public static class ObservableCollectionExtension
     {
-        public static ObservableCollection<ObservableCollection<CellVM>> ToCellObservableCollection(this IEnumerable<IEnumerable<byte[]>> tableData, Scaling scaling, bool? isStaticAxis, int? address)
+        public static ObservableCollection<ObservableCollection<CellVm>> ToCellObservableCollection(this IEnumerable<IEnumerable<byte[]>> tableData, Scaling scaling, bool? isStaticAxis, int? address)
         {
             if (tableData == null)
             {
@@ -21,7 +21,7 @@ namespace RamTune.UI.ViewModels
             {
                 var columns = o.Select(s =>
                 {
-                    var cell = new CellVM
+                    var cell = new CellVm
                     {
                         ByteValue = s,
                         Scaling = scaling,
@@ -37,14 +37,14 @@ namespace RamTune.UI.ViewModels
                     return cell;
                 });
 
-                return new ObservableCollection<CellVM>(columns);
+                return new ObservableCollection<CellVm>(columns);
             });
 
-            return new ObservableCollection<ObservableCollection<CellVM>>(rows);
+            return new ObservableCollection<ObservableCollection<CellVm>>(rows);
         }
     }
 
-    public class TableDisplayVM : ViewModelBase
+    public class TableDisplayVm : ViewModelBase
     {
         private RelayCommand _fineIncrementCommand;
         private RelayCommand _fineDecrementCommand;
@@ -53,7 +53,7 @@ namespace RamTune.UI.ViewModels
         private Table _table;
         private ITableReader _tableReader;
 
-        public TableDisplayVM(Table table, ITableReader tableReader)
+        public TableDisplayVm(Table table, ITableReader tableReader)
         {
             _table = table;
             _tableReader = tableReader;
@@ -61,11 +61,11 @@ namespace RamTune.UI.ViewModels
             Load();
         }
 
-        public ObservableCollection<ObservableCollection<CellVM>> ColumnHeaders { get; set; }
+        public ObservableCollection<ObservableCollection<CellVm>> ColumnHeaders { get; set; }
 
-        public ObservableCollection<ObservableCollection<CellVM>> RowHeaders { get; set; }
+        public ObservableCollection<ObservableCollection<CellVm>> RowHeaders { get; set; }
 
-        public ObservableCollection<ObservableCollection<CellVM>> TableData { get; set; }
+        public ObservableCollection<ObservableCollection<CellVm>> TableData { get; set; }
 
         public string Category { get { return _table.Category; } }
 
@@ -157,7 +157,7 @@ namespace RamTune.UI.ViewModels
             IsDirty = isDirty;
         }
 
-        private bool CheckDirty(ObservableCollection<ObservableCollection<CellVM>> cells)
+        private bool CheckDirty(ObservableCollection<ObservableCollection<CellVm>> cells)
         {
             var isDirty = cells?.SelectMany(columns => columns)
                                      .Any(cell => cell.IsDirty) ?? false;
@@ -193,12 +193,12 @@ namespace RamTune.UI.ViewModels
             TableData = _tableReader.LoadTableData(_table, columnElements, rowElements).ToCellObservableCollection(_table.Scaling, false, _table?.Address?.ConvertHexToInt());
         }
 
-        private void ModifyCells(ObservableCollection<ObservableCollection<CellVM>> cells, Direction direction, ChangeType changeType)
+        private void ModifyCells(ObservableCollection<ObservableCollection<CellVm>> cells, Direction direction, ChangeType changeType)
         {
             var selectedCells = cells?.SelectMany(columns => columns)
                                      .Where(cell => cell.IsSelected);
 
-            selectedCells ??= Enumerable.Empty<CellVM>();
+            selectedCells ??= Enumerable.Empty<CellVm>();
 
             foreach (var cell in selectedCells)
             {
@@ -225,10 +225,10 @@ namespace RamTune.UI.ViewModels
             }
         }
 
-        private void ResetCollection(ObservableCollection<ObservableCollection<CellVM>> cells)
+        private void ResetCollection(ObservableCollection<ObservableCollection<CellVm>> cells)
         {
             var dirtyCells = cells?.SelectMany(columns => columns)
-                                   .Where(cell => cell.IsDirty) ?? Enumerable.Empty<CellVM>();
+                                   .Where(cell => cell.IsDirty) ?? Enumerable.Empty<CellVm>();
 
             foreach (var cell in dirtyCells)
             {
@@ -236,10 +236,10 @@ namespace RamTune.UI.ViewModels
             }
         }
 
-        private void ResetSelectedCollection(ObservableCollection<ObservableCollection<CellVM>> cells)
+        private void ResetSelectedCollection(ObservableCollection<ObservableCollection<CellVm>> cells)
         {
             var dirtyCells = cells?.SelectMany(columns => columns)
-                                  .Where(cell => cell.IsDirty && cell.IsSelected) ?? Enumerable.Empty<CellVM>();
+                                  .Where(cell => cell.IsDirty && cell.IsSelected) ?? Enumerable.Empty<CellVm>();
 
             foreach (var cell in dirtyCells)
             {

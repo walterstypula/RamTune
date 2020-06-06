@@ -11,6 +11,6 @@ namespace RamTune.UI.ViewModels
             set { Set(nameof(Name), value); }
         }
 
-        public IEnumerable<TableDisplayVM> Tables { get; set; }
+        public IEnumerable<TableDisplayVm> Tables { get; set; }
     }
 }

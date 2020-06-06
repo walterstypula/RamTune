@@ -48,9 +48,9 @@ namespace RamTune.UI.ViewModels
             }
         }
 
-        public TableDisplayVM Table
+        public TableDisplayVm Table
         {
-            get { return Get<TableDisplayVM>(nameof(Table)); }
+            get { return Get<TableDisplayVm>(nameof(Table)); }
             set { Set(nameof(Table), value); }
         }
 
@@ -83,7 +83,7 @@ namespace RamTune.UI.ViewModels
                 var selectedItemChangedCommand = Get<RelayCommand>(nameof(SelectedItemChangedCommand));
                 if (selectedItemChangedCommand == null)
                 {
-                    selectedItemChangedCommand = new RelayCommand(parm => SelectedItemChanged(parm as TableDisplayVM));
+                    selectedItemChangedCommand = new RelayCommand(parm => SelectedItemChanged(parm as TableDisplayVm));
                     Set(nameof(SelectedItemChangedCommand), selectedItemChangedCommand);
                 }
 
@@ -100,7 +100,7 @@ namespace RamTune.UI.ViewModels
         {
             _loaderRomManager = new LoadedRomManager(romStream, _definitionLoader);
 
-            var tables = _loaderRomManager.Rom.Tables.Select(t => new TableDisplayVM(t, _loaderRomManager));
+            var tables = _loaderRomManager.Rom.Tables.Select(t => new TableDisplayVm(t, _loaderRomManager));
 
             var data = tables.GroupBy(g => g.Category)
                                   .Select(g => new GroupTableDisplayVM() { Name = g.Key, Tables = g.Select(a => a).ToList() })
@@ -109,7 +109,7 @@ namespace RamTune.UI.ViewModels
             GroupedTables = data;
         }
 
-        private void SelectedItemChanged(TableDisplayVM selectedTable)
+        private void SelectedItemChanged(TableDisplayVm selectedTable)
         {
             if (selectedTable == null)
             {

@@ -35,7 +35,7 @@
                 <HierarchicalDataTemplate DataType="{x:Type vm:GroupTableDisplayVM}" ItemsSource="{Binding Tables}">
                     <Label Content="{Binding Name}" />
                 </HierarchicalDataTemplate>
-                <DataTemplate DataType="{x:Type vm:TableDisplayVM}">
+                <DataTemplate DataType="{x:Type vm:TableDisplayVm}">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="*" Visibility="{Binding IsDirty, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource DirtyLabel}"/>
                         <Label Content="{Binding Name}" Style="{StaticResource DirtyLabel}" />
