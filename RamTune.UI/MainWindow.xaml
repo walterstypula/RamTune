@@ -17,9 +17,12 @@
         <DataTemplate DataType="{x:Type viewmodels:RomEditorVM}">
             <views:RomEditor />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:SettingsVM}">
+            <views:Settings />
+        </DataTemplate>
     </Window.Resources>
     <DockPanel>
-        <views:ActionMenu DockPanel.Dock="Top" DataContext="{Binding .}" />
+        <views:ActionMenuView DockPanel.Dock="Top" DataContext="{Binding .}" />
         <ContentControl Content="{Binding ViewContext}" />
     </DockPanel>
 </Window>

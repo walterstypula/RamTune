@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using MVVM;
 
 namespace RamTune.UI.ViewModels
 {
-    class SettingsVM
+    public class SettingsVM : ViewModelBase
     {
     }
 }

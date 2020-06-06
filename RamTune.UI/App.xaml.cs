@@ -12,7 +12,7 @@ namespace RamTune.UI
         private void OnStartup(object sender, StartupEventArgs e)
         {
             var window = new MainWindow();
-            window.DataContext = new MainVM();
+            window.DataContext = new MainVm();
             window.Show();
         }
 

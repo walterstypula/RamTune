@@ -5,17 +5,22 @@ using System.Windows.Input;
 
 namespace RamTune.UI.ViewModels
 {
-    public class MainVM : ViewModelBase
+    public class MainVm : ViewModelBase
     {
-        public MainVM()
+        private readonly RomEditorVM _romEditorVm;
+        private readonly SettingsVM _settingsVm;
+
+        public MainVm()
         {
             var loader = new DefinitionLoader();
 
-            //TODO add definitions loading screen
             var paths = Directory.GetFiles(Configuration.EcuFlashDefinitions, "*.xml", SearchOption.AllDirectories);
             loader.LoadDefinitions(paths);
 
-            this.ViewContext = new RomEditorVM(loader);
+            _romEditorVm = new RomEditorVM(loader);
+            _settingsVm = new SettingsVM();
+
+            SetViewContext(_romEditorVm);
         }
 
         public ICommand OpenRomCommand
@@ -25,26 +30,11 @@ namespace RamTune.UI.ViewModels
                 var openCommand = Get<RelayCommand>(nameof(OpenRomCommand));
                 if (openCommand == null)
                 {
-                    openCommand = new RelayCommand(parm => OpenRom());
+                    openCommand = new RelayCommand(param => OpenRom());
                     Set(nameof(OpenRomCommand), openCommand);
                 }
 
                 return openCommand;
-            }
-        }
-
-        public ICommand SaveRomCommand
-        {
-            get
-            {
-                var saveCommand = Get<RelayCommand>(nameof(SaveRomCommand));
-                if (saveCommand == null)
-                {
-                    saveCommand = new RelayCommand(parm => SaveRom());
-                    Set(nameof(SaveRomCommand), saveCommand);
-                }
-
-                return saveCommand;
             }
         }
 
@@ -55,17 +45,12 @@ namespace RamTune.UI.ViewModels
                 var resetAllTableCellsCommand = Get<RelayCommand>(nameof(ResetAllTableCellsCommand));
                 if (resetAllTableCellsCommand == null)
                 {
-                    resetAllTableCellsCommand = new RelayCommand(parm => ResetAllTableCells());
+                    resetAllTableCellsCommand = new RelayCommand(param => ResetAllTableCells());
                     Set(nameof(ResetAllTableCellsCommand), resetAllTableCellsCommand);
                 }
 
                 return resetAllTableCellsCommand;
             }
-        }
-
-        private void ResetAllTableCells()
-        {
-            MessageBus.Instance.Publish(new ActionItem(Actions.RESET_ALL_TABLE_CELLS, this));
         }
 
         public ICommand ResetSelectedTableCellsCommand
@@ -75,7 +60,7 @@ namespace RamTune.UI.ViewModels
                 var resetSelectedTableCellsCommand = Get<RelayCommand>(nameof(ResetSelectedTableCellsCommand));
                 if (resetSelectedTableCellsCommand == null)
                 {
-                    resetSelectedTableCellsCommand = new RelayCommand(parm => ResetSelectedTableCells());
+                    resetSelectedTableCellsCommand = new RelayCommand(param => ResetSelectedTableCells());
                     Set(nameof(ResetSelectedTableCellsCommand), resetSelectedTableCellsCommand);
                 }
 
@@ -83,16 +68,40 @@ namespace RamTune.UI.ViewModels
             }
         }
 
-        private void ResetSelectedTableCells()
+        public ICommand SaveRomCommand
         {
-            MessageBus.Instance.Publish(new ActionItem(Actions.RESET_SELECTED_TABLE_CELLS, this));
+            get
+            {
+                var saveCommand = Get<RelayCommand>(nameof(SaveRomCommand));
+                if (saveCommand == null)
+                {
+                    saveCommand = new RelayCommand(param => SaveRom());
+                    Set(nameof(SaveRomCommand), saveCommand);
+                }
+
+                return saveCommand;
+            }
         }
 
-
-        private void SaveRom()
+        public ICommand SettingsCommand
         {
-            var filePath = Common.SaveFile("bin files|*.bin");
-            MessageBus.Instance.Publish(new ActionItem(Actions.SAVE_ROM, this, filePath));
+            get
+            {
+                var settingsCommand = Get<RelayCommand>(nameof(SettingsCommand));
+                if (settingsCommand == null)
+                {
+                    settingsCommand = new RelayCommand(param => SetViewContext(_settingsVm));
+                    Set(nameof(SettingsCommand), settingsCommand);
+                }
+
+                return settingsCommand;
+            }
+        }
+
+        public object ViewContext
+        {
+            get { return Get<object>(nameof(ViewContext)); }
+            set { Set(nameof(ViewContext), value); }
         }
 
         private void OpenRom()
@@ -122,10 +131,25 @@ namespace RamTune.UI.ViewModels
             return openRom;
         }
 
-        public object ViewContext
+        private void ResetAllTableCells()
         {
-            get { return Get<object>(nameof(ViewContext)); }
-            set { Set(nameof(ViewContext), value); }
+            MessageBus.Instance.Publish(new ActionItem(Actions.RESET_ALL_TABLE_CELLS, this));
+        }
+
+        private void ResetSelectedTableCells()
+        {
+            MessageBus.Instance.Publish(new ActionItem(Actions.RESET_SELECTED_TABLE_CELLS, this));
+        }
+
+        private void SaveRom()
+        {
+            var filePath = Common.SaveFile("bin files|*.bin");
+            MessageBus.Instance.Publish(new ActionItem(Actions.SAVE_ROM, this, filePath));
+        }
+
+        private void SetViewContext(ViewModelBase viewModel)
+        {
+            ViewContext = viewModel;
         }
     }
 }

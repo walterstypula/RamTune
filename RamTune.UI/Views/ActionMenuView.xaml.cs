@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace RamTune.UI.Views
 {
     /// <summary>
-    /// Interaction logic for ActionMenu.xaml
+    /// Interaction logic for ActionMenuView.xaml
     /// </summary>
-    public partial class ActionMenu : UserControl
+    public partial class ActionMenuView : UserControl
     {
-        public ActionMenu()
+        public ActionMenuView()
         {
             InitializeComponent();
         }
