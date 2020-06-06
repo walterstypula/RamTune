@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace RamTune.UI
 {
@@ -7,6 +8,19 @@ namespace RamTune.UI
     /// </summary>
     public class Common
     {
+        public static string SelectFolder()
+        {
+            var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
+            var result = dialog.ShowDialog();
+
+            if (result == CommonFileDialogResult.Ok)
+            {
+                return dialog.FileName;
+            }
+
+            return string.Empty;
+        }
+
         public static string SelectFile(string filter)
         {
             var dialog = new OpenFileDialog();

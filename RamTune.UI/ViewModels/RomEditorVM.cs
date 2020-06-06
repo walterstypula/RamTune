@@ -10,20 +10,18 @@ namespace RamTune.UI.ViewModels
 {
     public class RomEditorVm : ViewModelBase
     {
-        private ActionInvoker _actionHandler = null;
-
-        private DefinitionLoader _definitionLoader;
+        private readonly DefinitionLoader _definitionLoader;
 
         private ITableReader _loaderRomManager;
 
         public RomEditorVm(DefinitionLoader loader)
         {
             _definitionLoader = loader;
-            _actionHandler = new ActionInvoker(OnAction);
-            MessageBus.Instance.Subscribe(Actions.OPEN_ROM, _actionHandler);
-            MessageBus.Instance.Subscribe(Actions.SAVE_ROM, _actionHandler);
-            MessageBus.Instance.Subscribe(Actions.RESET_SELECTED_TABLE_CELLS, _actionHandler);
-            MessageBus.Instance.Subscribe(Actions.RESET_ALL_TABLE_CELLS, _actionHandler);
+            ActionInvoker actionHandler = OnAction;
+            MessageBus.Instance.Subscribe(Actions.OPEN_ROM, actionHandler);
+            MessageBus.Instance.Subscribe(Actions.SAVE_ROM, actionHandler);
+            MessageBus.Instance.Subscribe(Actions.RESET_SELECTED_TABLE_CELLS, actionHandler);
+            MessageBus.Instance.Subscribe(Actions.RESET_ALL_TABLE_CELLS, actionHandler);
         }
 
         private void OnAction(ActionItem action)
@@ -83,7 +81,7 @@ namespace RamTune.UI.ViewModels
                 var selectedItemChangedCommand = Get<RelayCommand>(nameof(SelectedItemChangedCommand));
                 if (selectedItemChangedCommand == null)
                 {
-                    selectedItemChangedCommand = new RelayCommand(parm => SelectedItemChanged(parm as TableDisplayVm));
+                    selectedItemChangedCommand = new RelayCommand(param => SelectedItemChanged(param as TableDisplayVm));
                     Set(nameof(SelectedItemChangedCommand), selectedItemChangedCommand);
                 }
 
