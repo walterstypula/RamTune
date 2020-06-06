@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace RamTune.UI.Views
 {
     /// <summary>
-    /// Interaction logic for Table.xaml
+    /// Interaction logic for TableView.xaml
     /// </summary>
-    public partial class Table : UserControl
+    public partial class TableView : UserControl
     {
-        public Table()
+        public TableView()
         {
             InitializeComponent();
         }

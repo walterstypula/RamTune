@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="RamTune.UI.Views.TableWithDescriptions"
+﻿<UserControl x:Class="RamTune.UI.Views.TableWithDescriptionsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -28,7 +28,7 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <Label       Grid.Row="0" Content="{Binding Path=Table.ColumnDescription}" Foreground="{StaticResource RamTune.Table.Description}" HorizontalAlignment="Center" VerticalContentAlignment="Bottom" />
-                    <views:Table Grid.Row="1" DataContext="{Binding Table}" HorizontalAlignment="Center" />
+                    <views:TableView Grid.Row="1" DataContext="{Binding Table}" HorizontalAlignment="Center" />
                     <Label       Grid.Row="2" Content="{Binding Path=Table.TableDescription}" Foreground="{StaticResource RamTune.Table.Description}" HorizontalAlignment="Center" VerticalContentAlignment="Top" />
                 </Grid>
             </StackPanel>
