@@ -14,11 +14,11 @@
         Height="540"
         xmlns:viewmodels="clr-namespace:RamTune.UI.ViewModels">
     <Window.Resources>
-        <DataTemplate DataType="{x:Type viewmodels:RomEditorVM}">
-            <views:RomEditor />
+        <DataTemplate DataType="{x:Type viewmodels:RomEditorVm}">
+            <views:RomEditorView />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type viewmodels:SettingsVM}">
-            <views:Settings />
+        <DataTemplate DataType="{x:Type viewmodels:SettingsVm}">
+            <views:SettingsView />
         </DataTemplate>
     </Window.Resources>
     <DockPanel>

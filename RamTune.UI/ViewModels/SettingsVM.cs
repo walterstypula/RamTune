@@ -2,7 +2,7 @@
 
 namespace RamTune.UI.ViewModels
 {
-    public class SettingsVM : ViewModelBase
+    public class SettingsVm : ViewModelBase
     {
     }
 }

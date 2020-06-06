@@ -9,7 +9,7 @@
         <StackPanel  Orientation="Horizontal">
             <Button Content="&#xf07c;" Command="{Binding Path=OpenRomCommand}" Style="{StaticResource MenuButton}" ToolTip="Open Rom" />
             <Button Content="&#xf0c7;" Command="{Binding Path=SaveRomCommand}" Style="{StaticResource MenuButton}" ToolTip="Save Rom" />
-            <Button Content="&#xf085;" Command="{Binding Path=SettingsCommand}" Style="{StaticResource MenuButton}" ToolTip="Open Settings" />
+            <Button Content="&#xf085;" Command="{Binding Path=SettingsCommand}" Style="{StaticResource MenuButton}" ToolTip="Open SettingsView" />
             <Button Content="&#xf3e5;" Command="{Binding Path=ResetSelectedTableCellsCommand}" Style="{StaticResource MenuButton}" ToolTip="Reset Selected Table Cells" />
             <Button Content="&#xf122;" Command="{Binding Path=ResetAllTableCellsCommand}" Style="{StaticResource MenuButton}" ToolTip="Reset All Table Cells" />
         </StackPanel>

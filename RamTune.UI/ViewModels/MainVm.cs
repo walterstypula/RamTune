@@ -7,8 +7,8 @@ namespace RamTune.UI.ViewModels
 {
     public class MainVm : ViewModelBase
     {
-        private readonly RomEditorVM _romEditorVm;
-        private readonly SettingsVM _settingsVm;
+        private readonly RomEditorVm _romEditorVm;
+        private readonly SettingsVm _settingsVm;
 
         public MainVm()
         {
@@ -17,8 +17,8 @@ namespace RamTune.UI.ViewModels
             var paths = Directory.GetFiles(Configuration.EcuFlashDefinitions, "*.xml", SearchOption.AllDirectories);
             loader.LoadDefinitions(paths);
 
-            _romEditorVm = new RomEditorVM(loader);
-            _settingsVm = new SettingsVM();
+            _romEditorVm = new RomEditorVm(loader);
+            _settingsVm = new SettingsVm();
 
             SetViewContext(_romEditorVm);
         }

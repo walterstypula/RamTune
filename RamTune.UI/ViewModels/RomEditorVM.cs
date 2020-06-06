@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace RamTune.UI.ViewModels
 {
-    public class RomEditorVM : ViewModelBase
+    public class RomEditorVm : ViewModelBase
     {
         private ActionInvoker _actionHandler = null;
 
@@ -16,7 +16,7 @@ namespace RamTune.UI.ViewModels
 
         private ITableReader _loaderRomManager;
 
-        public RomEditorVM(DefinitionLoader loader)
+        public RomEditorVm(DefinitionLoader loader)
         {
             _definitionLoader = loader;
             _actionHandler = new ActionInvoker(OnAction);

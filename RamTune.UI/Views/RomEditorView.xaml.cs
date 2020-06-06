@@ -16,9 +16,9 @@ namespace RamTune.UI.Views
     /// <summary>
     /// Interaction logic for RomEditorView.xaml
     /// </summary>
-    public partial class RomEditor : UserControl
+    public partial class RomEditorView : UserControl
     {
-        public RomEditor()
+        public RomEditorView()
         {
             InitializeComponent();
         }
