@@ -35,6 +35,11 @@ namespace MVVM
             }
         }
 
+        public void Publish(string actionName, object actionSource)
+        {
+            this.Publish(new ActionItem(actionName, actionSource));
+        }
+
         public void Publish(ActionItem action)
         {
             if (_subscribers.ContainsKey(action.ActionName))

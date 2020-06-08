@@ -10,6 +10,14 @@ namespace RamTune.UI.ViewModels
 {
     public class RomEditorVm : ViewModelBase
     {
+        public class Actions
+        {
+            public const string ROMEDITOR_OPEN_ROM = nameof(ROMEDITOR_OPEN_ROM);
+            public const string ROMEDITOR_SAVE_ROM = nameof(ROMEDITOR_SAVE_ROM);
+            public const string ROMEDITOR_RESET_SELECTED_TABLE_CELLS = nameof(ROMEDITOR_RESET_SELECTED_TABLE_CELLS);
+            public const string ROMEDITOR_RESET_ALL_TABLE_CELLS = nameof(ROMEDITOR_RESET_ALL_TABLE_CELLS);
+        }
+
         private readonly DefinitionLoader _definitionLoader;
 
         private ITableReader _loaderRomManager;
@@ -18,29 +26,29 @@ namespace RamTune.UI.ViewModels
         {
             _definitionLoader = loader;
             ActionInvoker actionHandler = OnAction;
-            MessageBus.Instance.Subscribe(Actions.OPEN_ROM, actionHandler);
-            MessageBus.Instance.Subscribe(Actions.SAVE_ROM, actionHandler);
-            MessageBus.Instance.Subscribe(Actions.RESET_SELECTED_TABLE_CELLS, actionHandler);
-            MessageBus.Instance.Subscribe(Actions.RESET_ALL_TABLE_CELLS, actionHandler);
+            MessageBus.Instance.Subscribe(RomEditorVm.Actions.ROMEDITOR_OPEN_ROM, actionHandler);
+            MessageBus.Instance.Subscribe(RomEditorVm.Actions.ROMEDITOR_SAVE_ROM, actionHandler);
+            MessageBus.Instance.Subscribe(RomEditorVm.Actions.ROMEDITOR_RESET_SELECTED_TABLE_CELLS, actionHandler);
+            MessageBus.Instance.Subscribe(RomEditorVm.Actions.ROMEDITOR_RESET_ALL_TABLE_CELLS, actionHandler);
         }
 
         private void OnAction(ActionItem action)
         {
             switch (action.ActionName)
             {
-                case Actions.OPEN_ROM:
+                case RomEditorVm.Actions.ROMEDITOR_OPEN_ROM:
                     OpenRom(action.Param as Stream);
                     break;
 
-                case Actions.SAVE_ROM:
+                case RomEditorVm.Actions.ROMEDITOR_SAVE_ROM:
                     SaveRom(action.Param as string);
                     break;
 
-                case Actions.RESET_ALL_TABLE_CELLS:
+                case RomEditorVm.Actions.ROMEDITOR_RESET_ALL_TABLE_CELLS:
                     ResetAllTableCells();
                     break;
 
-                case Actions.RESET_SELECTED_TABLE_CELLS:
+                case RomEditorVm.Actions.ROMEDITOR_RESET_SELECTED_TABLE_CELLS:
                     ResetSelectedTableCells();
                     break;
             }
