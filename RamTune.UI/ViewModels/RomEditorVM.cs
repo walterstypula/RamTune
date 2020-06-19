@@ -12,10 +12,10 @@ namespace RamTune.UI.ViewModels
     {
         public class Actions
         {
-            public const string ROMEDITOR_OPEN_ROM = nameof(ROMEDITOR_OPEN_ROM);
-            public const string ROMEDITOR_SAVE_ROM = nameof(ROMEDITOR_SAVE_ROM);
-            public const string ROMEDITOR_RESET_SELECTED_TABLE_CELLS = nameof(ROMEDITOR_RESET_SELECTED_TABLE_CELLS);
-            public const string ROMEDITOR_RESET_ALL_TABLE_CELLS = nameof(ROMEDITOR_RESET_ALL_TABLE_CELLS);
+            public const string OpenRom = nameof(OpenRom);
+            public const string SaveRom = nameof(SaveRom);
+            public const string ResetSelectedTableCells = nameof(ResetSelectedTableCells);
+            public const string RomeditorResetAllTableCells = nameof(RomeditorResetAllTableCells);
         }
 
         private readonly DefinitionLoader _definitionLoader;
@@ -25,44 +25,45 @@ namespace RamTune.UI.ViewModels
         public RomEditorVm(DefinitionLoader loader)
         {
             _definitionLoader = loader;
+
             ActionInvoker actionHandler = OnAction;
-            MessageBus.Instance.Subscribe(RomEditorVm.Actions.ROMEDITOR_OPEN_ROM, actionHandler);
-            MessageBus.Instance.Subscribe(RomEditorVm.Actions.ROMEDITOR_SAVE_ROM, actionHandler);
-            MessageBus.Instance.Subscribe(RomEditorVm.Actions.ROMEDITOR_RESET_SELECTED_TABLE_CELLS, actionHandler);
-            MessageBus.Instance.Subscribe(RomEditorVm.Actions.ROMEDITOR_RESET_ALL_TABLE_CELLS, actionHandler);
+            MessageBus.Instance.Subscribe(RomEditorVm.Actions.OpenRom, actionHandler);
+            MessageBus.Instance.Subscribe(RomEditorVm.Actions.SaveRom, actionHandler);
+            MessageBus.Instance.Subscribe(RomEditorVm.Actions.ResetSelectedTableCells, actionHandler);
+            MessageBus.Instance.Subscribe(RomEditorVm.Actions.RomeditorResetAllTableCells, actionHandler);
         }
 
         private void OnAction(ActionItem action)
         {
             switch (action.ActionName)
             {
-                case RomEditorVm.Actions.ROMEDITOR_OPEN_ROM:
+                case RomEditorVm.Actions.OpenRom:
                     OpenRom(action.Param as Stream);
                     break;
 
-                case RomEditorVm.Actions.ROMEDITOR_SAVE_ROM:
+                case RomEditorVm.Actions.SaveRom:
                     SaveRom(action.Param as string);
                     break;
 
-                case RomEditorVm.Actions.ROMEDITOR_RESET_ALL_TABLE_CELLS:
+                case RomEditorVm.Actions.RomeditorResetAllTableCells:
                     ResetAllTableCells();
                     break;
 
-                case RomEditorVm.Actions.ROMEDITOR_RESET_SELECTED_TABLE_CELLS:
+                case RomEditorVm.Actions.ResetSelectedTableCells:
                     ResetSelectedTableCells();
                     break;
             }
         }
 
-        public TableDisplayVm Table
+        public TableVm Table
         {
-            get { return Get<TableDisplayVm>(nameof(Table)); }
+            get { return Get<TableVm>(nameof(Table)); }
             set { Set(nameof(Table), value); }
         }
 
-        public IEnumerable<GroupTableDisplayVM> GroupedTables
+        public IEnumerable<GroupTableVm> GroupedTables
         {
-            get { return Get<IEnumerable<GroupTableDisplayVM>>(nameof(GroupedTables)); }
+            get { return Get<IEnumerable<GroupTableVm>>(nameof(GroupedTables)); }
             set { Set(nameof(GroupedTables), value); }
         }
 
@@ -89,7 +90,7 @@ namespace RamTune.UI.ViewModels
                 var selectedItemChangedCommand = Get<RelayCommand>(nameof(SelectedItemChangedCommand));
                 if (selectedItemChangedCommand == null)
                 {
-                    selectedItemChangedCommand = new RelayCommand(param => SelectedItemChanged(param as TableDisplayVm));
+                    selectedItemChangedCommand = new RelayCommand(param => SelectedItemChanged(param as TableVm));
                     Set(nameof(SelectedItemChangedCommand), selectedItemChangedCommand);
                 }
 
@@ -106,16 +107,16 @@ namespace RamTune.UI.ViewModels
         {
             _loaderRomManager = new LoadedRomManager(romStream, _definitionLoader);
 
-            var tables = _loaderRomManager.Rom.Tables.Select(t => new TableDisplayVm(t, _loaderRomManager));
+            var tables = _loaderRomManager.Rom.Tables.Select(t => new TableVm(t, _loaderRomManager));
 
             var data = tables.GroupBy(g => g.Category)
-                                  .Select(g => new GroupTableDisplayVM() { Name = g.Key, Tables = g.Select(a => a).ToList() })
+                                  .Select(g => new GroupTableVm() { Name = g.Key, Tables = g.Select(a => a).ToList() })
                                   .ToList();
 
             GroupedTables = data;
         }
 
-        private void SelectedItemChanged(TableDisplayVm selectedTable)
+        private void SelectedItemChanged(TableVm selectedTable)
         {
             if (selectedTable == null)
             {

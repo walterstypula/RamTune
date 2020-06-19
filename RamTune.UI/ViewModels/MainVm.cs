@@ -1,5 +1,6 @@
 ﻿using MVVM;
 using RamTune.Core.Metadata;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Input;
 
@@ -7,24 +8,36 @@ namespace RamTune.UI.ViewModels
 {
     public class MainVm : ViewModelBase
     {
-        private readonly RomEditorVm _romEditorVm;
+        private RomEditorVm _romEditorVm;
         private readonly SettingsVm _settingsVm;
 
         public MainVm()
         {
-            var loader = new DefinitionLoader();
+            MessageBus.Instance.Subscribe(SettingsVm.Actions.SettingsSave, OnAction);
+            MessageBus.Instance.Subscribe(SettingsVm.Actions.SettingsCancel, OnAction);
 
-            var paths = Directory.GetFiles(Configuration.EcuFlashDefinitions, "*.xml", SearchOption.AllDirectories);
-            loader.LoadDefinitions(paths);
+            var settings = RamTuneCommon.LoadSettings();
 
-            _romEditorVm = new RomEditorVm(loader);
-            _settingsVm = new SettingsVm();
+            if (string.IsNullOrWhiteSpace(settings.DefinitionsDirectory))
+            {
+                _settingsVm = new SettingsVm();
+                SetViewContext(_settingsVm);
+                return;
+            }
 
+            _settingsVm = new SettingsVm(settings);
+            var definitionFiles = RamTuneCommon.GetDefinitions(_settingsVm.DefinitionsDirectory.Directory);
+
+            _romEditorVm = LoadEditor(definitionFiles);
             SetViewContext(_romEditorVm);
+        }
 
-            ActionInvoker actionHandler = OnAction;
-            MessageBus.Instance.Subscribe(SettingsVm.Actions.SettingsSave, actionHandler);
-            MessageBus.Instance.Subscribe(SettingsVm.Actions.SettingsCancel, actionHandler);
+        private static RomEditorVm LoadEditor(IEnumerable<string> definitionFiles)
+        {
+            var loader = new DefinitionLoader();
+            loader.LoadDefinitions(definitionFiles);
+
+            return new RomEditorVm(loader);
         }
 
         private void OnAction(ActionItem action)
@@ -32,8 +45,25 @@ namespace RamTune.UI.ViewModels
             switch (action.ActionName)
             {
                 case SettingsVm.Actions.SettingsSave:
+
+                    if (action.Param is SettingsVm settingsVm)
+                    {
+                        if (_romEditorVm is null)
+                        {
+                            var definitions = RamTuneCommon.GetDefinitions(settingsVm.DefinitionsDirectory.Directory);
+                            _romEditorVm = LoadEditor(definitions);
+                        }
+
+                        RamTuneCommon.SaveSettings(new Settings
+                        {
+                            DefinitionsDirectory = _settingsVm.DefinitionsDirectory.Directory,
+                            LogOutputDirectory = _settingsVm.LogOutputDirectory.Directory
+                        });
+                    }
+
                     ViewContext = _romEditorVm;
                     break;
+
                 case SettingsVm.Actions.SettingsCancel:
                     ViewContext = _romEditorVm;
                     break;
@@ -45,15 +75,17 @@ namespace RamTune.UI.ViewModels
             get
             {
                 var openCommand = Get<RelayCommand>(nameof(OpenRomCommand));
-                if (openCommand == null)
+                if (openCommand != null)
                 {
-                    openCommand = new RelayCommand(param =>
-                    {
-                        var romStream = OpenRomFile();
-                        MessageBus.Instance.Publish(new ActionItem(RomEditorVm.Actions.ROMEDITOR_OPEN_ROM, this, romStream));
-                    });
-                    Set(nameof(OpenRomCommand), openCommand);
+                    return openCommand;
                 }
+
+                openCommand = new RelayCommand(param =>
+                {
+                    var romStream = OpenRomFile();
+                    MessageBus.Instance.Publish(new ActionItem(RomEditorVm.Actions.OpenRom, this, romStream));
+                });
+                Set(nameof(OpenRomCommand), openCommand);
 
                 return openCommand;
             }
@@ -64,14 +96,16 @@ namespace RamTune.UI.ViewModels
             get
             {
                 var resetAllTableCellsCommand = Get<RelayCommand>(nameof(ResetAllTableCellsCommand));
-                if (resetAllTableCellsCommand == null)
+                if (resetAllTableCellsCommand != null)
                 {
-                    resetAllTableCellsCommand = new RelayCommand(param =>
-                    {
-                        MessageBus.Instance.Publish(new ActionItem(RomEditorVm.Actions.ROMEDITOR_RESET_ALL_TABLE_CELLS, this));
-                    });
-                    Set(nameof(ResetAllTableCellsCommand), resetAllTableCellsCommand);
+                    return resetAllTableCellsCommand;
                 }
+
+                resetAllTableCellsCommand = new RelayCommand(param =>
+                {
+                    MessageBus.Instance.Publish(new ActionItem(RomEditorVm.Actions.RomeditorResetAllTableCells, this));
+                });
+                Set(nameof(ResetAllTableCellsCommand), resetAllTableCellsCommand);
 
                 return resetAllTableCellsCommand;
             }
@@ -82,14 +116,16 @@ namespace RamTune.UI.ViewModels
             get
             {
                 var resetSelectedTableCellsCommand = Get<RelayCommand>(nameof(ResetSelectedTableCellsCommand));
-                if (resetSelectedTableCellsCommand == null)
+                if (resetSelectedTableCellsCommand != null)
                 {
-                    resetSelectedTableCellsCommand = new RelayCommand(param =>
-                    {
-                        MessageBus.Instance.Publish(new ActionItem(RomEditorVm.Actions.ROMEDITOR_RESET_SELECTED_TABLE_CELLS, this));
-                    });
-                    Set(nameof(ResetSelectedTableCellsCommand), resetSelectedTableCellsCommand);
+                    return resetSelectedTableCellsCommand;
                 }
+
+                resetSelectedTableCellsCommand = new RelayCommand(param =>
+                {
+                    MessageBus.Instance.Publish(new ActionItem(RomEditorVm.Actions.ResetSelectedTableCells, this));
+                });
+                Set(nameof(ResetSelectedTableCellsCommand), resetSelectedTableCellsCommand);
 
                 return resetSelectedTableCellsCommand;
             }
@@ -100,15 +136,17 @@ namespace RamTune.UI.ViewModels
             get
             {
                 var saveCommand = Get<RelayCommand>(nameof(SaveRomCommand));
-                if (saveCommand == null)
+                if (saveCommand != null)
                 {
-                    saveCommand = new RelayCommand(param =>
-                    {
-                        var filePath = Common.SaveFile("bin files|*.bin");
-                        MessageBus.Instance.Publish(new ActionItem(RomEditorVm.Actions.ROMEDITOR_SAVE_ROM, this, filePath));
-                    });
-                    Set(nameof(SaveRomCommand), saveCommand);
+                    return saveCommand;
                 }
+
+                saveCommand = new RelayCommand(param =>
+                {
+                    var filePath = Common.SaveFile("bin files|*.bin");
+                    MessageBus.Instance.Publish(new ActionItem(RomEditorVm.Actions.SaveRom, this, filePath));
+                });
+                Set(nameof(SaveRomCommand), saveCommand);
 
                 return saveCommand;
             }
@@ -119,11 +157,13 @@ namespace RamTune.UI.ViewModels
             get
             {
                 var settingsCommand = Get<RelayCommand>(nameof(SettingsCommand));
-                if (settingsCommand == null)
+                if (settingsCommand != null)
                 {
-                    settingsCommand = new RelayCommand(param => SetViewContext(_settingsVm));
-                    Set(nameof(SettingsCommand), settingsCommand);
+                    return settingsCommand;
                 }
+
+                settingsCommand = new RelayCommand(param => SetViewContext(_settingsVm));
+                Set(nameof(SettingsCommand), settingsCommand);
 
                 return settingsCommand;
             }
@@ -137,7 +177,7 @@ namespace RamTune.UI.ViewModels
 
         private Stream OpenRomFile()
         {
-            string path = Common.SelectFile("bin files|*.bin");
+            var path = Common.SelectFile("bin files|*.bin");
 
             if (string.IsNullOrEmpty(path))
             {
@@ -145,9 +185,9 @@ namespace RamTune.UI.ViewModels
             }
 
             Stream openRom;
-            using (FileStream fileStream = File.OpenRead(path))
+            using (var fileStream = File.OpenRead(path))
             {
-                MemoryStream ms = new MemoryStream();
+                var ms = new MemoryStream();
                 ms.SetLength(fileStream.Length);
                 fileStream.Read(ms.GetBuffer(), 0, (int)fileStream.Length);
                 openRom = ms;

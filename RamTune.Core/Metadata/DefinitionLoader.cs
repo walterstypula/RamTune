@@ -77,7 +77,7 @@ namespace RamTune.Core.Metadata
             foreach (var path in definitionPaths)
             {
                 var romScalings = LoadDefinition<DefinitionScalings>(path);
-                foreach (var scaling in romScalings.Scalings)
+                foreach (var scaling in romScalings?.Scalings ?? Enumerable.Empty<Scaling>())
                 {
                     var scalingName = $"{romScalings.RomId.XmlId}{scaling.Name}";
 
@@ -91,7 +91,12 @@ namespace RamTune.Core.Metadata
 
                 var rom = LoadDefinition<Definition>(path);
 
-                //KNOWN ISSUE
+                if (rom == null)
+                {
+                    continue;;
+                }
+
+                 //KNOWN ISSUE
                 definitions.Add(rom);
             }
 
@@ -180,10 +185,18 @@ namespace RamTune.Core.Metadata
 
         private T LoadDefinition<T>(string path)
         {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-            using (TextReader reader = new StreamReader(path))
+            try
             {
-                return (T)xmlSerializer.Deserialize(reader);
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+                using (TextReader reader = new StreamReader(path))
+                {
+                    return (T) xmlSerializer.Deserialize(reader);
+                }
+            }
+            catch (Exception)
+            {
+                //TODO: log to output
+                return default(T);
             }
         }
 

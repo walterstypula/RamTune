@@ -1,6 +1,5 @@
 ﻿using MVVM;
 using RamTune.Core.Metadata;
-using System;
 using System.Linq;
 using System.Text;
 
@@ -8,7 +7,9 @@ namespace RamTune.UI.ViewModels
 {
     public class CellVm : ViewModelBase
     {
-        private byte[] _unmodifiedValue = null;
+        private byte[] _unmodifiedValue;
+
+        public long? Address { get; set; }
 
         public byte[] ByteValue
         {
@@ -35,8 +36,8 @@ namespace RamTune.UI.ViewModels
             get
             {
                 return IsStatic
-                        ? Encoding.UTF8.GetString(ByteValue)
-                        : Scaling.GetDisplayValue(ByteValue);
+                    ? Encoding.UTF8.GetString(ByteValue)
+                    : Scaling.GetDisplayValue(ByteValue);
             }
             private set
             {
@@ -73,6 +74,12 @@ namespace RamTune.UI.ViewModels
             DisplayValue = Scaling.ChangeValue(currentValue, currentByteValue, direction, changeType);
         }
 
+        public void ResetValue()
+        {
+            ByteValue = _unmodifiedValue;
+            OnPropertyChanged(nameof(DisplayValue));
+        }
+
         public void SetValue(string value)
         {
             if (IsStatic)
@@ -81,12 +88,6 @@ namespace RamTune.UI.ViewModels
             }
 
             DisplayValue = Scaling.SetValue(value);
-        }
-
-        public void ResetValue()
-        {
-            ByteValue = _unmodifiedValue;
-            OnPropertyChanged(nameof(DisplayValue));
         }
     }
 }

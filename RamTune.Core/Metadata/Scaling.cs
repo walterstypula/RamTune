@@ -40,13 +40,4 @@ namespace RamTune.Core.Metadata
         [XmlElement(ElementName = "data")]
         public List<ScalingData> Data { get; set; }
     }
-
-    public class ScalingData
-    {
-        [XmlAttribute(AttributeName = "name")]
-        public string Name { get; set; }
-
-        [XmlAttribute(AttributeName = "value")]
-        public string Value { get; set; }
-    }
 }

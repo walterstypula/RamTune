@@ -1,41 +1,9 @@
-﻿using MVVM;
+﻿using System.Diagnostics.Contracts;
+using MVVM;
 using System.Windows.Input;
 
 namespace RamTune.UI.ViewModels
 {
-    public class DirectoryVm : ViewModelBase
-    {
-        public string Title
-        {
-            get => Get<string>(nameof(Title));
-            set => Set(nameof(Title), value);
-        }
-
-        public string Directory
-        {
-            get => Get<string>(nameof(Directory));
-            set => Set(nameof(Directory), value);
-        }
-
-        public ICommand ShowPickerCommand
-        {
-            get
-            {
-                var showFolderPickerCommand = Get<RelayCommand>(nameof(ShowPickerCommand));
-                if (showFolderPickerCommand == null)
-                {
-                    showFolderPickerCommand = new RelayCommand(param =>
-                    {
-                        Directory = Common.SelectFolder();
-                    });
-                    Set(nameof(ShowPickerCommand), showFolderPickerCommand);
-                }
-
-                return showFolderPickerCommand;
-            }
-        }
-    }
-
     public class SettingsVm : ViewModelBase
     {
         public class Actions
@@ -57,6 +25,13 @@ namespace RamTune.UI.ViewModels
             };
         }
 
+        public SettingsVm(Settings settings)
+            :this()
+        {
+            LogOutputDirectory.Directory = settings.LogOutputDirectory;
+            DefinitionsDirectory.Directory = settings.DefinitionsDirectory;
+        }
+
         public DirectoryVm LogOutputDirectory
         {
             get => Get<DirectoryVm>(nameof(LogOutputDirectory));
@@ -74,14 +49,16 @@ namespace RamTune.UI.ViewModels
             get
             {
                 var saveCommand = Get<RelayCommand>(nameof(SaveCommand));
-                if (saveCommand == null)
+                if (saveCommand != null)
                 {
-                    saveCommand = new RelayCommand(param =>
-                    {
-                        MessageBus.Instance.Publish(SettingsVm.Actions.SettingsSave, this);
-                    });
-                    Set(nameof(SaveCommand), saveCommand);
+                    return saveCommand;
                 }
+
+                saveCommand = new RelayCommand(param =>
+                {
+                    MessageBus.Instance.Publish(Actions.SettingsSave, this, this);
+                });
+                Set(nameof(SaveCommand), saveCommand);
 
                 return saveCommand;
             }
@@ -92,14 +69,16 @@ namespace RamTune.UI.ViewModels
             get
             {
                 var cancelCommand = Get<RelayCommand>(nameof(CancelCommand));
-                if (cancelCommand == null)
+                if (cancelCommand != null)
                 {
-                    cancelCommand = new RelayCommand(param =>
-                    {
-                        MessageBus.Instance.Publish(SettingsVm.Actions.SettingsCancel, this);
-                    });
-                    Set(nameof(CancelCommand), cancelCommand);
+                    return cancelCommand;
                 }
+
+                cancelCommand = new RelayCommand(param =>
+                {
+                    MessageBus.Instance.Publish(Actions.SettingsCancel, this);
+                });
+                Set(nameof(CancelCommand), cancelCommand);
 
                 return cancelCommand;
             }

@@ -35,9 +35,9 @@ namespace MVVM
             }
         }
 
-        public void Publish(string actionName, object actionSource)
+        public void Publish(string actionName, object actionSource, object param = null)
         {
-            this.Publish(new ActionItem(actionName, actionSource));
+            this.Publish(new ActionItem(actionName, actionSource, param));
         }
 
         public void Publish(ActionItem action)

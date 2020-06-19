@@ -5,36 +5,19 @@ namespace RamTune.UI.AttachedProperties
 {
     public static class VisualTreeExtensions
     {
-        public static DependencyObject GetParent(DependencyObject obj)
+        public static T FindAncestor<T>(DependencyObject obj) where T : DependencyObject
         {
-            if (obj == null)
-                return null;
-            ContentElement ce = obj as ContentElement;
-            if (ce != null)
-            {
-                DependencyObject parent = ContentOperations.GetParent(ce);
-                if (parent != null)
-                    return parent;
-                FrameworkContentElement fce = ce as FrameworkContentElement;
-                return fce != null ? fce.Parent : null;
-            }
-            return VisualTreeHelper.GetParent(obj);
-        }
-
-        public static T FindAncestor<T>(DependencyObject obj)
-       where T : DependencyObject
-        {
-            DependencyObject target = obj;
+            var target = obj;
             do
             {
                 target = GetParent(target);
             }
-            while (target != null && !(target is T found));
+            while (target != null && !(target is T));
+
             return target as T;
         }
 
-        public static T FindChild<T>(this DependencyObject reference)
-        where T : DependencyObject
+        public static T FindChild<T>(this DependencyObject reference) where T : DependencyObject
         {
             if (reference == null)
             {
@@ -43,7 +26,7 @@ namespace RamTune.UI.AttachedProperties
 
             T foundChild = null;
 
-            int childrenCount = VisualTreeHelper.GetChildrenCount(reference);
+            var childrenCount = VisualTreeHelper.GetChildrenCount(reference);
 
             for (int i = 0; i < childrenCount; i++)
             {
@@ -63,6 +46,29 @@ namespace RamTune.UI.AttachedProperties
             }
 
             return foundChild;
+        }
+
+        public static DependencyObject GetParent(DependencyObject obj)
+        {
+            if (obj == null)
+            {
+                return null;
+            }
+
+            if (!(obj is ContentElement ce))
+            {
+                return VisualTreeHelper.GetParent(obj);
+            }
+
+            var parent = ContentOperations.GetParent(ce);
+            if (parent != null)
+            {
+                return parent;
+            }
+
+            return ce is FrameworkContentElement fce
+                ? fce.Parent
+                : null;
         }
     }
 }

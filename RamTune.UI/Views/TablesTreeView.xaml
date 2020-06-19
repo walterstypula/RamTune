@@ -32,10 +32,10 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-                <HierarchicalDataTemplate DataType="{x:Type vm:GroupTableDisplayVM}" ItemsSource="{Binding Tables}">
+                <HierarchicalDataTemplate DataType="{x:Type vm:GroupTableVm}" ItemsSource="{Binding Tables}">
                     <Label Content="{Binding Name}" />
                 </HierarchicalDataTemplate>
-                <DataTemplate DataType="{x:Type vm:TableDisplayVm}">
+                <DataTemplate DataType="{x:Type vm:TableVm}">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="*" Visibility="{Binding IsDirty, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource DirtyLabel}"/>
                         <Label Content="{Binding Name}" Style="{StaticResource DirtyLabel}" />

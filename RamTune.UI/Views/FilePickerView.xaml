@@ -30,7 +30,7 @@
                 <Button
                     Grid.Column="1"
                     Content="..."
-                    Command="{Binding Path=ShowPickerCommand}" />
+                    Command="{Binding Path=ShowPickerCommand}" CommandParameter="{Binding Path=Directory}" />
             </Grid>
         </StackPanel>
     </Border>

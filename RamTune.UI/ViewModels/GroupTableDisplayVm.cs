@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RamTune.UI.ViewModels
 {
-    public class GroupTableDisplayVM : ViewModelBase
+    public class GroupTableVm : ViewModelBase
     {
         public string Name
         {
@@ -11,6 +11,6 @@ namespace RamTune.UI.ViewModels
             set { Set(nameof(Name), value); }
         }
 
-        public IEnumerable<TableDisplayVm> Tables { get; set; }
+        public IEnumerable<TableVm> Tables { get; set; }
     }
 }
