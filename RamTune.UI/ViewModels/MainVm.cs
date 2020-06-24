@@ -17,15 +17,14 @@ namespace RamTune.UI.ViewModels
             MessageBus.Instance.Subscribe(SettingsVm.Actions.SettingsCancel, OnAction);
 
             var settings = RamTuneCommon.LoadSettings();
+			_settingsVm = new SettingsVm(settings);
 
             if (string.IsNullOrWhiteSpace(settings.DefinitionsDirectory))
             {
-                _settingsVm = new SettingsVm();
                 SetViewContext(_settingsVm);
                 return;
             }
 
-            _settingsVm = new SettingsVm(settings);
             var definitionFiles = RamTuneCommon.GetDefinitions(_settingsVm.DefinitionsDirectory.Directory);
 
             _romEditorVm = LoadEditor(definitionFiles);

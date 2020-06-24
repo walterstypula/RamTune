@@ -1,8 +1,6 @@
 ﻿using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using RamTune.UI.ViewModels;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -11,14 +9,26 @@ namespace RamTune.UI
 {
     public class Settings
     {
+        public Settings()
+        {
+            LogOutputDirectory = RamTuneCommon.GetDefaultLogFolder();
+        }
+
         public string DefinitionsDirectory { get; set; }
         public string LogOutputDirectory { get; set; }
     }
 
     public class RamTuneCommon
     {
-        public const string ApplicationFolder = ".ramtune";
-        public const string SettingsFile = "settings.json";
+        private const string DefaultLogsFolder = "Logs";
+        private const string ApplicationFolder = ".ramtune";
+        private const string SettingsFile = "settings.json";
+
+        public static string GetDefaultLogFolder()
+        {
+            var defaultLogsFolder = Common.GetApplicationFolder(ApplicationFolder, DefaultLogsFolder);
+            return defaultLogsFolder;
+        }
 
         public static string GetApplicationSettingsFilePath()
         {
@@ -75,10 +85,16 @@ namespace RamTune.UI
             return obj;
         }
 
-        public static string GetApplicationFolder(string folderName)
+        public static string GetApplicationFolder(string folderName, params string[] folders)
         {
             var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
             var settingsFolder = System.IO.Path.Join(userProfilePath, folderName);
+
+            foreach (var folder in folders)
+            {
+                settingsFolder = Path.Join(settingsFolder, folder);
+            }
 
             return settingsFolder;
         }
@@ -87,6 +103,8 @@ namespace RamTune.UI
         {
             var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
             dialog.InitialDirectory = currentLocation;
+            dialog.DefaultDirectory = currentLocation;
+            dialog.RestoreDirectory = true;
             var result = dialog.ShowDialog();
 
             if (result == CommonFileDialogResult.Ok)
