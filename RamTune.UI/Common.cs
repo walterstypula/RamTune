@@ -15,7 +15,10 @@ namespace RamTune.UI
         }
 
         public string DefinitionsDirectory { get; set; }
+
         public string LogOutputDirectory { get; set; }
+
+        public string LoggerDefinitionsDirectory { get; set; }
     }
 
     public class RamTuneCommon

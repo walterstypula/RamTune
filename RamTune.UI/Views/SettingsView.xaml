@@ -15,6 +15,7 @@
         <StackPanel Grid.Row="0">
             <local:FilePickerView DataContext="{Binding LogOutputDirectory}" />
             <local:FilePickerView DataContext="{Binding DefinitionsDirectory}" />
+            <local:FilePickerView DataContext="{Binding LoggerDefinitionsDirectory}" />
         </StackPanel>
         <Grid
             Grid.Row="1">

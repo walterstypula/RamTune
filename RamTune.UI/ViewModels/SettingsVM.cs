@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-using MVVM;
+﻿using MVVM;
 using System.Windows.Input;
 
 namespace RamTune.UI.ViewModels
@@ -23,13 +22,35 @@ namespace RamTune.UI.ViewModels
             {
                 Title = "Definitions Directory"
             };
+
+            LoggerDefinitionsDirectory = new DirectoryVm()
+            {
+                Title = "Logger Definitions"
+            };
+        }
+
+        public Settings GetSettings()
+        {
+            return new Settings
+            {
+                DefinitionsDirectory = DefinitionsDirectory.Directory,
+                LogOutputDirectory = LogOutputDirectory.Directory,
+                LoggerDefinitionsDirectory = LoggerDefinitionsDirectory.Directory
+            };
+        }
+
+        public DirectoryVm LoggerDefinitionsDirectory
+        {
+            get => Get<DirectoryVm>(nameof(LoggerDefinitionsDirectory));
+            set => Set(nameof(LoggerDefinitionsDirectory), value);
         }
 
         public SettingsVm(Settings settings)
-            :this()
+            : this()
         {
             LogOutputDirectory.Directory = settings.LogOutputDirectory;
             DefinitionsDirectory.Directory = settings.DefinitionsDirectory;
+            LoggerDefinitionsDirectory.Directory = settings.LoggerDefinitionsDirectory;
         }
 
         public DirectoryVm LogOutputDirectory

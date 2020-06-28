@@ -53,11 +53,7 @@ namespace RamTune.UI.ViewModels
                             _romEditorVm = LoadEditor(definitions);
                         }
 
-                        RamTuneCommon.SaveSettings(new Settings
-                        {
-                            DefinitionsDirectory = _settingsVm.DefinitionsDirectory.Directory,
-                            LogOutputDirectory = _settingsVm.LogOutputDirectory.Directory
-                        });
+                        RamTuneCommon.SaveSettings(_settingsVm.GetSettings());
                     }
 
                     ViewContext = _romEditorVm;
