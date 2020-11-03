@@ -1,13 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-        <RootNamespace>NateW.Ssm</RootNamespace>
-        <AssemblyName>Lumberjack</AssemblyName>
-        <UseWindowsForms>true</UseWindowsForms>
-    </PropertyGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\LumberjackCore\LumberjackCore.csproj" />
-        <ProjectReference Include="..\SsmProtocol\SsmProtocol.csproj" />
-    </ItemGroup>
+  <PropertyGroup>
+	<OutputType>WinExe</OutputType>
+	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<RootNamespace>NateW.Ssm</RootNamespace>
+	<AssemblyName>Lumberjack</AssemblyName>
+	<UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <ItemGroup>
+	<ProjectReference Include="..\LumberjackCore\LumberjackCore.csproj" />
+	<ProjectReference Include="..\SsmProtocol\SsmProtocol.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+	<Folder Include="Configuration\" />
+  </ItemGroup>
+  <ItemGroup>
+	<None Include="..\Configuration\LiveTuning.json" Link="Configuration\LiveTuning.json">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Include="..\Configuration\logger.xml" Link="Configuration\logger.xml">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Include="..\Configuration\A2WC522N.bin" Link="Configuration\A2WC522N.bin">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Include="..\Configuration\Ambient Conditions.profile" Link="Configuration\Ambient Conditions.profile" >
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Include="..\Configuration\Boost And AFR.profile" Link="Configuration\Boost And AFR.profile">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Include="..\Configuration\General.profile" Link="Configuration\General.profile">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Include="..\Configuration\logger.dtd" Link="Configuration\logger.dtd">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Include="..\Configuration\MickeyD's fine learning knock correction profile.profile" Link="Configuration\MickeyD%27s fine learning knock correction profile.profile" >
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Include="..\Configuration\Standard 'critique my tune' profile.profile" Link="Configuration\Standard %27critique my tune%27 profile.profile" >
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Include="..\Configuration\Turbo dynamics.profile" Link="Configuration\Turbo dynamics.profile" >
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+  </ItemGroup>
 </Project>
