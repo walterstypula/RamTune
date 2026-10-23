@@ -42,6 +42,11 @@
                         <Style TargetType="Border">
                             <Setter Property="BorderBrush" Value="DimGray" />
                             <Style.Triggers>
+                                <!-- Set only by the ROM compare view -->
+                                <DataTrigger Binding="{Binding IsDifferent}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource RamTune.Compare.Different.Background}" />
+                                    <Setter Property="BorderBrush" Value="{StaticResource RamTune.Compare.Different}" />
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding IsDirty}" Value="True">
                                     <Setter Property="Background" Value="#33CCCCCC" />
                                     <Setter Property="BorderBrush" Value="White" />

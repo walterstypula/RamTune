@@ -12,7 +12,8 @@ public static class StreamExtensions
     public static byte[] ReadElement(this Stream stream, string endian, int byteArraySize)
     {
         var bytes = new byte[byteArraySize];
-        stream.Read(bytes, 0, byteArraySize);
+        // Reading past the end of the ROM (bad definition address) leaves zeros instead of throwing.
+        stream.ReadAtLeast(bytes, byteArraySize, throwOnEndOfStream: false);
         bytes.ReverseBytes(endian);
 
         return bytes;
@@ -129,28 +130,32 @@ public static class ScalingExtensions
         var value = double.Parse(data);
         var output = value.CalcValue(expression);
 
+        // Integer storage: round to the nearest raw value (truncating would turn 3.9999 into 3) and keep it in range.
+        double Raw(double min, double max) => Math.Clamp(Math.Round(output, MidpointRounding.AwayFromZero), min, max);
+
         switch (storageType)
         {
             case StorageType.uint32:
-                return BitConverter.GetBytes((uint)output);
+                return BitConverter.GetBytes((uint)Raw(uint.MinValue, uint.MaxValue));
 
             case StorageType.int32:
-                return BitConverter.GetBytes((int)output);
+                return BitConverter.GetBytes((int)Raw(int.MinValue, int.MaxValue));
 
             case StorageType.uint16:
-                return BitConverter.GetBytes((ushort)output);
+                return BitConverter.GetBytes((ushort)Raw(ushort.MinValue, ushort.MaxValue));
 
             case StorageType.int16:
-                return BitConverter.GetBytes((short)output);
+                return BitConverter.GetBytes((short)Raw(short.MinValue, short.MaxValue));
 
             case StorageType.@float:
                 return BitConverter.GetBytes((float)output);
 
+            // One byte each. BitConverter has no byte overloads and would widen these to two bytes.
             case StorageType.uint8:
-                return BitConverter.GetBytes((sbyte)output);
+                return new[] { (byte)Raw(byte.MinValue, byte.MaxValue) };
 
             case StorageType.int8:
-                return BitConverter.GetBytes((byte)output);
+                return new[] { unchecked((byte)(sbyte)Raw(sbyte.MinValue, sbyte.MaxValue)) };
 
             case StorageType.Unknown:
                 break;

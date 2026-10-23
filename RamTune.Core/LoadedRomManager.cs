@@ -109,11 +109,37 @@ namespace RamTune.Core
             _romStream.Write(bytes, 0, bytes.Length);
         }
 
-        public void Save(string filePath)
+        /// <summary>
+        /// Writes the ROM to <paramref name="filePath"/>, correcting the checksum first when the definition names a supported checksum module.
+        /// Returns a short note about the checksum for the user.
+        /// </summary>
+        public string Save(string filePath)
         {
+            var note = FixChecksum();
+
             _romStream.Seek(0, SeekOrigin.Begin);
             using (FileStream file = new FileStream(filePath, FileMode.Create, System.IO.FileAccess.Write))
                 _romStream.CopyTo(file);
+
+            return note;
+        }
+
+        private string FixChecksum()
+        {
+            var module = Rom?.RomId?.ChecksumModule;
+
+            if (!string.Equals(module, SubaruDbwChecksum.ModuleName, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return string.IsNullOrEmpty(module)
+                    ? "No checksum module in the definition; checksum not changed."
+                    : $"Checksum module '{module}' is not supported; checksum not changed.";
+            }
+
+            var corrected = SubaruDbwChecksum.Fix(_romStream);
+
+            return corrected < 0
+                ? "Subaru checksum table not found; checksum not changed."
+                : corrected == 0 ? "Checksum already correct." : $"Checksum corrected ({corrected} range{(corrected == 1 ? "" : "s")}).";
         }
     }
 }

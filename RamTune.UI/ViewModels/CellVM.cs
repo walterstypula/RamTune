@@ -1,4 +1,5 @@
 ﻿using MVVM;
+using RamTune.Core;
 using RamTune.Core.Metadata;
 using System;
 using System.Linq;
@@ -58,6 +59,15 @@ namespace RamTune.UI.ViewModels
             set { Set(nameof(IsStatic), value); }
         }
 
+        /// <summary>
+        /// Set by the ROM compare view when this cell's value differs from the matching cell in the other ROM.
+        /// </summary>
+        public bool IsDifferent
+        {
+            get { return Get<bool>(nameof(IsDifferent)); }
+            set { Set(nameof(IsDifferent), value); }
+        }
+
         public long? Address { get; set; }
 
         public Scaling Scaling { get; set; }
@@ -87,6 +97,37 @@ namespace RamTune.UI.ViewModels
         {
             ByteValue = _unmodifiedValue;
             OnPropertyChanged(nameof(DisplayValue));
+        }
+
+        /// <summary>
+        /// Takes the value of <paramref name="source"/>: byte for byte when both scalings store values the same way,
+        /// otherwise through the display value so it is converted to this cell's scaling.
+        /// </summary>
+        public void CopyValueFrom(CellVM source)
+        {
+            if (IsStatic || source.IsStatic)
+            {
+                return;
+            }
+
+            if (Scaling.IsCompatibleWith(source.Scaling))
+            {
+                ByteValue = source.ByteValue.ToArray();
+                OnPropertyChanged(nameof(DisplayValue));
+                return;
+            }
+
+            SetValue(source.DisplayValue);
+        }
+
+        public bool HasSameValueAs(CellVM other)
+        {
+            if (IsStatic || other.IsStatic || Scaling.IsCompatibleWith(other.Scaling))
+            {
+                return ByteValue.SequenceEqual(other.ByteValue);
+            }
+
+            return DisplayValue == other.DisplayValue;
         }
     }
 }
