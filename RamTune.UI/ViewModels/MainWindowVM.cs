@@ -4,6 +4,7 @@ using RamTune.Core.Metadata;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 namespace RamTune.UI.ViewModels
@@ -21,6 +22,8 @@ namespace RamTune.UI.ViewModels
         private RelayCommand _selectedItemChangedCommand;
 
         private RelayCommand _saveRomCommand;
+
+        private RelayCommand _openCompareCommand;
 
         private ITableReader _loaderRomManager;
 
@@ -66,6 +69,8 @@ namespace RamTune.UI.ViewModels
                 return _saveRomCommand;
             }
         }
+
+        public ICommand OpenCompareCommand => this.InitCommand(ref _openCompareCommand, parm => OpenCompare(), delegate { return true; });
 
         public ICommand ResetAllTableCellsCommand
         {
@@ -124,8 +129,26 @@ namespace RamTune.UI.ViewModels
 
         private void SaveRom()
         {
-            var filePath = Common.SaveFile("bin files|*.bin");
-            _loaderRomManager.Save(filePath);
+            if (_loaderRomManager == null)
+            {
+                return;
+            }
+
+            var filePath = Common.SaveFile(Common.RomFileFilter);
+
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return;
+            }
+
+            var checksumNote = _loaderRomManager.Save(filePath);
+            MessageBox.Show($"Saved {filePath}.\n{checksumNote}", "RamTune");
+        }
+
+        private void OpenCompare()
+        {
+            var window = new Views.CompareWindow { DataContext = new CompareWindowVM(_definitionLoader) };
+            window.Show();
         }
 
         private void OpenRom()
@@ -144,23 +167,8 @@ namespace RamTune.UI.ViewModels
 
         private Stream OpenRomFile()
         {
-            string path = Common.SelectFile("bin files|*.bin");
-
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new FileNotFoundException($"Selected file: '{path}' not found");
-            }
-
-            Stream openRom;
-            using (FileStream fileStream = File.OpenRead(path))
-            {
-                MemoryStream ms = new MemoryStream();
-                ms.SetLength(fileStream.Length);
-                fileStream.Read(ms.GetBuffer(), 0, (int)fileStream.Length);
-                openRom = ms;
-            }
-
-            return openRom;
+            string path = Common.SelectFile(Common.RomFileFilter);
+            return Common.ReadRomIntoMemory(path);
         }
 
         private void SelectedItemChanged(TableDisplayVM selectedTable)

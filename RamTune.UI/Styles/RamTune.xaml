@@ -7,11 +7,20 @@
     <Color x:Key="RamTune.DarkGray.Color">#3E3E42</Color>
     <Color x:Key="RamTune.Blue.Color">#0078D7</Color>
     <Color x:Key="RamTune.Yellow.Color">Yellow</Color>
-    
+    <Color x:Key="RamTune.Orange.Color">#FF8C00</Color>
+    <Color x:Key="RamTune.Red.Color">#FF5A5A</Color>
+
 
     <SolidColorBrush x:Key="RamTune.Grid.Splitter" Color="{StaticResource RamTune.LightGray.Color}" />
     <SolidColorBrush x:Key="RamTune.ActionMenu.Button" Color="{StaticResource RamTune.Blue.Color}" />
     <SolidColorBrush x:Key="RamTune.Table.Description" Color="{StaticResource RamTune.Yellow.Color}" />
+
+    <!-- ROM compare -->
+    <SolidColorBrush x:Key="RamTune.Compare.Different" Color="{StaticResource RamTune.Orange.Color}" />
+    <SolidColorBrush x:Key="RamTune.Compare.Different.Background" Color="#33FF8C00" />
+    <SolidColorBrush x:Key="RamTune.Compare.SizeMismatch" Color="{StaticResource RamTune.Red.Color}" />
+    <SolidColorBrush x:Key="RamTune.Compare.Missing" Color="{StaticResource RamTune.LightGray.Color}" />
+    <SolidColorBrush x:Key="RamTune.Compare.Panel" Color="{StaticResource RamTune.DarkGray.Color}" />
 
     <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="{StaticResource RamTune.DarkGray.Color}" />
     <SolidColorBrush x:Key="ScrollBar.Static.Border" Color="{StaticResource RamTune.DarkGray.Color}" />
@@ -47,6 +56,38 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource RamTune.ActionMenu.Button}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Text button used by the ROM compare window -->
+    <Style TargetType="Button" x:Key="TextButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="2" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource RamTune.Compare.Panel}" />
+        <Setter Property="BorderBrush" Value="DimGray" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Padding" Value="10,4" />
+        <Setter Property="Margin" Value="3" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource RamTune.ActionMenu.Button}" />
+                <Setter Property="Background" Value="{StaticResource RamTune.ActionMenu.Button}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#707070" />
+                <Setter Property="BorderBrush" Value="#505050" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Cursor" Value="Arrow" />
             </Trigger>
         </Style.Triggers>
     </Style>

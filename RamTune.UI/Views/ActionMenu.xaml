@@ -12,6 +12,7 @@
             <Button Content="&#xf0c7;" Command="{Binding Path=SaveRomCommand}" Style="{StaticResource MenuButton}" ToolTip="Save Rom" />
             <Button Content="&#xf3e5;" Command="{Binding Path=ResetSelectedTableCellsCommand}" Style="{StaticResource MenuButton}" ToolTip="Reset Selected Table Cells" />
             <Button Content="&#xf122;" Command="{Binding Path=ResetAllTableCellsCommand}" Style="{StaticResource MenuButton}" ToolTip="Reset All Table Cells" />
+            <Button Content="&#xf362;" Command="{Binding Path=OpenCompareCommand}" Style="{StaticResource MenuButton}" ToolTip="Compare Roms" />
         </StackPanel>
     </Border>
 </UserControl>

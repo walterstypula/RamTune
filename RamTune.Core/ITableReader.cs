@@ -13,6 +13,6 @@ namespace RamTune.Core
 
         Definition Rom { get; set; }
 
-        void Save(string filePath);
+        string Save(string filePath);
     }
 }

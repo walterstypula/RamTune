@@ -17,6 +17,8 @@ namespace RamTune.UI.ViewModels
                 return null;
             }
 
+            var elementSize = isStaticAxis.GetValueOrDefault() || scaling == null ? 1 : scaling.ParseStorageSize();
+
             var rows = tableData.Select(o =>
             {
                 var columns = o.Select(s =>
@@ -31,14 +33,14 @@ namespace RamTune.UI.ViewModels
 
                     if (address.HasValue)
                     {
-                        address++;
+                        address += elementSize;
                     }
 
                     return cell;
-                });
+                }).ToList();
 
                 return new ObservableCollection<CellVM>(columns);
-            });
+            }).ToList();
 
             return new ObservableCollection<ObservableCollection<CellVM>>(rows);
         }
@@ -212,17 +214,135 @@ namespace RamTune.UI.ViewModels
         {
             CheckDirty();
 
-            var dirtyCells = TableData.SelectMany(s => s).Where(s => s.IsDirty);
+            var dirtyCells = new[] { TableData, ColumnHeaders, RowHeaders }
+                                .Where(cells => cells != null)
+                                .SelectMany(cells => cells.SelectMany(s => s))
+                                .Where(s => s.IsDirty && !s.IsStatic);
 
             foreach (var cell in dirtyCells)
             {
-                var endian = this._table.Scaling.Endian;
+                var endian = cell.Scaling.Endian;
                 var bytes = cell.ByteValue.ToArray();
 
                 bytes.ReverseBytes(endian);
 
                 _tableReader.ApplyChanges(cell.Address.GetValueOrDefault(), bytes);
             }
+        }
+
+        /// <summary>
+        /// True when data and axes have the same number of rows and columns as <paramref name="other"/>.
+        /// </summary>
+        public bool HasSameShape(TableDisplayVM other)
+        {
+            return SameShape(TableData, other.TableData)
+                && SameShape(ColumnHeaders, other.ColumnHeaders)
+                && SameShape(RowHeaders, other.RowHeaders);
+        }
+
+        public int SelectedCellCount
+        {
+            get { return AllCells().Count(c => c.IsSelected); }
+        }
+
+        /// <summary>
+        /// Copies values from <paramref name="source"/> into this table, cell by cell at the same row and column,
+        /// for the data and both axes. With <paramref name="selectedOnly"/> only the cells selected in the source are copied.
+        /// The tables must have the same shape. Returns the number of cells whose value changed.
+        /// </summary>
+        public int CopyFrom(TableDisplayVM source, bool selectedOnly)
+        {
+            var changed = CopyCells(source.TableData, TableData, selectedOnly)
+                        + CopyCells(source.ColumnHeaders, ColumnHeaders, selectedOnly)
+                        + CopyCells(source.RowHeaders, RowHeaders, selectedOnly);
+
+            Apply();
+
+            return changed;
+        }
+
+        /// <summary>
+        /// Flags every cell whose value differs from the cell at the same position in <paramref name="other"/>. Returns the number of differing cells.
+        /// </summary>
+        public int MarkDifferences(TableDisplayVM other)
+        {
+            return MarkDifferences(TableData, other?.TableData)
+                 + MarkDifferences(ColumnHeaders, other?.ColumnHeaders)
+                 + MarkDifferences(RowHeaders, other?.RowHeaders);
+        }
+
+        private IEnumerable<CellVM> AllCells()
+        {
+            return new[] { TableData, ColumnHeaders, RowHeaders }
+                        .Where(cells => cells != null)
+                        .SelectMany(cells => cells.SelectMany(s => s));
+        }
+
+        private static bool SameShape(ObservableCollection<ObservableCollection<CellVM>> a, ObservableCollection<ObservableCollection<CellVM>> b)
+        {
+            if (a == null || b == null)
+            {
+                return a == null && b == null;
+            }
+
+            return a.Count == b.Count && a.Zip(b, (ra, rb) => ra.Count == rb.Count).All(s => s);
+        }
+
+        private static int CopyCells(ObservableCollection<ObservableCollection<CellVM>> source, ObservableCollection<ObservableCollection<CellVM>> target, bool selectedOnly)
+        {
+            if (source == null || target == null)
+            {
+                return 0;
+            }
+
+            var changed = 0;
+
+            for (var row = 0; row < source.Count && row < target.Count; row++)
+            {
+                for (var column = 0; column < source[row].Count && column < target[row].Count; column++)
+                {
+                    var from = source[row][column];
+                    var to = target[row][column];
+
+                    if ((selectedOnly && !from.IsSelected) || to.IsStatic || to.HasSameValueAs(from))
+                    {
+                        continue;
+                    }
+
+                    to.CopyValueFrom(from);
+                    changed++;
+                }
+            }
+
+            return changed;
+        }
+
+        private static int MarkDifferences(ObservableCollection<ObservableCollection<CellVM>> cells, ObservableCollection<ObservableCollection<CellVM>> other)
+        {
+            if (cells == null)
+            {
+                return 0;
+            }
+
+            var count = 0;
+
+            for (var row = 0; row < cells.Count; row++)
+            {
+                for (var column = 0; column < cells[row].Count; column++)
+                {
+                    var cell = cells[row][column];
+                    var match = other != null && row < other.Count && column < other[row].Count ? other[row][column] : null;
+
+                    cell.IsDifferent = match == null || !cell.HasSameValueAs(match);
+
+                    if (cell.IsDifferent)
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
         }
 
         private void ResetCollection(ObservableCollection<ObservableCollection<CellVM>> cells)
